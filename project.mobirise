@@ -1,71 +1,472 @@
 {
   "settings": {
-    "name": "WoqHentai 700 Special",
-    "currentPage": "page1.html",
+    "name": "Site-09-07_2201",
+    "currentPage": "page5.html",
     "theme": {
       "name": "mobirise-amp",
       "title": "Mobirise AMP",
       "styling": {
-        "primaryColor": "#232323",
-        "secondaryColor": "#4addff",
-        "successColor": "#0dcd7b",
-        "infoColor": "#ff5959",
-        "warningColor": "#ffc5e7",
+        "primaryColor": "#6f8bf9",
+        "secondaryColor": "#6f8bf9",
+        "successColor": "#ca0300",
+        "infoColor": "#7b6f50",
+        "warningColor": "#212120",
         "dangerColor": "#a0a0a0",
         "mainFont": "Roboto",
-        "display1Font": "Source Code Pro",
-        "display1Size": "1.6",
-        "display2Font": "Roboto",
+        "display1Font": "Roboto",
+        "display1Size": 4.5,
+        "display2Font": "Poppins",
         "display2Size": 2.2,
         "display5Font": "Roboto",
-        "display5Size": 1.8,
-        "display7Font": "Roboto",
+        "display5Size": "1",
+        "display7Font": "Open Sans",
         "display7Size": 1.1,
-        "display4Font": "Source Code Pro",
-        "display4Size": 0.9,
+        "display4Font": "Roboto",
+        "display4Size": "0.8",
         "isRoundedButtons": false,
         "isScrollToTopButton": false,
         "arrowColor": "#4ea2e3"
       },
       "additionalSetColors": [
-        "#ff2959",
-        "#ffd58c",
-        "#ffc5e7",
-        "#ff5959"
+        "#e2e2e2",
+        "#6f8bf9",
+        "#ca0300",
+        "#7b6f50",
+        "#212120",
+        "#ff84f3",
+        "#23cae3"
       ]
     },
     "path": "@PROJECT_PATH@",
-    "versionFirst": "4.10.4",
+    "versionFirst": "4.10.8",
     "siteFonts": [
       {
-        "css": "'Source Code Pro', monospace",
-        "name": "Source Code Pro",
-        "url": "https://fonts.googleapis.com/css?family=Source+Code+Pro:200,300,400,500,600,700,900"
+        "css": "'Open Sans', sans-serif",
+        "name": "Open Sans",
+        "url": "https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i"
+      },
+      {
+        "css": "'Roboto Condensed', sans-serif",
+        "name": "Roboto Condensed",
+        "url": "https://fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i"
+      },
+      {
+        "css": "'Poppins', sans-serif",
+        "name": "Poppins",
+        "url": "https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i"
       }
     ],
-    "uniqCompNum": 9,
-    "versionPublish": "4.10.4",
-    "screenshot": "screenshot.png",
-    "cleanCSS": true,
-    "robotsText": "User-agent: *\r\nDisallow: /cgi-bin\r\n",
-    "robotsSwitcher": "",
-    "siteUrl": "https://nicamoq.github.io/WoqHentai/",
-    "sitemapSwitcherAuto": "on",
-    "favicon": "@PROJECT_PATH@/assets/images/fav-95x100.png",
-    "noImageResize": "",
-    "sitemapSwitcher": "on",
-    "google-analytics": "",
-    "сanonical-url": ""
+    "uniqCompNum": 24,
+    "versionPublish": "4.10.8"
   },
   "pages": {
     "index.html": {
       "settings": {
         "main": true,
         "title": "Woq",
-        "meta_descr": "The main page.",
+        "meta_descr": "Me and the girls bout to post lewds",
         "header_custom": "",
         "footer_custom": "",
         "html_before": ""
+      },
+      "components": [
+        {
+          "alias": false,
+          "_styles": {
+            "background-color": "@bgColor",
+            "& when not (@fullWidth)": {
+              "padding-top": "(@paddingTop * 15px)",
+              "padding-bottom": "(@paddingBottom * 15px)"
+            },
+            ".image-block": {
+              "margin": "auto",
+              "width": "~\"@{videoSize}%\"",
+              "& when (@fullWidth)": {
+                "width": "100% !important"
+              }
+            },
+            "amp-img": {
+              "text-align": "center"
+            },
+            ".mbr-text": {
+              "margin": "0",
+              "padding": ".5rem 0",
+              "& when (@fullWidth)": {
+                "padding": ".5rem 15px"
+              },
+              "color": "#ffffff"
+            },
+            "@media (max-width: 767px)": {
+              ".image-block": {
+                "width": "100% !important"
+              }
+            }
+          },
+          "_name": "image2",
+          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"2\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"0\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"30\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\" checked=\"\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#ff84f3\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/1552152929923-578x818.png\" layout=\"responsive\" width=\"289\" height=\"409\" alt=\"Gang\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/1552152929923-578x818.png\" alt=\"Gang\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-1\" data-app-selector=\".mbr-text\">ようこそ<br></p>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBovxePiqr",
+          "_anchor": "image2-2",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "background-color": "@bgColor"
+          },
+          "_name": "content5",
+          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"3\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#ff84f3\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-secondary\" href=\"blue.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-success\" href=\"red.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-info\" href=\"brown.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-warning\" href=\"darkgrey.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a></div>\n    </div>\n</section>",
+          "_cid": "rBoERBiOj1",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {},
+          "_anchor": "content5-3"
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "& when (@bg-type = 'image')": {
+              "background-image": "url(@bg-value)"
+            },
+            "& when (@bg-type = 'color')": {
+              "background-color": "@bg-value"
+            },
+            "p": {
+              "margin": "0",
+              "color": "#ffffff"
+            },
+            ".mbr-col-sm-12, .mbr-text": {
+              "color": "#212120"
+            }
+          },
+          "_name": "footer1",
+          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-warning\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoS01DKb1",
+          "_protectedParams": [],
+          "_global": true,
+          "_once": "footer",
+          "_params": {},
+          "_anchor": "footer1-6"
+        }
+      ]
+    },
+    "brown.html": {
+      "settings": {
+        "title": "Brown",
+        "order": 3,
+        "meta_descr": "Hatoba!"
+      },
+      "components": [
+        {
+          "alias": false,
+          "_styles": {
+            "background-color": "@bgColor",
+            "& when not (@fullWidth)": {
+              "padding-top": "(@paddingTop * 15px)",
+              "padding-bottom": "(@paddingBottom * 15px)"
+            },
+            ".image-block": {
+              "margin": "auto",
+              "width": "~\"@{videoSize}%\"",
+              "& when (@fullWidth)": {
+                "width": "100% !important"
+              }
+            },
+            "amp-img": {
+              "text-align": "center"
+            },
+            ".mbr-text": {
+              "margin": "0",
+              "padding": ".5rem 0",
+              "& when (@fullWidth)": {
+                "padding": ".5rem 15px"
+              },
+              "color": "#000000"
+            },
+            "@media (max-width: 767px)": {
+              ".image-block": {
+                "width": "100% !important"
+              }
+            }
+          },
+          "_name": "image2",
+          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"4\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"5\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"66\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\" checked=\"\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#000000\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/580b585b2edbce24c47b294f-742x643.png\" layout=\"responsive\" width=\"288.4914463452566\" height=\"250\" alt=\"Mobirise\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/580b585b2edbce24c47b294f-742x643.png\" alt=\"Mobirise\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-text\">&nbsp;</p>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoSPb9PAZ",
+          "_anchor": "image2-7",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "background-color": "@bgColor"
+          },
+          "_name": "content5",
+          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#000000\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-success\" href=\"page5.html\" data-app-placeholder=\"Type Text\">w̰h̟̻͈͈͓͖̣a͓̭͓t҉̻?̼́</a></div>\n    </div>\n</section>",
+          "_cid": "rBoTmBbYKU",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {},
+          "_anchor": "content5-8"
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "& when (@bg-type = 'image')": {
+              "background-image": "url(@bg-value)"
+            },
+            "& when (@bg-type = 'color')": {
+              "background-color": "@bg-value"
+            },
+            "p": {
+              "margin": "0",
+              "color": "#ffffff"
+            },
+            ".mbr-col-sm-12, .mbr-text": {
+              "color": "#212120"
+            }
+          },
+          "_name": "footer1",
+          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-warning\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoS01DKb1",
+          "_protectedParams": [],
+          "_global": true,
+          "_once": "footer",
+          "_params": {},
+          "_anchor": "footer1-6"
+        }
+      ]
+    },
+    "red.html": {
+      "settings": {
+        "title": "Red",
+        "order": 2,
+        "meta_descr": "Flandre!"
+      },
+      "components": [
+        {
+          "alias": false,
+          "_styles": {
+            "background-color": "@bgColor",
+            "& when not (@fullWidth)": {
+              "padding-top": "(@paddingTop * 15px)",
+              "padding-bottom": "(@paddingBottom * 15px)"
+            },
+            ".image-block": {
+              "margin": "auto",
+              "width": "~\"@{videoSize}%\"",
+              "& when (@fullWidth)": {
+                "width": "100% !important"
+              }
+            },
+            "amp-img": {
+              "text-align": "center"
+            },
+            ".mbr-text": {
+              "margin": "0",
+              "padding": ".5rem 0",
+              "& when (@fullWidth)": {
+                "padding": ".5rem 15px"
+              },
+              "color": "#ffffff"
+            },
+            "@media (max-width: 767px)": {
+              ".image-block": {
+                "width": "100% !important"
+              }
+            }
+          },
+          "_name": "image2",
+          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"2\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"0\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"30\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\" checked=\"\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#ff84f3\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/fufyy-578x818.jpg\" layout=\"responsive\" width=\"289\" height=\"409\" alt=\"Mobirise\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/fufyy-578x818.jpg\" alt=\"Mobirise\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-1\" data-app-selector=\".mbr-text\">ようこそ</p>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBp0bYzmI5",
+          "_anchor": "image2-g",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "background-color": "@bgColor"
+          },
+          "_name": "content5",
+          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"3\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#ff84f3\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-secondary\" href=\"blue.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-success\" href=\"red.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-info\" href=\"brown.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-warning\" href=\"darkgrey.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a></div>\n    </div>\n</section>",
+          "_anchor": "content5-h",
+          "_isUserblock": true,
+          "_sourceTheme": "mobirise-amp",
+          "_cid": "rBp0tOmWn9",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "& when (@bg-type = 'image')": {
+              "background-image": "url(@bg-value)"
+            },
+            "& when (@bg-type = 'color')": {
+              "background-color": "@bg-value"
+            },
+            "p": {
+              "margin": "0",
+              "color": "#ffffff"
+            },
+            ".mbr-col-sm-12, .mbr-text": {
+              "color": "#212120"
+            }
+          },
+          "_name": "footer1",
+          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-warning\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoS01DKb1",
+          "_protectedParams": [],
+          "_global": true,
+          "_once": "footer",
+          "_params": {},
+          "_anchor": "footer1-6"
+        }
+      ]
+    },
+    "darkgrey.html": {
+      "settings": {
+        "title": "Dark Grey",
+        "order": 4,
+        "meta_descr": "w̨͎̬̥̤͎h̨̤͚̯̮͚̤̣e̻̬̪re̢̳͍̱̼͕ ͕͚̹̯i͎͎̮̘̗̙͝s̖̼̺̲̰̼ ̘͖̻ș͖̝͕̬̀h̵̠̬̤̗̩̠̺e͕̲̠͙̣͟?̩̰̤̣̥ͅ ̶͖̗w͇h̹̗̼̭̗͚͡e̡̝͙̭̺͓͇r͎̺͜e̞̣̹̯ ̢̰̞̯͈̖͙ḑ̲̮͓͓͕̻ͅi̟̘̻̖d̴̜͈̩̠̞͇ s͏͍͔̫h͓̼̰̯ę ̺g̶̱̫̖o͔̪̹̺͍̪?͚͓͓͓̝̺͠"
+      },
+      "components": [
+        {
+          "alias": false,
+          "_styles": {
+            "background-color": "@bgColor",
+            "& when not (@fullWidth)": {
+              "padding-top": "(@paddingTop * 15px)",
+              "padding-bottom": "(@paddingBottom * 15px)"
+            },
+            ".image-block": {
+              "margin": "auto",
+              "width": "~\"@{videoSize}%\"",
+              "& when (@fullWidth)": {
+                "width": "100% !important"
+              }
+            },
+            "amp-img": {
+              "text-align": "center"
+            },
+            ".mbr-text": {
+              "margin": "0",
+              "padding": ".5rem 0",
+              "& when (@fullWidth)": {
+                "padding": ".5rem 15px"
+              },
+              "color": "#ffffff"
+            },
+            "@media (max-width: 767px)": {
+              ".image-block": {
+                "width": "100% !important"
+              }
+            }
+          },
+          "_name": "image2",
+          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"3\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"3\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"66\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\" checked=\"\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#212120\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/1558423264257.gif\" layout=\"responsive\" width=\"288.6792452830189\" height=\"306\" alt=\"Mobirise\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/1558423264257.gif\" alt=\"Mobirise\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-1\" data-app-selector=\".mbr-text\"><b>404 not found</b></p>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoQmH7oeH",
+          "_anchor": "image2-5",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "background-color": "@bgColor",
+            ".mbr-text": {
+              "padding": "2rem 0",
+              "color": "#ffffff"
+            }
+          },
+          "_name": "content4",
+          "_customHTML": "<section class=\"content4 mbr-section article\" plugins=\"amp-main\" group=\"Article\">\n    \n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#212120\">\n    <!-- End block parameters -->\n    </mbr-parameters> \n\n    <div class=\"container\">\n        <div class=\"mbr-text align-center mbr-fonts-style mbr-light\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-text\" mbr-text>\n            This is a forgotten item and is no longer available. Please find her.</div>\n    </div>\n</section>",
+          "_cid": "rBp0TYEV53",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {},
+          "_anchor": "content4-j"
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "background-color": "@bgColor"
+          },
+          "_name": "content5",
+          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"3\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#212120\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-secondary\" href=\"blue.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-success\" href=\"red.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-info\" href=\"brown.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-warning\" href=\"darkgrey.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a></div>\n    </div>\n</section>",
+          "_anchor": "content5-k",
+          "_isUserblock": true,
+          "_sourceTheme": "mobirise-amp",
+          "_cid": "rBp5Lh5jRr",
+          "_protectedParams": [],
+          "_global": false,
+          "_once": false,
+          "_params": {}
+        },
+        {
+          "alias": false,
+          "_styles": {
+            "padding-top": "(@paddingTop * 15px)",
+            "padding-bottom": "(@paddingBottom * 15px)",
+            "& when (@bg-type = 'image')": {
+              "background-image": "url(@bg-value)"
+            },
+            "& when (@bg-type = 'color')": {
+              "background-color": "@bg-value"
+            },
+            "p": {
+              "margin": "0",
+              "color": "#ffffff"
+            },
+            ".mbr-col-sm-12, .mbr-text": {
+              "color": "#212120"
+            }
+          },
+          "_name": "footer1",
+          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-warning\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoS01DKb1",
+          "_protectedParams": [],
+          "_global": true,
+          "_once": "footer",
+          "_params": {},
+          "_anchor": "footer1-6"
+        }
+      ]
+    },
+    "page5.html": {
+      "settings": {
+        "title": "What happened?",
+        "order": 5
       },
       "components": [
         {
@@ -100,9 +501,9 @@
             }
           },
           "_name": "image2",
-          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"0\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"0\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"56\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#000000\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/1554421499680.gif\" layout=\"responsive\" width=\"288.4\" height=\"206\" alt=\"Mobirise\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/1554421499680.gif\" alt=\"Mobirise\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-text\">\n                    Create awesome and FAST websites!\n                </p>\n            </div>\n        </div>\n    </div>\n</section>",
-          "_cid": "ru7P5WKMoR",
-          "_anchor": "image2-3",
+          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"2\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"0\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"55\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\" checked=\"\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#e2e2e2\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/wsws-578x818.png\" layout=\"responsive\" width=\"289\" height=\"409\" alt=\"hatoba\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/wsws-578x818.png\" alt=\"hatoba\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-text\">&nbsp;</p>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBp6xt3ewm",
+          "_anchor": "image2-l",
           "_protectedParams": [],
           "_global": false,
           "_once": false,
@@ -116,13 +517,13 @@
             "background-color": "@bgColor"
           },
           "_name": "content5",
-          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"8\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#000000\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-warning-outline\" href=\"http://bit.ly/join-woqhentai\" data-app-placeholder=\"Type Text\">BEFRIEND</a>\n            <a class=\"btn btn-info-outline\" href=\"page1.html\" data-app-placeholder=\"Type Text\">RAPE</a></div>\n    </div>\n</section>",
-          "_cid": "ru7Pm8GE3z",
-          "_anchor": "content5-4",
+          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"3\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#e2e2e2\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons mbr-theme-style=\"display-1\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-info\" href=\"http://bit.ly/join-woqhentai\" data-app-placeholder=\"Type Text\">NUT</a></div>\n    </div>\n</section>",
+          "_cid": "rBp7amyQai",
           "_protectedParams": [],
           "_global": false,
           "_once": false,
-          "_params": {}
+          "_params": {},
+          "_anchor": "content5-m"
         },
         {
           "alias": false,
@@ -140,48 +541,63 @@
               "color": "#ffffff"
             },
             ".mbr-col-sm-12, .mbr-text": {
-              "color": "#232323"
+              "color": "#212120"
             }
           },
           "_name": "footer1",
-          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"8\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"7\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-primary\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
-          "_cid": "ru7QyQ66YX",
-          "_anchor": "footer1-5",
+          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-warning\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoS01DKb1",
           "_protectedParams": [],
           "_global": true,
           "_once": "footer",
-          "_params": {}
+          "_params": {},
+          "_anchor": "footer1-9"
         }
       ]
     },
-    "page1.html": {
+    "blue.html": {
       "settings": {
-        "title": "Rethink your life choices",
+        "title": "Blue",
         "order": 1,
-        "meta_descr": "You're going to get beaten."
+        "meta_descr": "Cirno!"
       },
       "components": [
         {
           "alias": false,
           "_styles": {
-            "& when not (@fullScreen)": {
+            "background-color": "@bgColor",
+            "& when not (@fullWidth)": {
               "padding-top": "(@paddingTop * 15px)",
               "padding-bottom": "(@paddingBottom * 15px)"
             },
-            "& when (@bg-type = 'color')": {
-              "background-color": "@bg-value"
+            ".image-block": {
+              "margin": "auto",
+              "width": "~\"@{videoSize}%\"",
+              "& when (@fullWidth)": {
+                "width": "100% !important"
+              }
             },
-            "& when (@bg-type = 'image')": {
-              "background-image": "url(@bg-value)"
+            "amp-img": {
+              "text-align": "center"
             },
-            ".mbr-section-subtitle": {
-              "margin-bottom": "1rem"
+            ".mbr-text": {
+              "margin": "0",
+              "padding": ".5rem 0",
+              "& when (@fullWidth)": {
+                "padding": ".5rem 15px"
+              },
+              "color": "#ffffff"
+            },
+            "@media (max-width: 767px)": {
+              ".image-block": {
+                "width": "100% !important"
+              }
             }
           },
-          "_name": "header4",
-          "_customHTML": "<section class=\"header4\" group=\"Headers\" plugins=\"amp-main\" mbr-class=\"{'mbr-fullscreen': fullScreen}\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\">\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"10\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"10\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        \n        <input type=\"checkbox\" title=\"Show Title\" name=\"showTitle\">\n        <input type=\"checkbox\" title=\"Show Text\" name=\"showText\">\n        <input type=\"checkbox\" title=\"Show Buttons\" name=\"showButtons\">\n\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"@PROJECT_PATH@/assets/images/background-800x524.png\" selected>\n            <input type=\"color\" title=\"Background Color\" value=\"#15181b\"> \n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <h1 class=\"mbr-fonts-style mbr-section-title align-left mbr-black mbr-bold\" mbr-theme-style=\"display-1\" mbr-if=\"showTitle\" data-app-selector=\".mbr-section-title\">\n            Mobirise AMP Theme\n        </h1>\n        <h2 class=\"mbr-fonts-style mbr-section-subtitle align-left mbr-black mbr-light\" mbr-theme-style=\"display-2\" mbr-if=\"showText\" data-app-selector=\".mbr-section-subtitle, .mbr-section-btn\">\n            Building the future web, together\n        </h2>\n        <div class=\"mbr-section-btn align-left\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-4\">\n            <a class=\"btn btn-md btn-black\" href=\"https://mobirise.co\">\n                TRY IT\n            </a>\n        </div>\n    </div>\n</section>",
-          "_cid": "ru7RFGtbYM",
-          "_anchor": "header4-7",
+          "_name": "image2",
+          "_customHTML": "<section class=\"image2\" group=\"Images &amp; Videos\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" value=\"2\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" value=\"0\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"range\" inline=\"\" title=\"Width\" name=\"videoSize\" min=\"20\" max=\"100\" value=\"30\" step=\"1\" condition=\"fullWidth == false\">\n        <input type=\"checkbox\" title=\"Show Caption\" name=\"showText\" checked=\"\">\n\n        <input type=\"color\" title=\"Background Color\" name=\"bgColor\" value=\"#ff84f3\" condition=\"showText==true\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div mbr-class=\"{'container': fullWidth == false}\">\n        <div class=\"image-block\">\n            <amp-img src=\"@PROJECT_PATH@/assets/images/resized-for-the-fifth-time-578x818.png\" layout=\"responsive\" width=\"289\" height=\"409\" alt=\"Mobirise\" class=\"mobirise-loader\">\n                <div placeholder=\"\" class=\"placeholder\"></div>\n                <img class=\"mbr-temp\" src=\"@PROJECT_PATH@/assets/images/resized-for-the-fifth-time-578x818.png\" alt=\"Mobirise\" title=\"\">\n            </amp-img>\n            <div class=\"mbr-figure-caption\" mbr-if=\"showText\">\n                <p mbr-text=\"\" class=\"mbr-text mbr-black align-center mbr-fonts-style\" mbr-theme-style=\"display-1\" data-app-selector=\".mbr-text\">ようこそ</p>\n            </div>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoWa6Mwtx",
+          "_anchor": "image2-e",
           "_protectedParams": [],
           "_global": false,
           "_once": false,
@@ -192,24 +608,14 @@
           "_styles": {
             "padding-top": "(@paddingTop * 15px)",
             "padding-bottom": "(@paddingBottom * 15px)",
-            "& when (@bg-type = 'color')": {
-              "background-color": "@bg-value"
-            },
-            "& when (@bg-type = 'image')": {
-              "background-image": "url(@bg-value)"
-            },
-            ".mbr-title": {
-              "padding-bottom": "1rem",
-              "color": "#ff2959"
-            },
-            ".mbr-section-btn": {
-              "padding-top": "1.5rem"
-            }
+            "background-color": "@bgColor"
           },
-          "_name": "content1",
-          "_customHTML": "<section class=\"mbr-section content1\" group=\"Article\" plugins=\"amp-main\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"8\">\n\n        <input type=\"checkbox\" title=\"Show Title\" name=\"showTitle\" checked>\n        <input type=\"checkbox\" title=\"Show Subtitle\" name=\"showSubtitle\">\n        <input type=\"checkbox\" title=\"Show Buttons\" name=\"showButtons\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background2.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <h2 mbr-if=\"showTitle\" class=\"mbr-title align-center mbr-fonts-style mbr-bold\" mbr-theme-style=\"display-1\" data-app-selector=\".mbr-title\">W R O N G</h2>\n        <h3 mbr-if=\"showSubtitle\" data-app-selector=\".mbr-section-subtitle\" class=\"mbr-section-subtitle align-center mbr-light mbr-fonts-style\" mbr-theme-style=\"display-5\">\n            <i>Shape your future web project with sharp design and refine coded functions.</i>\n        </h3>\n        <div class=\"mbr-section-btn align-center\" mbr-if=\"showButtons\" mbr-buttons mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnAdd,-mbrBtnMove\">\n            <a class=\"btn btn-primary\" href=\"https://mobirise.co\">LEARN MORE</a>\n            <a class=\"btn btn-black-outline\" href=\"https://mobirise.co\">LIVE DEMO</a>\n        </div>\n    </div>\n</section>",
-          "_cid": "ru7S4vuet7",
-          "_anchor": "content1-8",
+          "_name": "content5",
+          "_customHTML": "<section class=\"mbr-section content5\" plugins=\"amp-main\" group=\"Article\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline=\"\" title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline=\"\" title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"3\">\n        <input type=\"color\" title=\"Backgroud Color\" name=\"bgColor\" value=\"#ff84f3\">\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-container\">\n        <div class=\"mbr-section-btn align-center\" mbr-buttons=\"\" mbr-theme-style=\"display-4\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-secondary\" href=\"blue.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-success\" href=\"red.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-info\" href=\"brown.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a> <a class=\"btn btn-warning\" href=\"darkgrey.html\" data-app-placeholder=\"Type Text\">&nbsp; &nbsp;&nbsp;</a></div>\n    </div>\n</section>",
+          "_anchor": "content5-f",
+          "_isUserblock": true,
+          "_sourceTheme": "mobirise-amp",
+          "_cid": "rBoX7rf635",
           "_protectedParams": [],
           "_global": false,
           "_once": false,
@@ -231,17 +637,17 @@
               "color": "#ffffff"
             },
             ".mbr-col-sm-12, .mbr-text": {
-              "color": "#232323"
+              "color": "#212120"
             }
           },
           "_name": "footer1",
-          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"8\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"7\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-primary\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
-          "_cid": "ru7QyQ66YX",
-          "_anchor": "footer1-6",
+          "_customHTML": "<section class=\"footer1\" group=\"Footers\" plugins=\"amp-main\" global once=\"footer\">\n\n    <mbr-parameters>\n    <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"2\">\n        <fieldset type=\"background\" name=\"bg\">\n            <input type=\"image\" title=\"Background Image\" value=\"../_images/background6.jpg\">\n            <input type=\"color\" title=\"Background Color\" value=\"#000000\" selected>\n        </fieldset>\n    <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"container\">\n        <div class=\"mbr-col-sm-12 align-center mbr-white\">\n            <p class=\"mbr-text mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".mbr-col-sm-12, .mbr-text\" data-app-placeholder=\"Type Text\"><a href=\"http://bit.ly/join-woqhentai\" class=\"text-warning\">woqhentai.ml</a></p>\n        </div>\n    </div>\n</section>",
+          "_cid": "rBoS01DKb1",
           "_protectedParams": [],
           "_global": true,
           "_once": "footer",
-          "_params": {}
+          "_params": {},
+          "_anchor": "footer1-d"
         }
       ]
     }
