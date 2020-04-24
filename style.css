@@ -1,0 +1,53 @@
+body{
+	margin: 0;
+	padding: 20;
+	font-family: sans-serif;
+	background-image: url(bgduck.jpg)
+}
+.box{
+	width: 300px;
+	padding: 40px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	background: #191919;
+	text-align: center;
+}
+.box h1{
+	color: white;
+	font-weight: 500;
+}
+.box input[type = "text"],.box input[type = "password"]{
+	border: 0;
+	background: none;
+	display: block;
+	margin: 10px auto;
+	text-align: center;
+	border: 2px solid #FFFF;
+	padding: 14px 10px;
+	width: 150px;
+	outline: none;
+	color: white;
+}
+.box input[type = "text"]:focus,.box input[type = "password"]:focus{
+	width: 170px;
+	border-color: #FFFF
+}
+.box input[type = "submit"]{
+	border: 0;
+	background: none;
+	display: block;
+	margin: 20px auto;
+	text-align: center;
+	border: 2px solid #f09220;
+	padding: 14px 10px;
+	outline: none;
+	color: white;
+	transition:0.25s;
+	cursor: pointer;
+}
+.box input[type = "submit"]:hover{
+	background: #f09220;
+
+}
