@@ -3,7 +3,6 @@
 
 
 
-
 body {
   font-family: Rubik;
 }
@@ -16,12 +15,12 @@ body {
   font-size: 6.8rem;
 }
 .display-2 {
-  font-family: 'Rubik', sans-serif;
-  font-size: 3rem;
+  font-family: 'é+é-éGÅâ';
+  font-size: 1.8rem;
   font-display: swap;
 }
 .display-2 > .mbr-iconfont {
-  font-size: 4.8rem;
+  font-size: 2.88rem;
 }
 .display-4 {
   font-family: 'Roboto', sans-serif;
@@ -59,9 +58,9 @@ body {
     line-height: calc( 1.4 * (2.1374999999999997rem + (4.25 - 2.1374999999999997) * ((100vw - 20rem) / (48 - 20))));
   }
   .display-2 {
-    font-size: 2.4rem;
-    font-size: calc( 1.7rem + (3 - 1.7) * ((100vw - 20rem) / (48 - 20)));
-    line-height: calc( 1.4 * (1.7rem + (3 - 1.7) * ((100vw - 20rem) / (48 - 20))));
+    font-size: 1.44rem;
+    font-size: calc( 1.28rem + (1.8 - 1.28) * ((100vw - 20rem) / (48 - 20)));
+    line-height: calc( 1.4 * (1.28rem + (1.8 - 1.28) * ((100vw - 20rem) / (48 - 20))));
   }
   .display-4 {
     font-size: 0.48rem;
@@ -104,7 +103,7 @@ body {
   background-color: #1e4169 !important;
 }
 .bg-danger {
-  background-color: #b1a374 !important;
+  background-color: #7289da !important;
 }
 .btn-primary,
 .btn-primary:active {
@@ -208,8 +207,8 @@ body {
 }
 .btn-danger,
 .btn-danger:active {
-  background-color: #b1a374 !important;
-  border-color: #b1a374 !important;
+  background-color: #7289da !important;
+  border-color: #7289da !important;
   color: #ffffff !important;
 }
 .btn-danger:hover,
@@ -217,14 +216,14 @@ body {
 .btn-danger.focus,
 .btn-danger.active {
   color: #ffffff !important;
-  background-color: #8b7d4e !important;
-  border-color: #8b7d4e !important;
+  background-color: #3556ca !important;
+  border-color: #3556ca !important;
 }
 .btn-danger.disabled,
 .btn-danger:disabled {
   color: #ffffff !important;
-  background-color: #8b7d4e !important;
-  border-color: #8b7d4e !important;
+  background-color: #3556ca !important;
+  border-color: #3556ca !important;
 }
 .btn-white {
   color: #333333 !important;
@@ -372,22 +371,22 @@ body {
 .btn-danger-outline,
 .btn-danger-outline:active {
   background: none;
-  border-color: #7a6e45;
-  color: #7a6e45;
+  border-color: #304eb6;
+  color: #304eb6;
 }
 .btn-danger-outline:hover,
 .btn-danger-outline:focus,
 .btn-danger-outline.focus,
 .btn-danger-outline.active {
   color: #ffffff;
-  background-color: #b1a374;
-  border-color: #b1a374;
+  background-color: #7289da;
+  border-color: #7289da;
 }
 .btn-danger-outline.disabled,
 .btn-danger-outline:disabled {
   color: #ffffff !important;
-  background-color: #b1a374 !important;
-  border-color: #b1a374 !important;
+  background-color: #7289da !important;
+  border-color: #7289da !important;
 }
 .btn-black-outline,
 .btn-black-outline:active {
@@ -439,7 +438,7 @@ body {
   color: #1e4169 !important;
 }
 .text-danger {
-  color: #b1a374 !important;
+  color: #7289da !important;
 }
 .text-white {
   color: #ffffff !important;
@@ -469,7 +468,7 @@ a.text-warning:focus {
 }
 a.text-danger:hover,
 a.text-danger:focus {
-  color: #7a6e45 !important;
+  color: #304eb6 !important;
 }
 a.text-white:hover,
 a.text-white:focus {
@@ -489,7 +488,7 @@ a.text-black:focus {
   background-color: #1e4169;
 }
 .alert-danger {
-  background-color: #b1a374;
+  background-color: #7289da;
 }
 .mbr-section-btn a.btn:not(.btn-form):hover,
 .mbr-section-btn a.btn:not(.btn-form):focus {
@@ -525,7 +524,7 @@ a:hover {
 }
 .mbr-plan-header.bg-danger .mbr-plan-subtitle,
 .mbr-plan-header.bg-danger .mbr-plan-price-desc {
-  color: #dfd9c6;
+  color: #ffffff;
 }
 /* Scroll to top button*/
 .scrollToTop_wraper {
@@ -1024,4 +1023,122 @@ section.lazy-placeholder:after {
 .cid-s7Be05DQ5C .nav-link:hover,
 .cid-s7Be05DQ5C .dropdown-item:hover {
   color: #767676 !important;
+}
+.cid-sk5b1tBcM8 {
+  padding-top: 120px;
+  padding-bottom: 105px;
+  background-image: url("../../../assets/images/131988021-4003814446315126-4043795335762089690-n.png");
+}
+.cid-sk5b1tBcM8 P {
+  color: #767676;
+}
+.cid-sk5b1tBcM8 H1 {
+  color: #efefef;
+}
+.cid-sk5b1tBcM8 .mbr-text,
+.cid-sk5b1tBcM8 .mbr-section-btn {
+  color: #ffffff;
+}
+.cid-sk5mRvs1fB {
+  padding-top: 45px;
+  padding-bottom: 0px;
+  background-color: #000000;
+}
+.cid-sk5mRvs1fB P {
+  color: #767676;
+}
+.cid-sk5mRvs1fB H1 {
+  color: #ffffff;
+}
+.cid-sk5mk7nufe {
+  padding-top: 30px;
+  padding-bottom: 45px;
+  background-color: #000000;
+}
+.cid-sk5mk7nufe .card-img {
+  background-color: #fff;
+}
+.cid-sk5mk7nufe .card {
+  align-self: stretch;
+}
+.cid-sk5mk7nufe .card-box {
+  padding: 2rem;
+  background-color: #0d0d0d;
+}
+.cid-sk5mk7nufe h4 {
+  font-weight: 500;
+  margin-bottom: 0;
+  text-align: left;
+}
+.cid-sk5mk7nufe p {
+  text-align: left;
+}
+.cid-sk5mk7nufe .mbr-text {
+  color: #767676;
+}
+.cid-sk5mk7nufe .card-wrapper {
+  height: 100%;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s;
+}
+.cid-sk5mk7nufe .card-wrapper:hover {
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
+}
+@media (min-width: 992px) {
+  .cid-sk5mk7nufe .my-col {
+    flex: 0 0 20%;
+    max-width: 20%;
+    padding: 15px;
+    -webkit-flex: 0 0 20%;
+  }
+}
+.cid-sk5mk7nufe .card-title {
+  color: #c1c1c1;
+}
+.cid-sk6xam8uWq {
+  padding-top: 30px;
+  padding-bottom: 135px;
+  background-color: #000000;
+}
+.cid-sk6xam8uWq .card-img {
+  background-color: #fff;
+}
+.cid-sk6xam8uWq .card {
+  align-self: stretch;
+}
+.cid-sk6xam8uWq .card-box {
+  padding: 2rem;
+  background-color: #0d0d0d;
+}
+.cid-sk6xam8uWq h4 {
+  font-weight: 500;
+  margin-bottom: 0;
+  text-align: left;
+}
+.cid-sk6xam8uWq p {
+  text-align: left;
+}
+.cid-sk6xam8uWq .mbr-text {
+  color: #767676;
+}
+.cid-sk6xam8uWq .card-wrapper {
+  height: 100%;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  transition: box-shadow 0.3s;
+}
+.cid-sk6xam8uWq .card-wrapper:hover {
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
+}
+@media (min-width: 992px) {
+  .cid-sk6xam8uWq .my-col {
+    flex: 0 0 20%;
+    max-width: 20%;
+    padding: 15px;
+    -webkit-flex: 0 0 20%;
+  }
+}
+.cid-sk6xam8uWq .card-title {
+  color: #c1c1c1;
 }
