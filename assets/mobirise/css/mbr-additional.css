@@ -1,5 +1,6 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Noto+Sans+JP:100,300,400,500,700,900&display=swap);
 @import url(https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i,700,700i,900,900i&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&display=swap);
 
 
 
@@ -7,7 +8,7 @@ body {
   font-family: Rubik;
 }
 .display-1 {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Noto Sans JP', sans-serif;
   font-size: 4.25rem;
   font-display: swap;
 }
@@ -625,13 +626,13 @@ section.lazy-placeholder:after {
   opacity: 0.3;
 }
 .cid-s7Be05DQ5C .navbar {
-  background: #0a1018;
+  background: #000000;
   transition: none;
   min-height: 77px;
   padding: .5rem 0;
 }
 .cid-s7Be05DQ5C .navbar-dropdown.bg-color.transparent.opened {
-  background: #0a1018;
+  background: #000000;
 }
 .cid-s7Be05DQ5C a {
   font-style: normal;
@@ -722,7 +723,7 @@ section.lazy-placeholder:after {
   padding-bottom: 0;
 }
 .cid-s7Be05DQ5C .dropdown .dropdown-menu {
-  background: #0a1018;
+  background: #000000;
   visibility: hidden;
   display: block;
   position: absolute;
@@ -1027,7 +1028,7 @@ section.lazy-placeholder:after {
 .cid-sk5b1tBcM8 {
   padding-top: 120px;
   padding-bottom: 105px;
-  background-image: url("../../../assets/images/131988021-4003814446315126-4043795335762089690-n.png");
+  background-image: url("../../../assets/images/134365429-240944487588453-7845039279956096113-n.png");
 }
 .cid-sk5b1tBcM8 P {
   color: #767676;
@@ -1039,106 +1040,15 @@ section.lazy-placeholder:after {
 .cid-sk5b1tBcM8 .mbr-section-btn {
   color: #ffffff;
 }
-.cid-sk5mRvs1fB {
-  padding-top: 45px;
-  padding-bottom: 0px;
-  background-color: #000000;
+.cid-solgBaBTKl {
+  padding-top: 30px;
+  padding-bottom: 30px;
+  background: linear-gradient(0deg, #000000, #000000);
 }
-.cid-sk5mRvs1fB P {
-  color: #767676;
-}
-.cid-sk5mRvs1fB H1 {
+.cid-solgBaBTKl .mbr-iconfont-social {
+  font-size: 32px;
   color: #ffffff;
 }
-.cid-sk5mk7nufe {
-  padding-top: 30px;
-  padding-bottom: 45px;
-  background-color: #000000;
-}
-.cid-sk5mk7nufe .card-img {
-  background-color: #fff;
-}
-.cid-sk5mk7nufe .card {
-  align-self: stretch;
-}
-.cid-sk5mk7nufe .card-box {
-  padding: 2rem;
-  background-color: #0d0d0d;
-}
-.cid-sk5mk7nufe h4 {
-  font-weight: 500;
-  margin-bottom: 0;
-  text-align: left;
-}
-.cid-sk5mk7nufe p {
-  text-align: left;
-}
-.cid-sk5mk7nufe .mbr-text {
-  color: #767676;
-}
-.cid-sk5mk7nufe .card-wrapper {
-  height: 100%;
-  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-  transition: box-shadow 0.3s;
-}
-.cid-sk5mk7nufe .card-wrapper:hover {
-  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s;
-}
-@media (min-width: 992px) {
-  .cid-sk5mk7nufe .my-col {
-    flex: 0 0 20%;
-    max-width: 20%;
-    padding: 15px;
-    -webkit-flex: 0 0 20%;
-  }
-}
-.cid-sk5mk7nufe .card-title {
-  color: #c1c1c1;
-}
-.cid-sk6xam8uWq {
-  padding-top: 30px;
-  padding-bottom: 135px;
-  background-color: #000000;
-}
-.cid-sk6xam8uWq .card-img {
-  background-color: #fff;
-}
-.cid-sk6xam8uWq .card {
-  align-self: stretch;
-}
-.cid-sk6xam8uWq .card-box {
-  padding: 2rem;
-  background-color: #0d0d0d;
-}
-.cid-sk6xam8uWq h4 {
-  font-weight: 500;
-  margin-bottom: 0;
-  text-align: left;
-}
-.cid-sk6xam8uWq p {
-  text-align: left;
-}
-.cid-sk6xam8uWq .mbr-text {
-  color: #767676;
-}
-.cid-sk6xam8uWq .card-wrapper {
-  height: 100%;
-  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
-  transition: box-shadow 0.3s;
-}
-.cid-sk6xam8uWq .card-wrapper:hover {
-  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s;
-}
-@media (min-width: 992px) {
-  .cid-sk6xam8uWq .my-col {
-    flex: 0 0 20%;
-    max-width: 20%;
-    padding: 15px;
-    -webkit-flex: 0 0 20%;
-  }
-}
-.cid-sk6xam8uWq .card-title {
-  color: #c1c1c1;
+.cid-solgBaBTKl .social-list a:focus {
+  text-decoration: none;
 }
