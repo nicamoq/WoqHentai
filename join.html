@@ -533,17 +533,7 @@
     /* replace these with actual images:
        <img src="your-image.jpg" style="width:100%;height:100%;object-fit:cover"> */
 
-    .btn-proceed {
-      width: 100%; padding: 14px;
-      background: var(--pink); color: #fff;
-      border: none; border-radius: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      cursor: pointer; text-decoration: none;
-      display: block; text-align: center;
-      transition: background 0.2s, box-shadow 0.2s;
-    }
-    .btn-proceed:hover { background: #d9004d; box-shadow: 0 8px 28px rgba(254,8,91,0.3); }
+
 
     /* ── Loading dots ── */
     .dots span { display: inline-block; animation: blink 1.2s infinite; }
@@ -596,9 +586,35 @@
     .form-hint a { color: var(--cinna); text-decoration: none; cursor: pointer; }
     .form-hint a:hover { text-decoration: underline; }
 
+    /* ── Success button row ── */
+    .success-btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+    }
+    .btn-proceed {
+      padding: 13px 10px;
+      background: var(--pink); color: #fff;
+      border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: block; text-align: center;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-proceed:hover { background: #d9004d; box-shadow: 0 8px 28px rgba(254,8,91,0.3); }
+    .btn-proceed-secondary {
+      background: var(--card2);
+      border: 1px solid var(--border2);
+      color: var(--white2);
+    }
+    .btn-proceed-secondary:hover { background: #2a2a2a; box-shadow: none; color: var(--white); }
+
     @media (max-width: 480px) {
       .card-inner { padding: 22px 20px 24px; }
       .logo-main  { font-size: 38px; }
+      .success-btn-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -609,14 +625,14 @@
   <div class="header">
     <div class="logo-jp">ヲクコミュニティ</div>
     <div class="logo-main">ヲク<span>アニメ</span></div>
-    <div class="tagline">anime on telegram · since 2017</div>
+    <div class="tagline">woqhentai · since 2017</div>
   </div>
 
   <!-- Perks strip -->
   <div class="perks-strip">
     <div class="perk-chip"><div class="perk-chip-dot"></div>Telegram group</div>
     <div class="perk-chip"><div class="perk-chip-dot gold"></div>Anime streaming</div>
-    <div class="perk-chip"><div class="perk-chip-dot green"></div>Discord server</div>
+    <div class="perk-chip"><div class="perk-chip-dot green"></div>Hentai streaming</div>
     <div class="perk-chip"><div class="perk-chip-dot cinna"></div>Exclusive content</div>
   </div>
 
@@ -626,20 +642,20 @@
 
     <!-- Tab bar -->
     <div class="tab-bar">
-      <button class="tab-btn active" id="tab-card-btn" onclick="switchTab('card')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M2 10h20"/></svg>
-        Card
-      </button>
-      <button class="tab-btn" id="tab-cb-btn" onclick="switchTab('cb')">
+      <button class="tab-btn active" id="tab-cb-btn" onclick="switchTab('cb')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         Pay with Cinnabank
+      </button>
+      <button class="tab-btn" id="tab-card-btn" onclick="switchTab('card')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M2 10h20"/></svg>
+        Card
       </button>
     </div>
 
     <!-- ═══════════════════════════════════════════ -->
     <!-- TAB 1: Card payment                        -->
     <!-- ═══════════════════════════════════════════ -->
-    <div class="tab-panel active" id="tab-card">
+    <div class="tab-panel" id="tab-card">
       <div class="card-inner">
 
         <!-- Form view -->
@@ -648,7 +664,7 @@
             <div class="gate-icon">🎌</div>
             <div class="gate-text">
               <div class="gate-title">One-time entry fee</div>
-              <div class="gate-sub">Pay ₱1 with your Cinnabank card to unlock the community. <strong>New? Sign up free and get ₱1,000 to start.</strong></div>
+              <div class="gate-sub">Pay ₱1 with your free Cinnabank card to unlock the community. <strong>New? Sign up free and get ₱1,000 and a debit card to start.</strong></div>
             </div>
           </div>
 
@@ -696,7 +712,10 @@
           <div class="success-title">いらっしゃい！</div>
           <div class="success-sub">Payment confirmed. Welcome to woku.<br>Here's everything you just unlocked.</div>
           <div id="card-perks-unlock" class="perks-unlock"></div>
-          <a class="btn-proceed" href="https://bit.ly/woku-links" id="card-proceed-link">Take me there →</a>
+          <div class="success-btn-row">
+            <a class="btn-proceed btn-proceed-secondary" href="https://cinnabank.web.app" target="_blank">Open Cinnabank</a>
+            <a class="btn-proceed" href="bit.ly/3Q2oCLH" target="_blank">Take me to the group →</a>
+          </div>
         </div>
 
       </div>
@@ -705,7 +724,7 @@
     <!-- ═══════════════════════════════════════════ -->
     <!-- TAB 2: Cinnabank login / signup             -->
     <!-- ═══════════════════════════════════════════ -->
-    <div class="tab-panel" id="tab-cb">
+    <div class="tab-panel active" id="tab-cb">
       <div class="card-inner">
 
         <!-- Auth form view -->
@@ -715,7 +734,14 @@
             <div class="cb-logo-text">Cinna<em>bank</em></div>
           </div>
 
-          <!-- Login / Signup sub-tabs -->
+          <!-- Cinnabank promo strip -->
+          <div class="gate-notice" style="margin-bottom:18px;">
+            <div class="gate-icon">🏦</div>
+            <div class="gate-text">
+              <div class="gate-title">New to Cinnabank? Sign up for free.</div>
+              <div class="gate-sub">Get a <strong>₱1,000 welcome bonus</strong> instantly. Comes with a free virtual debit card — use it anywhere, send money to anyone, and pay entry fees like this one in seconds.</div>
+            </div>
+          </div>
           <div class="auth-sub-tabs">
             <button class="auth-sub-btn active" id="sub-login-btn" onclick="switchAuthMode('login')">Sign in</button>
             <button class="auth-sub-btn" id="sub-signup-btn" onclick="switchAuthMode('signup')">Create account</button>
@@ -814,19 +840,22 @@
           <!-- Preview images (replace src with real images) -->
           <div class="preview-img-row">
             <div class="preview-img">
-              <!-- <img src="preview-anime.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+              <!-- <img src="https://cdn.donmai.us/original/04/9a/__iroha_blue_archive__049a36ca9e15fc5e8d4b9c8d91e7343f.png" style="width:100%;height:100%;object-fit:cover"> -->
               📺
               <div class="preview-img-label">Anime stream</div>
             </div>
             <div class="preview-img">
-              <!-- <img src="preview-discord.jpg" style="width:100%;height:100%;object-fit:cover"> -->
-              🎮
-              <div class="preview-img-label">Discord server</div>
+              <!-- <img src="https://cdn.donmai.us/original/fa/c8/__satsuki_blue_archive__fac82060a4806467b9bbd4d49cf90303.png" style="width:100%;height:100%;object-fit:cover"> -->
+              🔞
+              <div class="preview-img-label">Hentai streaming</div>
             </div>
           </div>
 
           <div class="perks-unlock" id="cb-perks-unlock"></div>
-          <a class="btn-proceed" href="https://bit.ly/woku-links">Take me there →</a>
+          <div class="success-btn-row">
+            <a class="btn-proceed btn-proceed-secondary" href="https://cinnabank.web.app" target="_blank">Open Cinnabank</a>
+            <a class="btn-proceed" href="https://bit.ly/woku-links" target="_blank">Take me to the group →</a>
+          </div>
         </div>
 
       </div>
@@ -835,8 +864,8 @@
   </div><!-- /.paywall-card -->
 
   <div class="footer">
-    Payments processed securely via Cinnabank<br>
-    <a href="https://cinnabank.web.app">Don't have a Cinnabank account? Sign up free →</a>
+    Secured by Cinnabank · instant payments, zero hassle<br>
+    <a href="https://cinnabank.web.app">Sign up free → get ₱1,000 + a free virtual debit card</a>
     <br>
     <div class="cb-badge">
       <div class="cb-badge-dot"></div>
@@ -919,19 +948,19 @@
       icon: '📺',
       iconClass: 'pink',
       name: 'Anime streaming on Telegram',
-      desc: 'Stream hundreds of titles directly inside Telegram. No apps, no hassle.',
+      desc: 'Stream hundreds of titles directly inside our Telegram channel.',
     },
     {
-      icon: '🎮',
+      icon: '🔞',
       iconClass: 'green',
-      name: 'Discord community',
-      desc: 'Join the woku Discord — watch parties, recommendations, and fellow fans.',
+      name: 'Hentai streaming on Telegram',
+      desc: 'Curated anime titties with lots and lots of boobies.',
     },
     {
       icon: '✨',
       iconClass: 'gold',
       name: 'Exclusive group access',
-      desc: 'Members-only Telegram group with drops, polls, and curated picks.',
+      desc: 'Members-only Telegram group with uncensored content. No rules.',
     },
   ];
 
@@ -1018,7 +1047,7 @@
       });
 
       // Credit woku owner
-      if (WOKU_UID && WOKU_UID !== 'REPLACE_WITH_YOUR_CINNABANK_UID') {
+      if (WOKU_UID && WOKU_UID !== '3532494278') {
         try {
           const ownerRef  = doc(db, 'users', WOKU_UID);
           const ownerSnap = await getDoc(ownerRef);
@@ -1041,7 +1070,7 @@
       renderPerks('card-perks-unlock');
       document.getElementById('card-success-view').classList.add('show');
 
-      setTimeout(() => { window.location.href = 'https://bit.ly/woku-links'; }, 4000);
+
 
     } catch (err) {
       console.error(err);
@@ -1186,7 +1215,7 @@
       await updateDoc(doc(db, 'users', cbUser.uid), { balance: newBalance });
       await addDoc(collection(db, 'transactions'), {
         userId: cbUser.uid, type: 'debit', amount: FEE,
-        note: 'woku entry fee', counterparty: 'woku',
+        note: 'WOKU Entry Fee', counterparty: 'WOQHENTAI CORP.',
         source: 'cinnabank', balanceAfter: newBalance, createdAt: serverTimestamp(),
       });
 
@@ -1223,7 +1252,7 @@
       renderPerks('cb-perks-unlock');
       document.getElementById('cb-success-view').classList.add('show');
 
-      setTimeout(() => { window.location.href = 'https://bit.ly/woku-links'; }, 5000);
+
 
     } catch(err) {
       console.error(err);
@@ -1241,3 +1270,4 @@
 </script>
 </body>
 </html>
+ML in the textarea above, and it will magically appear in the frame below.</p>
