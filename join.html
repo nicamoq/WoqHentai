@@ -667,7 +667,7 @@
             <div class="gate-icon">🎌</div>
             <div class="gate-text">
               <div class="gate-title">One-time entry fee</div>
-              <div class="gate-sub">Pay ₱1 with your free Cinnabank card to unlock the community. <strong>New? Sign up free and get ₱1,000 and a debit card to start.</strong></div>
+              <div class="gate-sub">Pay ₱1 with your free Cinnabank card to join! <strong>Make a Cinnabank account and get ₱1,000 and a debit card for FREE!</strong><br><br><i>This form will only accept Cinnabank debit cards.</i></div>
             </div>
           </div>
 
@@ -875,7 +875,7 @@
   </div><!-- /.paywall-card -->
 
   <div class="footer">
-    Secured by Cinnabank · instant payments, zero hassle<br>
+    Secured by Cinnabank · instant payments<br>
     <a href="https://cinnabank.web.app">Sign up free → get ₱1,000 + a free virtual debit card</a>
     <br>
     <div class="cb-badge">
@@ -1052,8 +1052,9 @@
       await updateDoc(doc(db, 'users', uid), { balance: newBalance });
       await addDoc(collection(db, 'transactions'), {
         userId: uid, type: 'debit', amount: FEE,
-        note: 'woku entry fee', counterparty: 'woku',
-        merchant: 'woku', source: 'card',
+        note: 'woku entry fee', counterparty: 'WOQHENTAI CORP.',
+        merchant: 'WOQHENTAI CORP.', source: 'card',
+        recipientId: WOKU_UID,
         balanceAfter: newBalance, createdAt: serverTimestamp(),
       });
 
@@ -1069,7 +1070,8 @@
             await addDoc(collection(db, 'transactions'), {
               userId: WOKU_UID, type: 'credit', amount: FEE,
               note: 'woku entry fee', counterparty: userData.name || 'Member',
-              source: 'card', balanceAfter: ownerNew, createdAt: serverTimestamp(),
+              source: 'cinnabank', senderId: uid,
+              balanceAfter: ownerNew, createdAt: serverTimestamp(),
             });
           }
         } catch(_) {}
@@ -1227,7 +1229,8 @@
       await addDoc(collection(db, 'transactions'), {
         userId: cbUser.uid, type: 'debit', amount: FEE,
         note: 'WOKU Entry Fee', counterparty: 'WOQHENTAI CORP.',
-        source: 'cinnabank', balanceAfter: newBalance, createdAt: serverTimestamp(),
+        source: 'cinnabank', recipientId: WOKU_UID,
+        balanceAfter: newBalance, createdAt: serverTimestamp(),
       });
 
       // Credit woku owner
@@ -1242,7 +1245,8 @@
             await addDoc(collection(db, 'transactions'), {
               userId: WOKU_UID, type: 'credit', amount: FEE,
               note: 'WOKU Entry Fee', counterparty: cbUserData.name || 'Member',
-              source: 'cinnabank', balanceAfter: ownerNew, createdAt: serverTimestamp(),
+              source: 'cinnabank', senderId: cbUser.uid,
+              balanceAfter: ownerNew, createdAt: serverTimestamp(),
             });
           }
         } catch(_) {}
