@@ -865,7 +865,7 @@
           <div class="perks-unlock" id="cb-perks-unlock"></div>
           <div class="success-btn-row">
             <a class="btn-proceed btn-proceed-secondary" href="https://cinnabank.web.app" target="_blank">Open Cinnabank</a>
-            <a class="btn-proceed" href="https://bit.ly/woku-links" target="_blank">Take me to the group →</a>
+            <a class="btn-proceed" href="bit.ly/3Q2oCLH" target="_blank">Take me to the group →</a>
           </div>
         </div>
 
@@ -1052,7 +1052,7 @@
       await updateDoc(doc(db, 'users', uid), { balance: newBalance });
       await addDoc(collection(db, 'transactions'), {
         userId: uid, type: 'debit', amount: FEE,
-        note: 'woku entry fee', counterparty: 'WOQHENTAI CORP.',
+        note: 'WOKU Entry Fee. Welcome to ヲク.', counterparty: 'WOQHENTAI CORP.',
         merchant: 'WOQHENTAI CORP.', source: 'card',
         recipientId: WOKU_UID,
         balanceAfter: newBalance, createdAt: serverTimestamp(),
@@ -1069,7 +1069,7 @@
             await updateDoc(ownerRef, { balance: ownerNew });
             await addDoc(collection(db, 'transactions'), {
               userId: WOKU_UID, type: 'credit', amount: FEE,
-              note: 'woku entry fee', counterparty: userData.name || 'Member',
+              note: 'WOKU Entry Fee. Welcome to ヲク.', counterparty: userData.name || 'Member',
               source: 'cinnabank', senderId: uid,
               balanceAfter: ownerNew, createdAt: serverTimestamp(),
             });
@@ -1228,7 +1228,7 @@
       await updateDoc(doc(db, 'users', cbUser.uid), { balance: newBalance });
       await addDoc(collection(db, 'transactions'), {
         userId: cbUser.uid, type: 'debit', amount: FEE,
-        note: 'WOKU Entry Fee', counterparty: 'WOQHENTAI CORP.',
+        note: 'WOKU Entry Fee. Welcome to ヲク.', counterparty: 'WOQHENTAI CORP.',
         source: 'cinnabank', recipientId: WOKU_UID,
         balanceAfter: newBalance, createdAt: serverTimestamp(),
       });
@@ -1244,7 +1244,7 @@
             await updateDoc(ownerRef, { balance: ownerNew });
             await addDoc(collection(db, 'transactions'), {
               userId: WOKU_UID, type: 'credit', amount: FEE,
-              note: 'WOKU Entry Fee', counterparty: cbUserData.name || 'Member',
+              note: 'WOKU Entry Fee. Welcome to ヲク.', counterparty: cbUserData.name || 'Member',
               source: 'cinnabank', senderId: cbUser.uid,
               balanceAfter: ownerNew, createdAt: serverTimestamp(),
             });
