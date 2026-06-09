@@ -1,13 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="refresh" content="4; URL=https://bit.ly/woku-links" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>woku — join</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0a0a0a;
+      --surface: #111111;
+      --card:    #1a1a1a;
+      --border:  #2a2a2a;
+      --pink:    #fe085b;
+      --pink-dim: rgba(254,8,91,0.15);
+      --cinna:   #C8622A;
+      --cinna-dim: rgba(200,98,42,0.15);
+      --gold:    #e8a84e;
+      --white:   #f0f0f0;
+      --muted:   #666;
+      --red:     #e74c3c;
+      --green:   #2ecc71;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ── Layout ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ambient glow */
+    .page::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(254,8,91,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page::after {
+      content: '';
+      position: fixed;
+      bottom: -150px; right: -100px;
+      width: 400px; height: 400px;
+      background: radial-gradient(ellipse, rgba(200,98,42,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+      position: relative; z-index: 1;
+    }
+
+    .logo-jp {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .logo-main {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .logo-main span {
+      color: var(--pink);
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Card ── */
+    .paywall-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      position: relative; z-index: 1;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    }
+
+    .card-band {
+      height: 3px;
+      background: linear-gradient(90deg, var(--pink) 0%, var(--cinna) 50%, var(--gold) 100%);
+    }
+
+    .card-inner {
+      padding: 32px;
+    }
+
+    /* ── Gate notice ── */
+    .gate-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: var(--pink-dim);
+      border: 1px solid rgba(254,8,91,0.25);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 28px;
+    }
+
+    .gate-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      line-height: 1.2;
+    }
+
+    .gate-text {
+      flex: 1;
+    }
+
+    .gate-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .gate-sub {
+      font-size: 12px;
+      color: rgba(240,240,240,0.5);
+      line-height: 1.5;
+    }
+
+    .gate-sub strong {
+      color: var(--gold);
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Fields ── */
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      letter-spacing: 0.04em;
+    }
+
+    .field input::placeholder { color: #444; }
+
+    .field input:focus {
+      border-color: var(--cinna);
+      box-shadow: 0 0 0 3px rgba(200,98,42,0.15);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ── Amount row ── */
+    .amount-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--cinna-dim);
+      border: 1px solid rgba(200,98,42,0.25);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+
+    .amount-label {
+      font-size: 12px;
+      color: rgba(240,240,240,0.5);
+    }
+
+    .amount-value {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--gold);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Pay button ── */
+    .btn-pay {
+      width: 100%;
+      padding: 15px;
+      background: var(--pink);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-pay:hover {
+      background: #d9004d;
+      box-shadow: 0 8px 30px rgba(254,8,91,0.35);
+    }
+
+    .btn-pay:active { transform: scale(0.99); }
+
+    .btn-pay:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* ── Error / status ── */
+    .status-msg {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .status-msg.show { display: block; }
+
+    .status-msg.error {
+      background: rgba(231,76,60,0.12);
+      border: 1px solid rgba(231,76,60,0.3);
+      color: #ff8070;
+    }
+
+    .status-msg.success {
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.25);
+      color: #5ddb8e;
+      text-align: center;
+    }
+
+    /* ── Success state ── */
+    .success-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 8px 0 4px;
+      gap: 12px;
+    }
+
+    .success-view.show { display: flex; }
+
+    .success-emoji { font-size: 48px; line-height: 1; }
+
+    .success-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .success-sub {
+      font-size: 13px;
+      color: rgba(240,240,240,0.5);
+      line-height: 1.6;
+    }
+
+    .btn-proceed {
+      margin-top: 8px;
+      padding: 13px 32px;
+      background: var(--pink);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-proceed:hover {
+      background: #d9004d;
+      box-shadow: 0 8px 30px rgba(254,8,91,0.3);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: #333;
+      position: relative; z-index: 1;
+      line-height: 1.7;
+    }
+
+    .footer a { color: #555; text-decoration: none; }
+    .footer a:hover { color: var(--muted); }
+
+    /* cinnabank badge */
+    .cb-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--cinna-dim);
+      border: 1px solid rgba(200,98,42,0.2);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 11px;
+      color: var(--gold);
+      margin-top: 16px;
+    }
+
+    .cb-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cinna);
+      flex-shrink: 0;
+    }
+
+    /* ── Loading dots ── */
+    .dots span {
+      display: inline-block;
+      animation: blink 1.2s infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0; }
+      40% { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
-<center>
-       <a href="https://bit.ly/woqanime">
-         <img alt="We have anime on t.me/woqanime" src="assets/images/woqanime-catgirls.gif"
-         width=500" height="500">
-      </a> 
- 
-  <p>You will be redirected to the woqhentai <b>Telegram Channel</b> in 5 seconds. <a href="https://bit.ly/woku-links">Nothing happened? Click here</a>.</p>
+<div class="page">
 
+  <div class="header">
+    <div class="logo-jp">ヲクコミュニティ</div>
+    <div class="logo-main">ヲク<span>アニメ</span></div>
+    <div class="tagline">anime on telegram · since 2017</div>
+  </div>
+
+  <div class="paywall-card">
+    <div class="card-band"></div>
+    <div class="card-inner">
+
+      <!-- Main form view -->
+      <div id="form-view">
+        <div class="gate-notice">
+          <div class="gate-icon">🎌</div>
+          <div class="gate-text">
+            <div class="gate-title">One-time entry fee</div>
+            <div class="gate-sub">Pay ₱1 with your Cinnabank card to access the group link. <strong>New to Cinnabank? Sign up free and get ₱1,000 to start.</strong></div>
+          </div>
+        </div>
+
+        <div class="section-label">Cinnabank card details</div>
+
+        <div class="fields">
+          <div class="field">
+            <label>Card Number</label>
+            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)" autocomplete="off"/>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Expiry</label>
+              <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" autocomplete="off"/>
+            </div>
+            <div class="field">
+              <label>CVV</label>
+              <input type="text" id="card-cvv" placeholder="123" maxlength="3" autocomplete="off"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="amount-row">
+          <div class="amount-label">Entry fee</div>
+          <div class="amount-value">₱1.00</div>
+        </div>
+
+        <button class="btn-pay" id="pay-btn" onclick="processPayment()">Pay ₱1 &amp; get the link</button>
+
+        <div class="status-msg error" id="error-msg"></div>
+        <div class="status-msg success" id="loading-msg">
+          Verifying card<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+        </div>
+      </div>
+
+      <!-- Success view -->
+      <div class="success-view" id="success-view">
+        <div class="success-emoji">🎉</div>
+        <div class="success-title">いらっしゃい！</div>
+        <div class="success-sub">Payment confirmed. Welcome to woq.<br>You're being redirected now.</div>
+        <a class="btn-proceed" href="https://bit.ly/woku-links" id="proceed-link">Take me there →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Payments processed securely via Cinnabank<br>
+    <a href="https://cinnabank.web.app">Don't have an account? Sign up free →</a>
+    <br>
+    <div class="cb-badge">
+      <div class="cb-badge-dot"></div>
+      Powered by Cinnabank
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  // ── PASTE YOUR CINNABANK FIREBASE CONFIG HERE ──────────────────────────────
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    // Replace these values with your Cinnabank Firebase project config
+    // (find it in cinnabank's firebase-init.js)
+    apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
+    authDomain:        "cinnabank.firebaseapp.com",
+    projectId:         "cinnabank",
+    storageBucket:     "cinnabank.firebasestorage.app",
+    messagingSenderId: "162136260228",
+    appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  // ── Input formatters ───────────────────────────────────────────────────────
+  window.formatCardNumber = function(input) {
+    let val = input.value.replace(/\D/g, '').slice(0, 16);
+    input.value = val.replace(/(.{4})/g, '$1 ').trim();
+  };
+
+  window.formatExpiry = function(input) {
+    let val = input.value.replace(/\D/g, '').slice(0, 4);
+    if (val.length >= 3) val = val.slice(0,2) + '/' + val.slice(2);
+    input.value = val;
+  };
+
+  // ── Payment logic ──────────────────────────────────────────────────────────
+  window.processPayment = async function() {
+    const rawNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+    const expiry    = document.getElementById('card-expiry').value.trim();
+    const cvv       = document.getElementById('card-cvv').value.trim();
+
+    const errorEl   = document.getElementById('error-msg');
+    const loadingEl = document.getElementById('loading-msg');
+    const btn       = document.getElementById('pay-btn');
+
+    // hide old messages
+    errorEl.classList.remove('show');
+    loadingEl.classList.remove('show');
+
+    // ── Client-side validation ──
+    if (rawNumber.length !== 16) return showError('Enter a valid 16-digit card number.');
+    if (!/^\d{2}\/\d{2}$/.test(expiry)) return showError('Enter expiry as MM/YY.');
+    if (!/^\d{3}$/.test(cvv)) return showError('CVV must be 3 digits.');
+
+    // check expiry not in the past
+    const [mm, yy] = expiry.split('/').map(Number);
+    const now = new Date();
+    const expDate = new Date(2000 + yy, mm - 1, 1);
+    if (expDate < new Date(now.getFullYear(), now.getMonth(), 1)) {
+      return showError('This card has expired.');
+    }
+
+    btn.disabled = true;
+    loadingEl.classList.add('show');
+
+    try {
+      // ── Look up card in Firestore ──
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('cardNumber', '==', rawNumber));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        return fail('Card not found. Make sure you have a Cinnabank account.');
+      }
+
+      const userDoc  = snap.docs[0];
+      const userData = userDoc.data();
+      const uid      = userDoc.id;
+
+      // ── Validate CVV & expiry ──
+      if (userData.cardCVV !== cvv) {
+        return fail('Incorrect CVV.');
+      }
+      if (userData.cardExpiry !== expiry) {
+        return fail('Expiry date does not match our records.');
+      }
+
+      // ── Check card locked ──
+      if (userData.cardLocked === true) {
+        return fail('This card is currently locked. Unlock it in your Cinnabank account.');
+      }
+
+      // ── Check balance ──
+      const balance = userData.balance || 0;
+      const FEE     = 1;
+      if (balance < FEE) {
+        return fail(`Insufficient balance. Your card has ₱${balance.toFixed(2)}.`);
+      }
+
+      // ── Deduct & record transaction ──
+      const newBalance = Math.round((balance - FEE) * 100) / 100;
+
+      await updateDoc(doc(db, 'users', uid), {
+        balance: newBalance
+      });
+
+      await addDoc(collection(db, 'transactions'), {
+        userId:       uid,
+        type:         'debit',
+        amount:       FEE,
+        note:         'woku entry fee',
+        counterparty: 'woku',
+        merchant:     'woku',
+        source:       'card',
+        balanceAfter: newBalance,
+        createdAt:    serverTimestamp()
+      });
+
+      // ── Success ──
+      loadingEl.classList.remove('show');
+      btn.disabled = false;
+      document.getElementById('form-view').style.display = 'none';
+      document.getElementById('success-view').classList.add('show');
+
+      // auto redirect after 2.5s
+      setTimeout(() => {
+        window.location.href = 'https://bit.ly/woku-links';
+      }, 2500);
+
+    } catch (err) {
+      console.error(err);
+      fail('Something went wrong. Please try again.');
+    }
+  };
+
+  function showError(msg) {
+    const el  = document.getElementById('error-msg');
+    const btn = document.getElementById('pay-btn');
+    el.textContent = msg;
+    el.classList.add('show');
+    document.getElementById('loading-msg').classList.remove('show');
+    btn.disabled = false;
+  }
+
+  function fail(msg) {
+    showError(msg);
+  }
+</script>
 </body>
+</html>
