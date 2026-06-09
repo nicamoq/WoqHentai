@@ -4,24 +4,30 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>woku — join</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black:   #0a0a0a;
-      --surface: #111111;
-      --card:    #1a1a1a;
-      --border:  #2a2a2a;
-      --pink:    #fe085b;
-      --pink-dim: rgba(254,8,91,0.15);
-      --cinna:   #C8622A;
-      --cinna-dim: rgba(200,98,42,0.15);
-      --gold:    #e8a84e;
-      --white:   #f0f0f0;
-      --muted:   #666;
-      --red:     #e74c3c;
-      --green:   #2ecc71;
+      --black:      #0a0a0a;
+      --surface:    #111111;
+      --card:       #1a1a1a;
+      --card2:      #1f1f1f;
+      --border:     #2a2a2a;
+      --border2:    #333;
+      --pink:       #fe085b;
+      --pink-dim:   rgba(254,8,91,0.13);
+      --pink-glow:  rgba(254,8,91,0.35);
+      --cinna:      #C8622A;
+      --cinna-dim:  rgba(200,98,42,0.13);
+      --cinna-dark: #8B3D14;
+      --gold:       #e8a84e;
+      --white:      #f0f0f0;
+      --white2:     #b0b0b0;
+      --muted:      #555;
+      --red:        #e74c3c;
+      --green:      #2ecc71;
+      --green-dim:  rgba(46,204,113,0.12);
     }
 
     html, body {
@@ -38,76 +44,97 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
+      padding: 40px 20px 60px;
       position: relative;
       overflow: hidden;
     }
 
-    /* ambient glow */
     .page::before {
       content: '';
       position: fixed;
       top: -200px; left: 50%;
       transform: translateX(-50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(254,8,91,0.08) 0%, transparent 70%);
+      width: 700px; height: 460px;
+      background: radial-gradient(ellipse, rgba(254,8,91,0.07) 0%, transparent 70%);
       pointer-events: none;
     }
     .page::after {
       content: '';
       position: fixed;
-      bottom: -150px; right: -100px;
+      bottom: -150px; right: -80px;
       width: 400px; height: 400px;
-      background: radial-gradient(ellipse, rgba(200,98,42,0.07) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(200,98,42,0.06) 0%, transparent 70%);
       pointer-events: none;
     }
 
     /* ── Header ── */
     .header {
       text-align: center;
-      margin-bottom: 36px;
+      margin-bottom: 32px;
       position: relative; z-index: 1;
     }
-
     .logo-jp {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 13px;
-      font-weight: 300;
+      font-size: 12px; font-weight: 300;
       color: var(--muted);
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
+      letter-spacing: 0.3em; text-transform: uppercase;
+      margin-bottom: 10px;
     }
-
     .logo-main {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 48px;
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1;
+      font-size: 46px; font-weight: 700;
+      color: var(--white); line-height: 1;
       margin-bottom: 8px;
     }
+    .logo-main span { color: var(--pink); }
+    .tagline { font-size: 13px; color: var(--muted); letter-spacing: 0.04em; }
 
-    .logo-main span {
-      color: var(--pink);
+    /* ── Perks strip ── */
+    .perks-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 28px;
+      position: relative; z-index: 1;
+      max-width: 460px;
     }
-
-    .tagline {
-      font-size: 13px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
+    .perk-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--white2);
     }
+    .perk-chip-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--pink);
+      flex-shrink: 0;
+    }
+    .perk-chip-dot.gold { background: var(--gold); }
+    .perk-chip-dot.green { background: var(--green); }
+    .perk-chip-dot.cinna { background: var(--cinna); }
 
     /* ── Card ── */
     .paywall-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 22px;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
       overflow: hidden;
       position: relative; z-index: 1;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      box-shadow: 0 28px 80px rgba(0,0,0,0.55);
+      animation: cardRise 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes cardRise {
+      from { transform: translateY(22px) scale(0.98); opacity: 0; }
+      to   { transform: translateY(0) scale(1); opacity: 1; }
     }
 
     .card-band {
@@ -115,360 +142,701 @@
       background: linear-gradient(90deg, var(--pink) 0%, var(--cinna) 50%, var(--gold) 100%);
     }
 
-    .card-inner {
-      padding: 32px;
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
     }
+    .tab-btn {
+      flex: 1;
+      padding: 14px 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      transition: color 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      position: relative;
+    }
+    .tab-btn.active {
+      color: var(--white);
+    }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 16px; right: 16px;
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+      background: var(--pink);
+    }
+    .tab-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card-inner { padding: 28px 30px 30px; }
 
     /* ── Gate notice ── */
     .gate-notice {
       display: flex;
       align-items: flex-start;
-      gap: 14px;
+      gap: 13px;
       background: var(--pink-dim);
-      border: 1px solid rgba(254,8,91,0.25);
+      border: 1px solid rgba(254,8,91,0.22);
       border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 28px;
+      padding: 15px;
+      margin-bottom: 24px;
     }
-
-    .gate-icon {
-      font-size: 22px;
-      flex-shrink: 0;
-      line-height: 1.2;
-    }
-
-    .gate-text {
-      flex: 1;
-    }
-
-    .gate-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--white);
-      margin-bottom: 4px;
-    }
-
-    .gate-sub {
-      font-size: 12px;
-      color: rgba(240,240,240,0.5);
-      line-height: 1.5;
-    }
-
-    .gate-sub strong {
-      color: var(--gold);
-    }
+    .gate-icon { font-size: 20px; flex-shrink: 0; line-height: 1.25; }
+    .gate-title { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 3px; }
+    .gate-sub { font-size: 12px; color: rgba(240,240,240,0.45); line-height: 1.55; }
+    .gate-sub strong { color: var(--gold); }
 
     /* ── Section label ── */
     .section-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.12em;
+      font-size: 10px; font-weight: 500;
+      color: var(--muted); letter-spacing: 0.12em;
       text-transform: uppercase;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
     }
-
     .section-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+      content: ''; flex: 1; height: 1px; background: var(--border);
     }
 
     /* ── Fields ── */
-    .fields {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
+    .fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
     .field label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+      font-size: 11px; font-weight: 500;
+      color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
     }
-
     .field input {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 13px 14px;
+      padding: 12px 14px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: var(--white);
-      outline: none;
+      font-size: 14px; color: var(--white);
+      outline: none; width: 100%;
       transition: border-color 0.2s, box-shadow 0.2s;
-      width: 100%;
-      letter-spacing: 0.04em;
     }
-
-    .field input::placeholder { color: #444; }
-
+    .field input::placeholder { color: #3a3a3a; }
     .field input:focus {
       border-color: var(--cinna);
-      box-shadow: 0 0 0 3px rgba(200,98,42,0.15);
+      box-shadow: 0 0 0 3px rgba(200,98,42,0.13);
     }
-
-    .field-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
     /* ── Amount row ── */
     .amount-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--cinna-dim);
+      border: 1px solid rgba(200,98,42,0.22);
+      border-radius: 10px;
+      padding: 13px 16px;
+      margin-bottom: 18px;
+    }
+    .amount-label { font-size: 12px; color: rgba(240,240,240,0.45); }
+    .amount-value { font-size: 20px; font-weight: 500; color: var(--gold); }
+
+    /* ── Auth sub-tabs (login / signup) ── */
+    .auth-sub-tabs {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 20px;
+      gap: 2px;
+    }
+    .auth-sub-btn {
+      flex: 1;
+      padding: 9px 8px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .auth-sub-btn.active {
+      background: var(--card2);
+      color: var(--white);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    }
+
+    /* Cinnabank logo inline */
+    .cb-inline-logo {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: var(--cinna-dim);
-      border: 1px solid rgba(200,98,42,0.25);
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 20px;
+      gap: 8px;
+      margin-bottom: 18px;
     }
-
-    .amount-label {
-      font-size: 12px;
-      color: rgba(240,240,240,0.5);
+    .cb-logo-icon {
+      width: 30px; height: 30px;
+      background: var(--cinna);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 12px; color: #fff; font-weight: 700;
+      flex-shrink: 0;
     }
+    .cb-logo-text { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--white2); }
+    .cb-logo-text em { color: var(--cinna); font-style: italic; }
 
-    .amount-value {
-      font-size: 20px;
-      font-weight: 500;
-      color: var(--gold);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ── Pay button ── */
+    /* ── Buttons ── */
     .btn-pay {
-      width: 100%;
-      padding: 15px;
-      background: var(--pink);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
+      width: 100%; padding: 14px;
+      background: var(--pink); color: #fff;
+      border: none; border-radius: 12px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 14px; font-weight: 500;
       cursor: pointer;
       transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
       letter-spacing: 0.02em;
     }
-
-    .btn-pay:hover {
-      background: #d9004d;
-      box-shadow: 0 8px 30px rgba(254,8,91,0.35);
-    }
-
+    .btn-pay:hover { background: #d9004d; box-shadow: 0 8px 30px rgba(254,8,91,0.3); }
     .btn-pay:active { transform: scale(0.99); }
+    .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
-    .btn-pay:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      box-shadow: none;
+    .btn-cb {
+      width: 100%; padding: 14px;
+      background: var(--cinna); color: #fff;
+      border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
     }
+    .btn-cb:hover { background: var(--cinna-dark); box-shadow: 0 8px 28px rgba(200,98,42,0.3); }
+    .btn-cb:active { transform: scale(0.99); }
+    .btn-cb:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
-    /* ── Error / status ── */
+    /* ── Status messages ── */
     .status-msg {
-      margin-top: 14px;
-      padding: 12px 14px;
+      margin-top: 12px;
+      padding: 11px 14px;
       border-radius: 10px;
       font-size: 13px;
-      display: none;
-      line-height: 1.5;
+      display: none; line-height: 1.5;
     }
-
     .status-msg.show { display: block; }
+    .status-msg.error { background: rgba(231,76,60,0.12); color: #e74c3c; border: 1px solid rgba(231,76,60,0.2); }
+    .status-msg.info  { background: rgba(200,98,42,0.1); color: var(--gold); border: 1px solid rgba(200,98,42,0.18); }
 
-    .status-msg.error {
-      background: rgba(231,76,60,0.12);
-      border: 1px solid rgba(231,76,60,0.3);
-      color: #ff8070;
-    }
-
-    .status-msg.success {
-      background: rgba(46,204,113,0.1);
-      border: 1px solid rgba(46,204,113,0.25);
-      color: #5ddb8e;
+    /* ── Confirm screen ── */
+    .confirm-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
+      padding: 32px 28px 28px;
+      animation: fadeIn 0.3s ease;
     }
+    .confirm-view.show { display: flex; }
+    .confirm-avatar {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--cinna);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; color: #fff;
+      margin-bottom: 14px;
+      border: 2px solid rgba(200,98,42,0.35);
+    }
+    .confirm-greeting {
+      font-size: 12px; color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .confirm-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px; color: var(--white);
+      margin-bottom: 4px;
+    }
+    .confirm-bank { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
 
-    /* ── Success state ── */
+    .confirm-amount-box {
+      background: var(--cinna-dim);
+      border: 1px solid rgba(200,98,42,0.22);
+      border-radius: 12px;
+      padding: 14px 20px;
+      width: 100%;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .confirm-amount-label { font-size: 12px; color: var(--muted); }
+    .confirm-amount-value { font-size: 22px; font-weight: 500; color: var(--gold); }
+
+    .btn-confirm {
+      width: 100%; padding: 14px;
+      background: var(--pink); color: #fff;
+      border: none; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; margin-bottom: 10px;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-confirm:hover { background: #d9004d; box-shadow: 0 6px 24px rgba(254,8,91,0.25); }
+    .btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-back-link {
+      background: none; border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: var(--muted);
+      cursor: pointer;
+    }
+    .btn-back-link:hover { color: var(--white2); }
+
+    /* ── Success view ── */
     .success-view {
       display: none;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 8px 0 4px;
-      gap: 12px;
+      padding: 40px 28px;
     }
+    .success-view.show { display: flex; animation: fadeIn 0.4s ease; }
 
-    .success-view.show { display: flex; }
-
-    .success-emoji { font-size: 48px; line-height: 1; }
+    .success-ring {
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: conic-gradient(var(--green) 0%, rgba(46,204,113,0.1) 0%);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px; position: relative;
+      animation: ringFill 0.8s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    @keyframes ringFill {
+      from { background: conic-gradient(var(--green) 0%, rgba(46,204,113,0.1) 0%); }
+      to   { background: conic-gradient(var(--green) 100%, rgba(46,204,113,0.1) 0%); }
+    }
+    .success-ring::before {
+      content: ''; position: absolute; inset: 6px;
+      background: var(--card); border-radius: 50%;
+    }
+    .success-ring svg {
+      width: 30px; height: 30px; stroke: var(--green);
+      position: relative; z-index: 1;
+      animation: checkPop 0.4s 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes checkPop { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .success-title {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--white);
+      font-size: 22px; font-weight: 700;
+      color: var(--white); margin-bottom: 8px;
+    }
+    .success-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; }
+
+    /* ── Perks unlock cards ── */
+    .perks-unlock {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 24px;
+    }
+    .perk-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border2);
+      border-radius: 11px;
+      padding: 12px 14px;
+      animation: slideIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .perk-item:nth-child(1) { animation-delay: 0.15s; }
+    .perk-item:nth-child(2) { animation-delay: 0.25s; }
+    .perk-item:nth-child(3) { animation-delay: 0.35s; }
+    @keyframes slideIn { from { transform: translateX(-14px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .perk-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .perk-icon.pink  { background: var(--pink-dim); }
+    .perk-icon.gold  { background: rgba(232,168,78,0.12); }
+    .perk-icon.green { background: var(--green-dim); }
+
+    .perk-info { flex: 1; text-align: left; }
+    .perk-name { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 2px; }
+    .perk-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+    .perk-badge {
+      font-size: 10px; font-weight: 500;
+      color: var(--green);
+      background: var(--green-dim);
+      border-radius: 20px;
+      padding: 3px 8px; flex-shrink: 0;
     }
 
-    .success-sub {
-      font-size: 13px;
-      color: rgba(240,240,240,0.5);
-      line-height: 1.6;
+    /* ── Welcome bonus banner ── */
+    .bonus-banner {
+      width: 100%;
+      background: linear-gradient(135deg, rgba(200,98,42,0.18) 0%, rgba(232,168,78,0.1) 100%);
+      border: 1px solid rgba(232,168,78,0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      animation: slideIn 0.5s 0.5s cubic-bezier(0.22,1,0.36,1) both;
     }
+    .bonus-icon { font-size: 26px; flex-shrink: 0; }
+    .bonus-text { flex: 1; }
+    .bonus-title { font-size: 13px; font-weight: 500; color: var(--gold); margin-bottom: 2px; }
+    .bonus-sub   { font-size: 12px; color: rgba(240,240,240,0.45); }
+
+    /* placeholder images */
+    .preview-img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .preview-img {
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--muted);
+      text-align: center; padding: 8px;
+      position: relative;
+    }
+    .preview-img-label {
+      position: absolute; bottom: 6px; left: 8px;
+      font-size: 10px; color: rgba(255,255,255,0.45);
+      background: rgba(0,0,0,0.5); border-radius: 4px; padding: 2px 6px;
+    }
+    /* replace these with actual images:
+       <img src="your-image.jpg" style="width:100%;height:100%;object-fit:cover"> */
 
     .btn-proceed {
-      margin-top: 8px;
-      padding: 13px 32px;
-      background: var(--pink);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
+      width: 100%; padding: 14px;
+      background: var(--pink); color: #fff;
+      border: none; border-radius: 12px;
       font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
+      font-size: 14px; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      display: block; text-align: center;
       transition: background 0.2s, box-shadow 0.2s;
-      text-decoration: none;
-      display: inline-block;
     }
+    .btn-proceed:hover { background: #d9004d; box-shadow: 0 8px 28px rgba(254,8,91,0.3); }
 
-    .btn-proceed:hover {
-      background: #d9004d;
-      box-shadow: 0 8px 30px rgba(254,8,91,0.3);
-    }
+    /* ── Loading dots ── */
+    .dots span { display: inline-block; animation: blink 1.2s infinite; }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
 
     /* ── Footer ── */
     .footer {
-      margin-top: 24px;
+      margin-top: 22px;
       text-align: center;
       font-size: 11px;
-      color: #333;
+      color: #2e2e2e;
       position: relative; z-index: 1;
       line-height: 1.7;
     }
-
-    .footer a { color: #555; text-decoration: none; }
+    .footer a { color: #444; text-decoration: none; }
     .footer a:hover { color: var(--muted); }
-
-    /* cinnabank badge */
     .cb-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-flex; align-items: center; gap: 6px;
       background: var(--cinna-dim);
-      border: 1px solid rgba(200,98,42,0.2);
+      border: 1px solid rgba(200,98,42,0.18);
       border-radius: 20px;
       padding: 5px 12px;
-      font-size: 11px;
-      color: var(--gold);
-      margin-top: 16px;
+      font-size: 11px; color: var(--gold);
+      margin-top: 14px;
     }
+    .cb-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cinna); flex-shrink: 0; }
 
-    .cb-badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cinna);
-      flex-shrink: 0;
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e1e1e; color: var(--white);
+      padding: 11px 22px; border-radius: 10px;
+      font-size: 13px; z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+      white-space: nowrap;
+      border: 1px solid var(--border2);
     }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error   { background: #3a0f0f; color: #e74c3c; border-color: rgba(231,76,60,0.3); }
+    .toast.success { background: #0f2a1c; color: var(--green); border-color: rgba(46,204,113,0.25); }
 
-    /* ── Loading dots ── */
-    .dots span {
-      display: inline-block;
-      animation: blink 1.2s infinite;
+    /* ── Form hint links ── */
+    .form-hint {
+      text-align: center; font-size: 12px; color: var(--muted);
+      margin-top: 12px;
     }
-    .dots span:nth-child(2) { animation-delay: 0.2s; }
-    .dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes blink {
-      0%, 80%, 100% { opacity: 0; }
-      40% { opacity: 1; }
+    .form-hint a { color: var(--cinna); text-decoration: none; cursor: pointer; }
+    .form-hint a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card-inner { padding: 22px 20px 24px; }
+      .logo-main  { font-size: 38px; }
     }
   </style>
 </head>
 <body>
 <div class="page">
 
+  <!-- Header -->
   <div class="header">
     <div class="logo-jp">ヲクコミュニティ</div>
     <div class="logo-main">ヲク<span>アニメ</span></div>
     <div class="tagline">anime on telegram · since 2017</div>
   </div>
 
+  <!-- Perks strip -->
+  <div class="perks-strip">
+    <div class="perk-chip"><div class="perk-chip-dot"></div>Telegram group</div>
+    <div class="perk-chip"><div class="perk-chip-dot gold"></div>Anime streaming</div>
+    <div class="perk-chip"><div class="perk-chip-dot green"></div>Discord server</div>
+    <div class="perk-chip"><div class="perk-chip-dot cinna"></div>Exclusive content</div>
+  </div>
+
+  <!-- Main card -->
   <div class="paywall-card">
     <div class="card-band"></div>
-    <div class="card-inner">
 
-      <!-- Main form view -->
-      <div id="form-view">
-        <div class="gate-notice">
-          <div class="gate-icon">🎌</div>
-          <div class="gate-text">
-            <div class="gate-title">One-time entry fee</div>
-            <div class="gate-sub">Pay ₱1 with your Cinnabank card to access the group link. <strong>New to Cinnabank? Sign up free and get ₱1,000 to start.</strong></div>
-          </div>
-        </div>
-
-        <div class="section-label">Cinnabank card details</div>
-
-        <div class="fields">
-          <div class="field">
-            <label>Card Number</label>
-            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)" autocomplete="off"/>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label>Expiry</label>
-              <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" autocomplete="off"/>
-            </div>
-            <div class="field">
-              <label>CVV</label>
-              <input type="text" id="card-cvv" placeholder="123" maxlength="3" autocomplete="off"/>
-            </div>
-          </div>
-        </div>
-
-        <div class="amount-row">
-          <div class="amount-label">Entry fee</div>
-          <div class="amount-value">₱1.00</div>
-        </div>
-
-        <button class="btn-pay" id="pay-btn" onclick="processPayment()">Pay ₱1 &amp; get the link</button>
-
-        <div class="status-msg error" id="error-msg"></div>
-        <div class="status-msg success" id="loading-msg">
-          Verifying card<span class="dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
-      </div>
-
-      <!-- Success view -->
-      <div class="success-view" id="success-view">
-        <div class="success-emoji">🎉</div>
-        <div class="success-title">いらっしゃい！</div>
-        <div class="success-sub">Payment confirmed. Welcome to woq.<br>You're being redirected now.</div>
-        <a class="btn-proceed" href="https://bit.ly/woku-links" id="proceed-link">Take me there →</a>
-      </div>
-
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tab-card-btn" onclick="switchTab('card')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M2 10h20"/></svg>
+        Card
+      </button>
+      <button class="tab-btn" id="tab-cb-btn" onclick="switchTab('cb')">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Pay with Cinnabank
+      </button>
     </div>
-  </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB 1: Card payment                        -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="tab-panel active" id="tab-card">
+      <div class="card-inner">
+
+        <!-- Form view -->
+        <div id="card-form-view">
+          <div class="gate-notice">
+            <div class="gate-icon">🎌</div>
+            <div class="gate-text">
+              <div class="gate-title">One-time entry fee</div>
+              <div class="gate-sub">Pay ₱1 with your Cinnabank card to unlock the community. <strong>New? Sign up free and get ₱1,000 to start.</strong></div>
+            </div>
+          </div>
+
+          <div class="section-label">Cinnabank card details</div>
+
+          <div class="fields">
+            <div class="field">
+              <label>Card Number</label>
+              <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19"
+                oninput="formatCardNumber(this)" autocomplete="off"/>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Expiry</label>
+                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5"
+                  oninput="formatExpiry(this)" autocomplete="off"/>
+              </div>
+              <div class="field">
+                <label>CVV</label>
+                <input type="text" id="card-cvv" placeholder="123" maxlength="3" autocomplete="off"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="amount-row">
+            <div class="amount-label">Entry fee</div>
+            <div class="amount-value">₱1.00</div>
+          </div>
+
+          <button class="btn-pay" id="card-pay-btn" onclick="processCardPayment()">Pay ₱1 &amp; unlock access</button>
+
+          <div class="status-msg error" id="card-error"></div>
+          <div class="status-msg info" id="card-loading">
+            Verifying card<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+          </div>
+        </div>
+
+        <!-- Success view (card) -->
+        <div class="success-view" id="card-success-view">
+          <div class="success-ring">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <div class="success-title">いらっしゃい！</div>
+          <div class="success-sub">Payment confirmed. Welcome to woku.<br>Here's everything you just unlocked.</div>
+          <div id="card-perks-unlock" class="perks-unlock"></div>
+          <a class="btn-proceed" href="https://bit.ly/woku-links" id="card-proceed-link">Take me there →</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- TAB 2: Cinnabank login / signup             -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div class="tab-panel" id="tab-cb">
+      <div class="card-inner">
+
+        <!-- Auth form view -->
+        <div id="cb-auth-view">
+          <div class="cb-inline-logo">
+            <div class="cb-logo-icon">Cb</div>
+            <div class="cb-logo-text">Cinna<em>bank</em></div>
+          </div>
+
+          <!-- Login / Signup sub-tabs -->
+          <div class="auth-sub-tabs">
+            <button class="auth-sub-btn active" id="sub-login-btn" onclick="switchAuthMode('login')">Sign in</button>
+            <button class="auth-sub-btn" id="sub-signup-btn" onclick="switchAuthMode('signup')">Create account</button>
+          </div>
+
+          <!-- Sign in fields -->
+          <div id="cb-login-fields">
+            <div class="fields">
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="cb-login-email" placeholder="you@example.com" autocomplete="email"/>
+              </div>
+              <div class="field">
+                <label>Password</label>
+                <input type="password" id="cb-login-password" placeholder="••••••••" autocomplete="current-password"/>
+              </div>
+            </div>
+            <div class="amount-row">
+              <div class="amount-label">Entry fee</div>
+              <div class="amount-value">₱1.00</div>
+            </div>
+            <button class="btn-cb" id="cb-login-btn" onclick="processCbLogin()">Sign in &amp; pay ₱1</button>
+            <div class="status-msg error" id="cb-login-error"></div>
+            <div class="status-msg info"  id="cb-login-loading">
+              Signing in<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+            </div>
+            <div class="form-hint">No account? <a onclick="switchAuthMode('signup')">Create one free →</a></div>
+          </div>
+
+          <!-- Sign up fields -->
+          <div id="cb-signup-fields" style="display:none">
+            <div class="fields">
+              <div class="field">
+                <label>Full name</label>
+                <input type="text" id="cb-signup-name" placeholder="Your name" autocomplete="name"/>
+              </div>
+              <div class="field">
+                <label>Email</label>
+                <input type="email" id="cb-signup-email" placeholder="you@example.com" autocomplete="email"/>
+              </div>
+              <div class="field">
+                <label>Password</label>
+                <input type="password" id="cb-signup-password" placeholder="At least 6 characters" autocomplete="new-password"/>
+              </div>
+            </div>
+            <div class="amount-row">
+              <div class="amount-label">Entry fee after signup</div>
+              <div class="amount-value">₱1.00</div>
+            </div>
+            <button class="btn-cb" id="cb-signup-btn" onclick="processCbSignup()">Create account &amp; pay ₱1</button>
+            <div class="status-msg error" id="cb-signup-error"></div>
+            <div class="status-msg info"  id="cb-signup-loading">
+              Creating account<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+            </div>
+            <div class="form-hint">Already have an account? <a onclick="switchAuthMode('login')">Sign in →</a></div>
+          </div>
+        </div>
+
+        <!-- Confirm screen (logged-in user confirms ₱1 deduction) -->
+        <div class="confirm-view" id="cb-confirm-view">
+          <div class="confirm-avatar" id="confirm-avatar">?</div>
+          <div class="confirm-greeting">Paying as</div>
+          <div class="confirm-name" id="confirm-name">—</div>
+          <div class="confirm-bank">Cinnabank account</div>
+          <div class="confirm-amount-box">
+            <div class="confirm-amount-label">Entry fee</div>
+            <div class="confirm-amount-value">₱1.00</div>
+          </div>
+          <div class="status-msg error" id="cb-confirm-error" style="width:100%;margin-bottom:12px;margin-top:0;"></div>
+          <button class="btn-confirm" id="cb-confirm-btn" onclick="confirmCbPayment()">Confirm &amp; unlock access</button>
+          <div class="status-msg info" id="cb-confirm-loading" style="width:100%;text-align:center;margin-top:8px;">
+            Processing<span class="dots"><span>.</span><span>.</span><span>.</span></span>
+          </div>
+          <button class="btn-back-link" onclick="cancelConfirm()" style="margin-top:14px;">← Back</button>
+        </div>
+
+        <!-- Success view (Cinnabank tab) -->
+        <div class="success-view" id="cb-success-view">
+          <div class="success-ring">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <div class="success-title">いらっしゃい！</div>
+          <div class="success-sub" id="cb-success-sub">Welcome to woku.<br>Here's everything you just unlocked.</div>
+
+          <!-- Welcome bonus (shown only for new signups) -->
+          <div class="bonus-banner" id="cb-bonus-banner" style="display:none">
+            <div class="bonus-icon">🎁</div>
+            <div class="bonus-text">
+              <div class="bonus-title">₱1,000 credited to your Cinnabank!</div>
+              <div class="bonus-sub">Your welcome bonus is ready to use.</div>
+            </div>
+          </div>
+
+          <!-- Preview images (replace src with real images) -->
+          <div class="preview-img-row">
+            <div class="preview-img">
+              <!-- <img src="preview-anime.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+              📺
+              <div class="preview-img-label">Anime stream</div>
+            </div>
+            <div class="preview-img">
+              <!-- <img src="preview-discord.jpg" style="width:100%;height:100%;object-fit:cover"> -->
+              🎮
+              <div class="preview-img-label">Discord server</div>
+            </div>
+          </div>
+
+          <div class="perks-unlock" id="cb-perks-unlock"></div>
+          <a class="btn-proceed" href="https://bit.ly/woku-links">Take me there →</a>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /.paywall-card -->
 
   <div class="footer">
     Payments processed securely via Cinnabank<br>
-    <a href="https://cinnabank.web.app">Don't have an account? Sign up free →</a>
+    <a href="https://cinnabank.web.app">Don't have a Cinnabank account? Sign up free →</a>
     <br>
     <div class="cb-badge">
       <div class="cb-badge-dot"></div>
@@ -476,17 +844,19 @@
     </div>
   </div>
 
-</div>
+</div><!-- /.page -->
+
+<div class="toast" id="toast"></div>
 
 <script type="module">
-  // ── PASTE YOUR CINNABANK FIREBASE CONFIG HERE ──────────────────────────────
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-  import { getFirestore, collection, query, where, getDocs, doc, updateDoc, addDoc, serverTimestamp }
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, addDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
+  // ── Firebase config ─────────────────────────────────────────────────────────
   const firebaseConfig = {
-    // Replace these values with your Cinnabank Firebase project config
-    // (find it in cinnabank's firebase-init.js)
     apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
     authDomain:        "cinnabank.firebaseapp.com",
     projectId:         "cinnabank",
@@ -495,132 +865,378 @@
     appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
 
-  // ── Input formatters ───────────────────────────────────────────────────────
+  // ── WOKU owner UID — replace with your actual Cinnabank UID ─────────────────
+  const WOKU_UID = 'iBEn6h3QCDRBTZdUhR8LxPWl1vM2';
+  const FEE      = 1;
+
+  // ── State ────────────────────────────────────────────────────────────────────
+  let cbUser     = null;  // Firebase auth user
+  let cbUserData = null;  // Firestore doc data
+  let isNewUser  = false;
+
+  // ── Tab switching ────────────────────────────────────────────────────────────
+  window.switchTab = function(tab) {
+    document.getElementById('tab-card').classList.toggle('active', tab === 'card');
+    document.getElementById('tab-cb').classList.toggle('active',   tab === 'cb');
+    document.getElementById('tab-card-btn').classList.toggle('active', tab === 'card');
+    document.getElementById('tab-cb-btn').classList.toggle('active',   tab === 'cb');
+  };
+
+  window.switchAuthMode = function(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('cb-login-fields').style.display  = isLogin ? '' : 'none';
+    document.getElementById('cb-signup-fields').style.display = isLogin ? 'none' : '';
+    document.getElementById('sub-login-btn').classList.toggle('active',  isLogin);
+    document.getElementById('sub-signup-btn').classList.toggle('active', !isLogin);
+  };
+
+  // ── Input formatters ─────────────────────────────────────────────────────────
   window.formatCardNumber = function(input) {
     let val = input.value.replace(/\D/g, '').slice(0, 16);
     input.value = val.replace(/(.{4})/g, '$1 ').trim();
   };
-
   window.formatExpiry = function(input) {
     let val = input.value.replace(/\D/g, '').slice(0, 4);
     if (val.length >= 3) val = val.slice(0,2) + '/' + val.slice(2);
     input.value = val;
   };
 
-  // ── Payment logic ──────────────────────────────────────────────────────────
-  window.processPayment = async function() {
+  // ── Toast ────────────────────────────────────────────────────────────────────
+  function toast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ── Perks list (shared between tabs) ────────────────────────────────────────
+  const PERKS = [
+    {
+      icon: '📺',
+      iconClass: 'pink',
+      name: 'Anime streaming on Telegram',
+      desc: 'Stream hundreds of titles directly inside Telegram. No apps, no hassle.',
+    },
+    {
+      icon: '🎮',
+      iconClass: 'green',
+      name: 'Discord community',
+      desc: 'Join the woku Discord — watch parties, recommendations, and fellow fans.',
+    },
+    {
+      icon: '✨',
+      iconClass: 'gold',
+      name: 'Exclusive group access',
+      desc: 'Members-only Telegram group with drops, polls, and curated picks.',
+    },
+  ];
+
+  function renderPerks(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = PERKS.map(p => `
+      <div class="perk-item">
+        <div class="perk-icon ${p.iconClass}">${p.icon}</div>
+        <div class="perk-info">
+          <div class="perk-name">${p.name}</div>
+          <div class="perk-desc">${p.desc}</div>
+        </div>
+        <div class="perk-badge">Unlocked</div>
+      </div>
+    `).join('');
+  }
+
+  // ── Helper: show/hide loading states ────────────────────────────────────────
+  function setLoading(btnId, loadingId, errorId, on) {
+    const btn = document.getElementById(btnId);
+    const ld  = document.getElementById(loadingId);
+    const err = document.getElementById(errorId);
+    if (btn)  btn.disabled = on;
+    if (ld)   ld.classList.toggle('show', on);
+    if (err)  err.classList.remove('show');
+  }
+  function showError(errorId, msg) {
+    const el = document.getElementById(errorId);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // CARD FLOW
+  // ─────────────────────────────────────────────────────────────────────────────
+  window.processCardPayment = async function() {
     const rawNumber = document.getElementById('card-number').value.replace(/\s/g, '');
     const expiry    = document.getElementById('card-expiry').value.trim();
     const cvv       = document.getElementById('card-cvv').value.trim();
 
-    const errorEl   = document.getElementById('error-msg');
-    const loadingEl = document.getElementById('loading-msg');
-    const btn       = document.getElementById('pay-btn');
+    const errEl  = document.getElementById('card-error');
+    const loadEl = document.getElementById('card-loading');
+    const btn    = document.getElementById('card-pay-btn');
+    errEl.classList.remove('show');
+    loadEl.classList.remove('show');
 
-    // hide old messages
-    errorEl.classList.remove('show');
-    loadingEl.classList.remove('show');
+    if (rawNumber.length !== 16)             { showError('card-error', 'Enter a valid 16-digit card number.'); return; }
+    if (!/^\d{2}\/\d{2}$/.test(expiry))     { showError('card-error', 'Enter expiry as MM/YY.'); return; }
+    if (!/^\d{3}$/.test(cvv))               { showError('card-error', 'CVV must be 3 digits.'); return; }
 
-    // ── Client-side validation ──
-    if (rawNumber.length !== 16) return showError('Enter a valid 16-digit card number.');
-    if (!/^\d{2}\/\d{2}$/.test(expiry)) return showError('Enter expiry as MM/YY.');
-    if (!/^\d{3}$/.test(cvv)) return showError('CVV must be 3 digits.');
-
-    // check expiry not in the past
     const [mm, yy] = expiry.split('/').map(Number);
-    const now = new Date();
-    const expDate = new Date(2000 + yy, mm - 1, 1);
-    if (expDate < new Date(now.getFullYear(), now.getMonth(), 1)) {
-      return showError('This card has expired.');
+    const expDate  = new Date(2000 + yy, mm - 1, 1);
+    if (expDate < new Date(new Date().getFullYear(), new Date().getMonth(), 1)) {
+      showError('card-error', 'This card has expired.'); return;
     }
 
     btn.disabled = true;
-    loadingEl.classList.add('show');
+    loadEl.classList.add('show');
 
     try {
-      // ── Look up card in Firestore ──
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('cardNumber', '==', rawNumber));
+      const q    = query(collection(db, 'users'), where('cardNumber', '==', rawNumber));
       const snap = await getDocs(q);
-
-      if (snap.empty) {
-        return fail('Card not found. Make sure you have a Cinnabank account.');
-      }
+      if (snap.empty)                         { cardFail('Card not found. Make sure you have a Cinnabank account.'); return; }
 
       const userDoc  = snap.docs[0];
       const userData = userDoc.data();
       const uid      = userDoc.id;
 
-      // ── Validate CVV & expiry ──
-      if (userData.cardCVV !== cvv) {
-        return fail('Incorrect CVV.');
-      }
-      if (userData.cardExpiry !== expiry) {
-        return fail('Expiry date does not match our records.');
-      }
+      if (userData.cardCVV    !== cvv)        { cardFail('Incorrect CVV.'); return; }
+      if (userData.cardExpiry !== expiry)     { cardFail('Expiry date does not match our records.'); return; }
+      if (userData.cardLocked === true)       { cardFail('This card is currently locked. Unlock it in your Cinnabank account.'); return; }
 
-      // ── Check card locked ──
-      if (userData.cardLocked === true) {
-        return fail('This card is currently locked. Unlock it in your Cinnabank account.');
-      }
-
-      // ── Check balance ──
       const balance = userData.balance || 0;
-      const FEE     = 1;
-      if (balance < FEE) {
-        return fail(`Insufficient balance. Your card has ₱${balance.toFixed(2)}.`);
+      if (balance < FEE)                      { cardFail(`Insufficient balance. Your card has ₱${balance.toFixed(2)}.`); return; }
+
+      const newBalance = Math.round((balance - FEE) * 100) / 100;
+      await updateDoc(doc(db, 'users', uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), {
+        userId: uid, type: 'debit', amount: FEE,
+        note: 'woku entry fee', counterparty: 'woku',
+        merchant: 'woku', source: 'card',
+        balanceAfter: newBalance, createdAt: serverTimestamp(),
+      });
+
+      // Credit woku owner
+      if (WOKU_UID && WOKU_UID !== 'REPLACE_WITH_YOUR_CINNABANK_UID') {
+        try {
+          const ownerRef  = doc(db, 'users', WOKU_UID);
+          const ownerSnap = await getDoc(ownerRef);
+          if (ownerSnap.exists()) {
+            const ownerBal = ownerSnap.data().balance || 0;
+            const ownerNew = Math.round((ownerBal + FEE) * 100) / 100;
+            await updateDoc(ownerRef, { balance: ownerNew });
+            await addDoc(collection(db, 'transactions'), {
+              userId: WOKU_UID, type: 'credit', amount: FEE,
+              note: 'woku entry fee', counterparty: userData.name || 'Member',
+              source: 'card', balanceAfter: ownerNew, createdAt: serverTimestamp(),
+            });
+          }
+        } catch(_) {}
       }
 
-      // ── Deduct & record transaction ──
-      const newBalance = Math.round((balance - FEE) * 100) / 100;
-
-      await updateDoc(doc(db, 'users', uid), {
-        balance: newBalance
-      });
-
-      await addDoc(collection(db, 'transactions'), {
-        userId:       uid,
-        type:         'debit',
-        amount:       FEE,
-        note:         'woku entry fee',
-        counterparty: 'woku',
-        merchant:     'woku',
-        source:       'card',
-        balanceAfter: newBalance,
-        createdAt:    serverTimestamp()
-      });
-
-      // ── Success ──
-      loadingEl.classList.remove('show');
+      loadEl.classList.remove('show');
       btn.disabled = false;
-      document.getElementById('form-view').style.display = 'none';
-      document.getElementById('success-view').classList.add('show');
+      document.getElementById('card-form-view').style.display = 'none';
+      renderPerks('card-perks-unlock');
+      document.getElementById('card-success-view').classList.add('show');
 
-      // auto redirect after 2.5s
-      setTimeout(() => {
-        window.location.href = 'https://bit.ly/woku-links';
-      }, 2500);
+      setTimeout(() => { window.location.href = 'https://bit.ly/woku-links'; }, 4000);
 
     } catch (err) {
       console.error(err);
-      fail('Something went wrong. Please try again.');
+      cardFail('Something went wrong. Please try again.');
     }
   };
 
-  function showError(msg) {
-    const el  = document.getElementById('error-msg');
-    const btn = document.getElementById('pay-btn');
-    el.textContent = msg;
-    el.classList.add('show');
-    document.getElementById('loading-msg').classList.remove('show');
-    btn.disabled = false;
+  function cardFail(msg) {
+    showError('card-error', msg);
+    document.getElementById('card-loading').classList.remove('show');
+    document.getElementById('card-pay-btn').disabled = false;
   }
 
-  function fail(msg) {
-    showError(msg);
+  // ─────────────────────────────────────────────────────────────────────────────
+  // CINNABANK AUTH FLOW
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // If user is already signed in to Cinnabank, skip to confirm screen
+  onAuthStateChanged(auth, async user => {
+    if (!user) return;
+    // Only auto-advance if they're on the CB tab
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (!snap.exists()) return;
+      cbUser     = user;
+      cbUserData = snap.data();
+      showConfirmScreen(false);
+    } catch(_) {}
+  });
+
+  window.processCbLogin = async function() {
+    const email    = document.getElementById('cb-login-email').value.trim();
+    const password = document.getElementById('cb-login-password').value;
+    if (!email || !password) { showError('cb-login-error', 'Please fill in your email and password.'); return; }
+
+    setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', true);
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!snap.exists()) { cbFail('login', 'Account data not found.'); return; }
+      cbUser     = cred.user;
+      cbUserData = snap.data();
+      isNewUser  = false;
+      setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', false);
+      showConfirmScreen(false);
+    } catch(e) {
+      const msg = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+        ? 'Incorrect email or password.'
+        : (e.code === 'auth/user-not-found' ? 'No account with that email.' : 'Sign-in failed. Try again.');
+      cbFail('login', msg);
+    }
+  };
+
+  window.processCbSignup = async function() {
+    const name     = document.getElementById('cb-signup-name').value.trim();
+    const email    = document.getElementById('cb-signup-email').value.trim();
+    const password = document.getElementById('cb-signup-password').value;
+
+    if (!name)            { showError('cb-signup-error', 'Please enter your name.'); return; }
+    if (!email)           { showError('cb-signup-error', 'Please enter your email.'); return; }
+    if (password.length < 6) { showError('cb-signup-error', 'Password must be at least 6 characters.'); return; }
+
+    setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Generate a simple account number
+      const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+      // Create Firestore user doc with ₱1,000 welcome balance
+      const userData = {
+        name, email,
+        balance: 1000,
+        accountNumber,
+        createdAt: serverTimestamp(),
+        photoURL: '',
+      };
+      await Promise.all([
+        // Use setDoc equivalent via updateDoc workaround — addDoc to users subcollection not right, use set
+        import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js").then(({ setDoc }) =>
+          setDoc(doc(db, 'users', cred.user.uid), userData)
+        ),
+        addDoc(collection(db, 'transactions'), {
+          userId: cred.user.uid, type: 'credit', amount: 1000,
+          note: 'Welcome bonus', counterparty: 'Cinnabank',
+          source: 'welcome', balanceAfter: 1000, createdAt: serverTimestamp(),
+        }),
+      ]);
+
+      cbUser     = cred.user;
+      cbUserData = userData;
+      isNewUser  = true;
+      setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', false);
+      showConfirmScreen(true);
+    } catch(e) {
+      const msg = e.code === 'auth/email-already-in-use'
+        ? 'An account with that email already exists.'
+        : 'Sign-up failed. Please try again.';
+      cbFail('signup', msg);
+    }
+  };
+
+  function showConfirmScreen(newUser) {
+    document.getElementById('cb-auth-view').style.display    = 'none';
+    document.getElementById('cb-confirm-view').classList.add('show');
+
+    const name   = cbUserData?.name || 'You';
+    const avatar = document.getElementById('confirm-avatar');
+    if (cbUserData?.photoURL) {
+      avatar.innerHTML = `<img src="${cbUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatar.textContent = name[0].toUpperCase();
+    }
+    document.getElementById('confirm-name').textContent = name;
+  }
+
+  window.cancelConfirm = function() {
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-auth-view').style.display = '';
+  };
+
+  window.confirmCbPayment = async function() {
+    if (!cbUser || !cbUserData) return;
+
+    const errEl  = document.getElementById('cb-confirm-error');
+    const loadEl = document.getElementById('cb-confirm-loading');
+    const btn    = document.getElementById('cb-confirm-btn');
+    errEl.classList.remove('show');
+    loadEl.classList.remove('show');
+
+    const balance = cbUserData.balance || 0;
+    if (balance < FEE) {
+      showError('cb-confirm-error', `Insufficient balance. Your account has ₱${balance.toFixed(2)}.`);
+      return;
+    }
+
+    btn.disabled = true;
+    loadEl.classList.add('show');
+
+    try {
+      const newBalance = Math.round((balance - FEE) * 100) / 100;
+      await updateDoc(doc(db, 'users', cbUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), {
+        userId: cbUser.uid, type: 'debit', amount: FEE,
+        note: 'woku entry fee', counterparty: 'woku',
+        source: 'cinnabank', balanceAfter: newBalance, createdAt: serverTimestamp(),
+      });
+
+      // Credit woku owner
+      if (WOKU_UID && WOKU_UID !== 'REPLACE_WITH_YOUR_CINNABANK_UID') {
+        try {
+          const ownerRef  = doc(db, 'users', WOKU_UID);
+          const ownerSnap = await getDoc(ownerRef);
+          if (ownerSnap.exists()) {
+            const ownerBal = ownerSnap.data().balance || 0;
+            const ownerNew = Math.round((ownerBal + FEE) * 100) / 100;
+            await updateDoc(ownerRef, { balance: ownerNew });
+            await addDoc(collection(db, 'transactions'), {
+              userId: WOKU_UID, type: 'credit', amount: FEE,
+              note: 'woku entry fee', counterparty: cbUserData.name || 'Member',
+              source: 'cinnabank', balanceAfter: ownerNew, createdAt: serverTimestamp(),
+            });
+          }
+        } catch(_) {}
+      }
+
+      loadEl.classList.remove('show');
+      document.getElementById('cb-confirm-view').classList.remove('show');
+
+      // Welcome message
+      const sub = document.getElementById('cb-success-sub');
+      if (isNewUser) {
+        sub.innerHTML = `Welcome to woku, <strong>${cbUserData.name || 'friend'}</strong>!<br>Here's everything you just unlocked.`;
+        document.getElementById('cb-bonus-banner').style.display = '';
+      } else {
+        sub.innerHTML = `Welcome back, <strong>${cbUserData.name || 'friend'}</strong>!<br>Here's everything waiting for you.`;
+      }
+
+      renderPerks('cb-perks-unlock');
+      document.getElementById('cb-success-view').classList.add('show');
+
+      setTimeout(() => { window.location.href = 'https://bit.ly/woku-links'; }, 5000);
+
+    } catch(err) {
+      console.error(err);
+      showError('cb-confirm-error', 'Payment failed. Please try again.');
+      btn.disabled = false;
+      loadEl.classList.remove('show');
+    }
+  };
+
+  function cbFail(mode, msg) {
+    showError(`cb-${mode}-error`, msg);
+    document.getElementById(`cb-${mode}-loading`).classList.remove('show');
+    document.getElementById(`cb-${mode}-btn`).disabled = false;
   }
 </script>
 </body>
