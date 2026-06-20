@@ -63,11 +63,14 @@ body::before {
 
 .hero-bg {
   position: absolute;
-  inset: 0;
+  top: -8%; left: -8%;
+  width: 116%; height: 116%;
   background-image: url('assets/images/woqanime2s.jpg');
   background-size: cover;
   background-position: center;
   z-index: 0;
+  will-change: transform;
+  transform: translate3d(0,0,0) scale(1.08);
 }
 .hero-bg::after {
   content: '';
@@ -480,5 +483,48 @@ footer {
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function () {
+  var bg = document.querySelector('.hero-bg');
+  var hero = document.querySelector('.hero');
+  if (!bg || !hero) return;
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion || typeof gsap === 'undefined') return;
+
+  // How far the image can shift, in pixels, at the extreme edges of the hero
+  var MAX_SHIFT = 26;
+
+  // quickTo gives GSAP-managed easing/inertia without re-triggering full tweens on every move
+  var xTo = gsap.quickTo(bg, 'x', { duration: 1.1, ease: 'power3.out' });
+  var yTo = gsap.quickTo(bg, 'y', { duration: 1.1, ease: 'power3.out' });
+
+  gsap.set(bg, { scale: 1.08, transformOrigin: '50% 50%' });
+
+  function onMove(clientX, clientY) {
+    var rect = hero.getBoundingClientRect();
+    var px = (clientX - rect.left) / rect.width;   // 0 -> 1 across hero
+    var py = (clientY - rect.top) / rect.height;    // 0 -> 1 down hero
+    var nx = px - 0.5; // -0.5 -> 0.5
+    var ny = py - 0.5;
+
+    xTo(-nx * MAX_SHIFT * 2);
+    yTo(-ny * MAX_SHIFT * 2);
+  }
+
+  hero.addEventListener('mousemove', function (e) {
+    onMove(e.clientX, e.clientY);
+  });
+
+  hero.addEventListener('mouseleave', function () {
+    xTo(0);
+    yTo(0);
+  });
+
+  // Light touch support: tilt based on device orientation isn't ideal here,
+  // so on touch devices we just leave the image centered/static.
+})();
+</script>
 </body>
 </html>
