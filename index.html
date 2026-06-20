@@ -490,8 +490,7 @@ footer {
   var hero = document.querySelector('.hero');
   if (!bg || !hero) return;
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion || typeof gsap === 'undefined') return;
+  if (typeof gsap === 'undefined') return;
 
   // How far the image can shift, in pixels, at the extreme edges of the hero
   var MAX_SHIFT = 26;
