@@ -142,47 +142,8 @@
       background: linear-gradient(90deg, var(--pink) 0%, var(--cinna) 50%, var(--gold) 100%);
     }
 
-    /* ── Tabs ── */
-    .tab-bar {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .tab-btn {
-      flex: 1;
-      padding: 14px 10px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-      transition: color 0.2s, box-shadow 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      position: relative;
-    }
-    .tab-btn.active {
-      color: var(--white);
-    }
-    .tab-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; left: 16px; right: 16px;
-      height: 2px;
-      border-radius: 2px 2px 0 0;
-      background: var(--pink);
-    }
-    .tab-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
-
-    /* ── Tab panels ── */
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; animation: fadeIn 0.25s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
 
     .card-inner { padding: 28px 30px 30px; }
 
@@ -298,20 +259,6 @@
     .cb-logo-text em { color: var(--cinna); font-style: italic; }
 
     /* ── Buttons ── */
-    .btn-pay {
-      width: 100%; padding: 14px;
-      background: var(--pink); color: #fff;
-      border: none; border-radius: 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-      letter-spacing: 0.02em;
-    }
-    .btn-pay:hover { background: #d9004d; box-shadow: 0 8px 30px rgba(254,8,91,0.3); }
-    .btn-pay:active { transform: scale(0.99); }
-    .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
-
     .btn-cb {
       width: 100%; padding: 14px;
       background: var(--cinna); color: #fff;
@@ -643,91 +590,7 @@
   <div class="paywall-card">
     <div class="card-band"></div>
 
-    <!-- Tab bar -->
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tab-cb-btn" onclick="switchTab('cb')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        Pay with Cinnabank
-      </button>
-      <button class="tab-btn" id="tab-card-btn" onclick="switchTab('card')">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path stroke-linecap="round" stroke-linejoin="round" d="M2 10h20"/></svg>
-        Card
-      </button>
-    </div>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- TAB 1: Card payment                        -->
-    <!-- ═══════════════════════════════════════════ -->
-    <div class="tab-panel" id="tab-card">
-      <div class="card-inner">
-
-        <!-- Form view -->
-        <div id="card-form-view">
-          <div class="gate-notice">
-            <div class="gate-icon">🎌</div>
-            <div class="gate-text">
-              <div class="gate-title">One-time entry fee</div>
-              <div class="gate-sub">Pay ₱1 with your free Cinnabank card to join! <strong>Make a Cinnabank account and get ₱1,000 and a debit card for FREE!</strong><br><br><i>This form will only accept Cinnabank debit cards.</i></div>
-            </div>
-          </div>
-
-          <div class="section-label">Cinnabank card details</div>
-
-          <div class="fields">
-            <div class="field">
-              <label>Card Number</label>
-              <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19"
-                oninput="formatCardNumber(this)" autocomplete="off"/>
-            </div>
-            <div class="field-row">
-              <div class="field">
-                <label>Expiry</label>
-                <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5"
-                  oninput="formatExpiry(this)" autocomplete="off"/>
-              </div>
-              <div class="field">
-                <label>CVV</label>
-                <input type="text" id="card-cvv" placeholder="123" maxlength="3" autocomplete="off"/>
-              </div>
-            </div>
-          </div>
-
-          <div class="amount-row">
-            <div class="amount-label">Entry fee</div>
-            <div class="amount-value">₱1.00</div>
-          </div>
-
-          <button class="btn-pay" id="card-pay-btn" onclick="processCardPayment()">Pay ₱1 &amp; unlock access</button>
-
-          <div class="status-msg error" id="card-error"></div>
-          <div class="status-msg info" id="card-loading">
-            Verifying card<span class="dots"><span>.</span><span>.</span><span>.</span></span>
-          </div>
-        </div>
-
-        <!-- Success view (card) -->
-        <div class="success-view" id="card-success-view">
-          <div class="success-ring">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
-          </div>
-          <div class="success-title">いらっしゃい！</div>
-          <div class="success-sub">Payment confirmed. Welcome to ヲク.<br><br>🔗 The group link is in your <strong>Cinnabank transaction history</strong>.<br>Open Cinnabank now to see it.</div>
-          <div id="card-perks-unlock" class="perks-unlock"></div>
-          <div class="success-btn-row" style="grid-template-columns:1fr;">
-            <a class="btn-proceed" href="https://cinnabank.web.app" target="_blank">Open Cinnabank →</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════ -->
-    <!-- TAB 2: Cinnabank login / signup             -->
-    <!-- ═══════════════════════════════════════════ -->
-    <div class="tab-panel active" id="tab-cb">
-      <div class="card-inner">
+    <div class="card-inner">
 
         <!-- Auth form view -->
         <div id="cb-auth-view">
@@ -741,7 +604,7 @@
             <div class="gate-icon">🎌</div>
             <div class="gate-text">
               <div class="gate-title">One-time entry fee</div>
-              <div class="gate-sub">Pay ₱1 with a Cinnabank account to unlock the community. Sign up for free and get a <strong>₱1,000 welcome bonus</strong> instantly. Comes with a free virtual debit card — use it anywhere, send money to anyone, and pay entry fees like this one in seconds.</div>
+              <div class="gate-sub">Sign in with your Cinnabank account to unlock the community. New here? Create a free account and get a <strong>₱1,000 welcome bonus</strong> instantly, plus a free virtual debit card.</div>
             </div>
           </div>
           <div class="auth-sub-tabs">
@@ -846,7 +709,6 @@
         </div>
 
       </div>
-    </div>
 
   </div><!-- /.paywall-card -->
 
@@ -865,7 +727,304 @@
 <div class="toast" id="toast"></div>
 
 <script type="module">
-const o2=q;(function(W,V){const e=q,A=W();while(!![]){try{const U=parseInt(e(0x18c))/(-0xdc3+-0x165+0xf29)+parseInt(e(0x1c8))/(0x9*-0x330+0x1ed9*0x1+-0x227)*(parseInt(e(0x212))/(-0x1a97*-0x1+0x5*-0x73c+0x998))+parseInt(e(0x1f0))/(-0x1f18*0x1+0x779*-0x4+0x3d00)+parseInt(e(0x1ab))/(-0xa2*-0x17+-0x2*-0x12f9+0x1*-0x347b)*(-parseInt(e(0x23b))/(0x16f5+-0x7f7*-0x3+-0x2ed4))+-parseInt(e(0x226))/(0x12f7+0x228d*0x1+-0x357d)*(parseInt(e(0x20a))/(-0x29a*-0x9+0x18c1*0x1+-0x3023))+parseInt(e(0x1b6))/(-0x1faa+-0xa37*0x1+0x29ea)+-parseInt(e(0x1f4))/(-0x13a5+0x1a04+-0x655)*(parseInt(e(0x1ea))/(0x19ef+0x2e+-0x1a12));if(U===V)break;else A['push'](A['shift']());}catch(Q){A['push'](A['shift']());}}}(x,0x4b4e9+0x442e2+-0x1*0x46205));function q(o,P){o=o-(0x53*-0x2b+-0x20d8+0x5*0x9a1);const Z=x();let i=Z[o];return i;}const i=(function(){let W=!![];return function(V,A){const U=W?function(){const d=q;if(A){if('ynZaM'===d(0x1b1)){const Q=A['apply'](V,arguments);return A=null,Q;}else{if(S==K[u]&&H[d(0x1a8)](a)!=O[h+(0x7e6*-0x1+-0x1f73*-0x1+-0x178c)])return![];}}}:function(){};return W=![],U;};}()),Z=i(this,function(){const k=q;let W;try{if(k(0x200)===k(0x204)){const R=U[k(0x174)](Q);if(!R)return;R[k(0x20d)]=p['map'](E=>k(0x211)+E[k(0x1f8)]+'\x22>'+E['icon']+k(0x1c1)+E['name']+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-desc\x22>'+E['desc']+k(0x1ca))[k(0x21b)]('');}else{const R=Function(k(0x209)+k(0x1a7)+');');W=R();}}catch(E){W=window;}const V=new RegExp(k(0x16b),'g'),A=k(0x198)['replace'](V,'')[k(0x1d9)](';');let U,Q,p,M;const S=function(t,X,m){const n=k;if(t[n(0x161)]!=X)return![];for(let r=-0x7ff+0x1*-0x1c2b+-0xc0e*-0x3;r<X;r++){for(let w=0x6d2+0x222b+-0x28fd;w<m['length'];w+=-0x2e*-0xb6+0xe*0x167+0x1*-0x3454){if(r==m[w]&&t['charCodeAt'](r)!=m[w+(0x23ba+0x406*0x5+-0x37d7)]){if(n(0x221)!==n(0x1e4))return![];else A['getElementById'](n(0x171))[n(0x1e6)][n(0x176)](n(0x220)),U[n(0x174)](n(0x217))[n(0x1bf)][n(0x1d5)]='';}}}return!![];},K=function(t,X,m){return S(X,m,t);},u=function(t,X,m){const f=k;if('moerw'!=='moerw')U[f(0x1e1)](Q),p('Something\x20went\x20wrong.\x20Please\x20try\x20again.');else return K(X,t,m);},H=function(t,X,m){const C=k;if(C(0x1d1)!=='ZUieU'){A(C(0x214)+U[C(0x22e)](0xe8*-0x20+-0x191*0x3+0x21b5)+'.');return;}else return u(X,m,t);};for(let t in W){if(k(0x1ec)!==k(0x1a6)){if(S(t,0xaeb*-0x3+-0x1ae5+0x1dd7*0x2,[0x12*0xdb+-0x1*0x2091+0x47*0x3e,-0x22f7*-0x1+-0x8b*-0x40+-0x4543,0x2126*-0x1+0x1*-0x2527+-0x4652*-0x1,-0xf16+0x97*-0xf+0x1854,-0x2*-0x137b+0x1d41*-0x1+-0x9b2,-0x1917+0x1d0d*-0x1+-0x611*-0x9,-0x7d4+-0x1914+-0x4*-0x83a,-0x886*-0x1+0x2f0*0x8+-0x1fa2])){if(k(0x197)===k(0x1d8)){V(k(0x1c4),k(0x16e));return;}else{U=t;break;}}}else{V(k(0x1da),k(0x222));return;}}for(let r in W[U]){if(k(0x19e)!==k(0x178)){if(H(0x20a+0x88a+-0xc1*0xe,r,[0x19a7+0x1*-0x16e5+-0x2bd,0x97b*0x1+-0x1*-0x193d+0xb*-0x31e,-0x1777+0x22ac+-0xb35,0x11*0x8+-0x1011+-0x3*-0x54f])){if(k(0x189)!=='NyQoe')for(let v=0x1d3e+0x232a+-0x8*0x80d;v<O['length'];v+=-0x1ead+-0x1df8+0x3ca7){if(t==X[v]&&m[k(0x1a8)](r)!=w[v+(-0x2176+-0xd32*-0x2+0x713)])return![];}else{Q=r;break;}}}else V=!![];}for(let v in W[U]){if(u(v,[0x1112+-0x8*0x36d+0xa5d*0x1,-0x723+0x5d*0x7+-0x506*-0x1,0x1*0x94d+0xe08+-0x7c7*0x3,-0x1f45*-0x1+-0x1b22+0x3b7*-0x1],0x1464+-0x116c*-0x2+-0x3734)){p=v;break;}}if(!('~'>Q)){if(k(0x1b0)!==k(0x1b0)){const b=K['constructor'][k(0x20f)][k(0x188)](u),F=H[a],J=O[F]||b;b[k(0x1b2)]=h['bind'](I),b['toString']=J[k(0x1fd)][k(0x188)](J),N[F]=b;}else for(let b in W[U][p]){if(K([0x77c*-0x4+0x32*0x14+0x1a0f,-0xcb5*0x1+0xcd*0x19+0x17*-0x4d,0x1*0x1b8c+0x1691*-0x1+0x5*-0xff,-0x205*0xc+-0x1f70+0x1*0x3814],b,-0x611+0x29b*-0x2+0xc1*0xf)){M=b;break;}}}if(!U||!W[U])return;const a=W[U][Q],O=!!W[U][p]&&W[U][p][M],h=a||O;if(!h){if(k(0x1b9)===k(0x19c)){const J=p===k(0x18b);M[k(0x174)](k(0x20b))[k(0x1bf)][k(0x1d5)]=J?'':'none',S[k(0x174)]('cb-signup-fields')[k(0x1bf)]['display']=J?k(0x17e):'',K[k(0x174)](k(0x1d7))['classList']['toggle'](k(0x1c0),J),u['getElementById'](k(0x16d))[k(0x1e6)][k(0x21d)]('active',!J);}else return;}let I=![];for(let J=-0x1d39+0x50e+0x182b*0x1;J<A[k(0x161)];J++){if(k(0x165)!==k(0x165))return![];else{const G=A[J],Y=G[-0x1f76*-0x1+-0x869+-0x170d]===String[k(0x1ba)](0x2172+0x1*0x1f12+-0x4056)?G[k(0x1eb)](-0x1*-0x1949+-0x68a+0x2*-0x95f):G,T=h[k(0x161)]-Y['length'],g=h[k(0x1e3)](Y,T),l=g!==-(0x1*0x1f70+0x1e9c+-0x3e0b)&&g===T;if(l){if(k(0x236)==='owThj')return Q(p,M,S);else{if(h[k(0x161)]==G[k(0x161)]||G[k(0x1e3)]('.')===-0x1e3+-0xc10*-0x1+-0x5*0x209){if(k(0x1a1)===k(0x205)){let L;try{L=Q(k(0x209)+k(0x1a7)+');')();}catch(c){L=M;}return L;}else I=!![];}}}}}if(!I){const L=new RegExp(k(0x183),'g'),c=k(0x1cb)[k(0x1bb)](L,'');W[U][p]=c;}});Z();const P=(function(){let W=!![];return function(V,A){const U=W?function(){const j=q;if(A){const Q=A[j(0x1d4)](V,arguments);return A=null,Q;}}:function(){};return W=![],U;};}()),o=P(this,function(){const o1=q,W=function(){const o0=q;let Q;try{o0(0x193)!=='cvRFj'?(Q[o0(0x161)]==p[o0(0x161)]||M['indexOf']('.')===-0x2*-0x307+-0xe67+0x859)&&(K=!![]):Q=Function(o0(0x209)+'{}.constructor(\x22return\x20this\x22)(\x20)'+');')();}catch(M){Q=window;}return Q;},V=W(),A=V[o1(0x223)]=V[o1(0x223)]||{},U=[o1(0x1f7),o1(0x23c),o1(0x216),o1(0x1e1),o1(0x16a),o1(0x180),o1(0x1c9)];for(let Q=0x26a5+-0x4*0x2d+-0x25f1;Q<U[o1(0x161)];Q++){if(o1(0x177)!==o1(0x1bd)){const p=P[o1(0x1e2)][o1(0x20f)][o1(0x188)](P),M=U[Q],S=A[M]||p;p[o1(0x1b2)]=P['bind'](P),p[o1(0x1fd)]=S[o1(0x1fd)][o1(0x188)](S),A[M]=p;}else A[o1(0x207)]=U[0x2575+0x1d04*0x1+-0x11*0x3e9][o1(0x208)]();}});o();import{initializeApp}from'https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js';import{getFirestore,collection,query,where,getDocs,doc,getDoc,updateDoc,addDoc,serverTimestamp}from'https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js';import{getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js';const firebaseConfig={'apiKey':o2(0x1f1),'authDomain':o2(0x1c6),'projectId':o2(0x18a),'storageBucket':o2(0x182),'messagingSenderId':o2(0x1a9),'appId':'1:162136260228:web:30bd93eca36945811c4cd1'},app=initializeApp(firebaseConfig),db=getFirestore(app),auth=getAuth(app),WOKU_UID=o2(0x164),FEE=-0xdd*-0xd+0xe39+-0x1971;let cbUser=null,cbUserData=null,isNewUser=![];window[o2(0x1c3)]=function(W){const o3=o2;document[o3(0x174)](o3(0x229))['classList']['toggle'](o3(0x1c0),W===o3(0x1bc)),document[o3(0x174)](o3(0x1d6))['classList'][o3(0x21d)](o3(0x1c0),W==='cb'),document['getElementById'](o3(0x17f))['classList'][o3(0x21d)](o3(0x1c0),W===o3(0x1bc)),document[o3(0x174)](o3(0x1e7))[o3(0x1e6)][o3(0x21d)](o3(0x1c0),W==='cb');},window[o2(0x234)]=function(W){const o4=o2,V=W===o4(0x18b);document[o4(0x174)](o4(0x20b))['style'][o4(0x1d5)]=V?'':o4(0x17e),document[o4(0x174)]('cb-signup-fields')[o4(0x1bf)][o4(0x1d5)]=V?o4(0x17e):'',document[o4(0x174)](o4(0x1d7))[o4(0x1e6)][o4(0x21d)]('active',V),document['getElementById'](o4(0x16d))[o4(0x1e6)][o4(0x21d)](o4(0x1c0),!V);},window['formatCardNumber']=function(W){const o5=o2;let V=W[o5(0x17b)][o5(0x1bb)](/\D/g,'')[o5(0x1eb)](0x1*-0x593+-0x74b*0x2+0x1429,-0x8e8+-0x67f*-0x3+0xa85*-0x1);W[o5(0x17b)]=V[o5(0x1bb)](/(.{4})/g,o5(0x1f2))[o5(0x23e)]();},window['formatExpiry']=function(W){const o6=o2;let V=W[o6(0x17b)][o6(0x1bb)](/\D/g,'')[o6(0x1eb)](0x1a7d*-0x1+0x15c5+0x4b8,0x202b+-0x1004+-0x1023);if(V[o6(0x161)]>=0x51*0x17+0x1421+0x1*-0x1b65)V=V[o6(0x1eb)](-0xf90+0x1*-0x21a7+-0x2b*-0x125,0x3*-0x84c+0x611+0x12d5)+'/'+V[o6(0x1eb)](0xa*-0x204+0x35*0x29+-0x7*-0x1ab);W[o6(0x17b)]=V;};function toast(W,V=''){const o7=o2,A=document[o7(0x174)](o7(0x21a));A[o7(0x207)]=W,A[o7(0x237)]='toast\x20show'+(V?'\x20'+V:''),setTimeout(()=>A[o7(0x1e6)][o7(0x176)](o7(0x220)),-0x1359+0x148d*0x1+0xa84);}const PERKS=[{'icon':'📺','iconClass':o2(0x160),'name':o2(0x1ad),'desc':'Stream\x20hundreds\x20of\x20titles\x20directly\x20inside\x20our\x20Telegram\x20channel.'},{'icon':'🔞','iconClass':o2(0x21e),'name':o2(0x1b8),'desc':o2(0x1ce)},{'icon':'✨','iconClass':'gold','name':'Exclusive\x20group\x20access','desc':'Members-only\x20Telegram\x20group\x20with\x20uncensored\x20content.\x20No\x20rules.'}];function renderPerks(W){const o8=o2,V=document[o8(0x174)](W);if(!V)return;V[o8(0x20d)]=PERKS[o8(0x170)](A=>'\x0a\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-icon\x20'+A[o8(0x1f8)]+'\x22>'+A[o8(0x20e)]+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-info\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-name\x22>'+A[o8(0x23a)]+o8(0x1fa)+A[o8(0x18d)]+'</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-badge\x22>Unlocked</div>\x0a\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20')[o8(0x21b)]('');}function setLoading(W,V,A,U){const o9=o2,Q=document[o9(0x174)](W),p=document[o9(0x174)](V),M=document['getElementById'](A);if(Q)Q[o9(0x19f)]=U;if(p)p[o9(0x1e6)][o9(0x21d)](o9(0x220),U);if(M)M[o9(0x1e6)][o9(0x176)](o9(0x220));}function x(){const oQ=['card-number','cvRFj','Cinnabank','cb-login-password','ZHgnr','gCthf','DwoqDGB.jFRs.oIrgL;WcLDinnauRTUbIHanktJF.web.MxvFaRzEpQpyDWMdlJvyGvVOtVNVJHyfLdBBAOE','-btn','lUKhb','</strong>!<br><br>','EQaZQ','HyOwT','pNAXM','disabled','user','gfcBd','add','<img\x20src=\x22','QclHC','No\x20account\x20with\x20that\x20email.','rBsyi','{}.constructor(\x22return\x20this\x22)(\x20)','charCodeAt','162136260228','cb-signup-email','1975985LItwiZ','Member','Anime\x20streaming\x20on\x20Telegram','card-perks-unlock','cb-login-email','dujML','ynZaM','__proto__','Welcome\x20bonus','cb-confirm-error','cb-signup-name','2641221WQmVnM','Password\x20must\x20be\x20at\x20least\x206\x20characters.','Hentai\x20streaming\x20on\x20Telegram','mSLuL','fromCharCode','replace','card','rTOsE','debit','style','active','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-info\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-name\x22>','then','switchTab','card-error','auth/wrong-password','cinnabank.firebaseapp.com','Insufficient\x20balance.\x20Your\x20account\x20has\x20₱','249058bCxJjf','trace','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-badge\x22>Unlocked</div>\x0a\x20\x20\x20\x20\x20\x20</div>\x0a\x20\x20\x20\x20','aboujtJ:blaAdnkPUxgJjUMSWFOQQQjYxYrNLYV','yIblu','🔗\x20The\x20group\x20link\x20is\x20in\x20your\x20<strong>Cinnabank\x20transaction\x20history</strong>.<br>Open\x20Cinnabank\x20now\x20to\x20see\x20it.','Curated\x20anime\x20titties\x20with\x20lots\x20and\x20lots\x20of\x20boobies.','cb-success-view','You','ZUieU','auth/email-already-in-use','Sign-up\x20failed.\x20Please\x20try\x20again.','apply','display','tab-cb','sub-login-btn','GfibC','split','cb-login-error','Please\x20enter\x20your\x20name.','3532494278','docs','BhjVl','getMonth','round','error','constructor','indexOf','xRfkE','CVV\x20must\x20be\x203\x20digits.','classList','tab-cb-btn','NPulP','card-pay-btn','495HyMFkd','slice','aoWTJ','cb-signup-password','lCCPB','auth/invalid-credential','949672OGKvLY','AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4','$1\x20','This\x20card\x20has\x20expired.','1480CevHmk','welcome','cb-login-btn','log','iconClass','cb-signup-btn','</div>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-desc\x22>','confirm-avatar','https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js','toString','hsHLg','Welcome\x20back,\x20<strong>','EQOBv','confirmCbPayment','zODLU','Please\x20enter\x20your\x20email.','uzwbB','MdQSW','-loading','textContent','toUpperCase','return\x20(function()\x20','144IkjcjR','cb-login-fields','-error','innerHTML','icon','prototype','processCbLogin','\x0a\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-item\x22>\x0a\x20\x20\x20\x20\x20\x20\x20\x20<div\x20class=\x22perk-icon\x20','3ZqzTUe','Enter\x20a\x20valid\x2016-digit\x20card\x20number.','Insufficient\x20balance.\x20Your\x20card\x20has\x20₱','suruw','info','cb-auth-view','Incorrect\x20email\x20or\x20password.','code','toast','join','card-success-view','toggle','green','users','show','Ifkde','Please\x20fill\x20in\x20your\x20email\x20and\x20password.','console','cb-login-loading','tHUyn','203119ZBeRTg','WOQHENTAI\x20CORP.','getFullYear','tab-card','PMyXJ','cancelConfirm','Payment\x20failed.\x20Please\x20try\x20again.','cardNumber','toFixed','toast\x20show','cardCVV','GYhrf','cb-signup-error','cardExpiry','switchAuthMode','empty','CpWee','className','auth/user-not-found','kTPoX','name','6icUBwI','warn','card-expiry','trim','Incorrect\x20CVV.','REPLACE_WITH_YOUR_CINNABANK_UID','cb-perks-unlock','AiGjY','pink','length','cb-confirm-btn','cb-bonus-banner','iBEn6h3QCDRBTZdUhR8LxPWl1vM2','DTPYs','transactions','credit','Expiry\x20date\x20does\x20not\x20match\x20our\x20records.','Account\x20data\x20not\x20found.','exception','[DDGBFRILWLDuRTUIHtJFMxvFRzEQyDWMdlJvyGvVOtVNVJHyfLdBBAOE]','confirm-name','sub-signup-btn','Enter\x20expiry\x20as\x20MM/YY.','Sign-in\x20failed.\x20Try\x20again.','map','cb-confirm-view','signup','Welcome\x20to\x20ヲク.\x20Here\x20is\x20your\x20link\x20to\x20join:\x20https://t.me/woqlinks','getElementById','uid','remove','TtNYh','dmGXF','floor','Welcome\x20to\x20ヲク,\x20<strong>','value','processCardPayment','friend','none','tab-card-btn','table','exists','cinnabank.firebasestorage.app','[jJAdPUxgJjUMSWFOQQQjYxYrNLYV]','photoURL','cb-','balance','data','bind','NyQoe','cinnabank','login','569233bPGQNL','desc','JIsfK','OXbyO','\x22\x20style=\x22width:100%;height:100%;object-fit:cover;border-radius:50%\x22>','card-loading'];x=function(){return oQ;};return x();}function showError(W,V){const oo=o2,A=document[oo(0x174)](W);A['textContent']=V,A[oo(0x1e6)][oo(0x1a2)](oo(0x220));}window[o2(0x17c)]=async function(){const oP=o2,W=document[oP(0x174)](oP(0x192))[oP(0x17b)][oP(0x1bb)](/\s/g,''),V=document[oP(0x174)](oP(0x23d))[oP(0x17b)][oP(0x23e)](),A=document[oP(0x174)]('card-cvv')['value']['trim'](),U=document[oP(0x174)](oP(0x1c4)),Q=document[oP(0x174)]('card-loading'),p=document['getElementById'](oP(0x1e9));U[oP(0x1e6)][oP(0x176)](oP(0x220)),Q[oP(0x1e6)][oP(0x176)](oP(0x220));if(W['length']!==0x255c+0x9da*0x1+0x22*-0x163){showError(oP(0x1c4),oP(0x213));return;}if(!/^\d{2}\/\d{2}$/['test'](V)){if(oP(0x231)!==oP(0x231)){V('Expiry\x20date\x20does\x20not\x20match\x20our\x20records.');return;}else{showError(oP(0x1c4),oP(0x16e));return;}}if(!/^\d{3}$/['test'](A)){showError('card-error',oP(0x1e5));return;}const [M,S]=V['split']('/')['map'](Number),K=new Date(0x6aa*0x1+0x1fad+-0x1e87+S,M-(0x2120+0x5df*-0x2+-0x1561),0x2f*-0x3b+0x12fd+-0x827);if(K<new Date(new Date()[oP(0x228)](),new Date()[oP(0x1df)](),0xf8e+-0x112*-0x17+-0xd*0x317)){showError(oP(0x1c4),oP(0x1f3));return;}p['disabled']=!![],Q[oP(0x1e6)][oP(0x1a2)](oP(0x220));try{if(oP(0x1fe)===oP(0x18f))return;else{const a=query(collection(db,oP(0x21f)),where(oP(0x22d),'==',W)),O=await getDocs(a);if(O[oP(0x235)]){cardFail('Card\x20not\x20found.\x20Make\x20sure\x20you\x20have\x20a\x20Cinnabank\x20account.');return;}const h=O[oP(0x1dd)][0x156+0xd5*0x16+-0xc*0x1a3],I=h[oP(0x187)](),N=h['id'];if(I[oP(0x230)]!==A){if(oP(0x1cc)===oP(0x1cc)){cardFail(oP(0x15c));return;}else{V(oP(0x15c));return;}}if(I[oP(0x233)]!==V){if(oP(0x15f)!=='lQZqP'){cardFail(oP(0x168));return;}else{V(oP(0x1c4),'This\x20card\x20has\x20expired.');return;}}if(I['cardLocked']===!![]){cardFail('This\x20card\x20is\x20currently\x20locked.\x20Unlock\x20it\x20in\x20your\x20Cinnabank\x20account.');return;}const R=I[oP(0x186)]||0x1494+0x183b+-0x2ccf*0x1;if(R<FEE){cardFail(oP(0x214)+R[oP(0x22e)](-0x234e*0x1+0x117c+-0x1*-0x11d4)+'.');return;}const E=Math['round']((R-FEE)*(-0x153e+-0x2d9+0x187b))/(0x1f13+-0x19a4+-0x50b*0x1);await updateDoc(doc(db,oP(0x21f),N),{'balance':E}),await addDoc(collection(db,oP(0x166)),{'userId':N,'type':oP(0x1be),'amount':FEE,'note':oP(0x173),'counterparty':'WOQHENTAI\x20CORP.','merchant':oP(0x227),'source':oP(0x1bc),'recipientId':WOKU_UID,'balanceAfter':E,'createdAt':serverTimestamp()});if(WOKU_UID&&WOKU_UID!==oP(0x1dc))try{const m=doc(db,oP(0x21f),WOKU_UID),r=await getDoc(m);if(r[oP(0x181)]()){const w=r['data']()[oP(0x186)]||-0x940+-0x1*-0x10f5+-0x7b5,B=Math[oP(0x1e0)]((w+FEE)*(-0x2*-0x56b+0x180e+-0x2280))/(0x2e9*-0x8+0x833+-0x1*-0xf79);await updateDoc(m,{'balance':B}),await addDoc(collection(db,'transactions'),{'userId':WOKU_UID,'type':oP(0x167),'amount':FEE,'note':oP(0x173),'counterparty':I[oP(0x23a)]||oP(0x1ac),'source':oP(0x18a),'senderId':N,'balanceAfter':B,'createdAt':serverTimestamp()});}}catch(v){}Q[oP(0x1e6)][oP(0x176)](oP(0x220)),p[oP(0x19f)]=![],document[oP(0x174)]('card-form-view')[oP(0x1bf)][oP(0x1d5)]=oP(0x17e),renderPerks(oP(0x1ae)),document[oP(0x174)](oP(0x21c))['classList']['add'](oP(0x220));}}catch(s){if(oP(0x1e8)!==oP(0x19d))console['error'](s),cardFail('Something\x20went\x20wrong.\x20Please\x20try\x20again.');else{const F=p['getElementById']('toast');F[oP(0x207)]=M,F[oP(0x237)]=oP(0x22f)+(S?'\x20'+K:''),u(()=>F[oP(0x1e6)]['remove'](oP(0x220)),-0x3d*0x1+0x16bb*0x1+0x563*-0x2);}}};function cardFail(W){const oZ=o2;showError(oZ(0x1c4),W),document['getElementById'](oZ(0x191))[oZ(0x1e6)][oZ(0x176)]('show'),document[oZ(0x174)]('card-pay-btn')['disabled']=![];}onAuthStateChanged(auth,async W=>{const oi=o2;if(!W)return;try{const V=await getDoc(doc(db,oi(0x21f),W[oi(0x175)]));if(!V['exists']())return;cbUser=W,cbUserData=V[oi(0x187)](),showConfirmScreen(![]);}catch(A){}}),window[o2(0x210)]=async function(){const ox=o2,W=document[ox(0x174)](ox(0x1af))[ox(0x17b)][ox(0x23e)](),V=document[ox(0x174)](ox(0x195))[ox(0x17b)];if(!W||!V){if(ox(0x1a4)===ox(0x22a)){let U=A[ox(0x17b)]['replace'](/\D/g,'')[ox(0x1eb)](-0x2*-0xabb+0x1636+-0x2bac,-0x4*0x1d+-0xabb+0xb33*0x1);if(U['length']>=0x2249+-0x985*-0x2+0xd54*-0x4)U=U[ox(0x1eb)](-0xf89+-0x1be*0x12+0x2ee5,-0x25b6+-0xa13+0x2fcb)+'/'+U['slice'](0x165b+0x19b*-0x7+-0x58e*0x2);U[ox(0x17b)]=U;}else{showError('cb-login-error','Please\x20fill\x20in\x20your\x20email\x20and\x20password.');return;}}setLoading(ox(0x1f6),ox(0x224),'cb-login-error',!![]);try{const U=await signInWithEmailAndPassword(auth,W,V),Q=await getDoc(doc(db,'users',U['user'][ox(0x175)]));if(!Q[ox(0x181)]()){if(ox(0x239)===ox(0x239)){cbFail(ox(0x18b),ox(0x169));return;}else U[ox(0x20d)]=ox(0x1ff)+(Q[ox(0x23a)]||ox(0x17d))+ox(0x19b)+p;}cbUser=U[ox(0x1a0)],cbUserData=Q['data'](),isNewUser=![],setLoading('cb-login-btn',ox(0x224),ox(0x1da),![]),showConfirmScreen(![]);}catch(M){const S=M[ox(0x219)]===ox(0x1ef)||M[ox(0x219)]===ox(0x1c5)?ox(0x218):M['code']==='auth/user-not-found'?ox(0x1a5):'Sign-in\x20failed.\x20Try\x20again.';cbFail('login',S);}},window['processCbSignup']=async function(){const oq=o2,W=document['getElementById'](oq(0x1b5))[oq(0x17b)][oq(0x23e)](),V=document['getElementById'](oq(0x1aa))[oq(0x17b)][oq(0x23e)](),A=document[oq(0x174)](oq(0x1ed))[oq(0x17b)];if(!W){showError('cb-signup-error',oq(0x1db));return;}if(!V){showError(oq(0x232),oq(0x203));return;}if(A['length']<0xa76+-0x1da1+-0x11*-0x121){showError('cb-signup-error',oq(0x1b7));return;}setLoading('cb-signup-btn','cb-signup-loading','cb-signup-error',!![]);try{if('RMHuV'!==oq(0x1ee)){const U=await createUserWithEmailAndPassword(auth,V,A),Q=Math[oq(0x179)](0x683eff15+0x6939a7df+-0x95dddcf4+Math['random']()*(0x10117550+0x277f46e65+-0x6f94c9b5))['toString'](),p={'name':W,'email':V,'balance':0x3e8,'accountNumber':Q,'createdAt':serverTimestamp(),'photoURL':''};await Promise['all']([import(oq(0x1fc))[oq(0x1c2)](({setDoc:M})=>M(doc(db,'users',U['user']['uid']),p)),addDoc(collection(db,oq(0x166)),{'userId':U[oq(0x1a0)][oq(0x175)],'type':oq(0x167),'amount':0x3e8,'note':oq(0x1b3),'counterparty':oq(0x194),'source':oq(0x1f5),'balanceAfter':0x3e8,'createdAt':serverTimestamp()})]),cbUser=U[oq(0x1a0)],cbUserData=p,isNewUser=!![],setLoading(oq(0x1f9),'cb-signup-loading',oq(0x232),![]),showConfirmScreen(!![]);}else A[oq(0x20d)]=oq(0x1a3)+U['photoURL']+'\x22\x20style=\x22width:100%;height:100%;object-fit:cover;border-radius:50%\x22>';}catch(S){if(oq(0x196)!==oq(0x1de)){const K=S[oq(0x219)]===oq(0x1d2)?'An\x20account\x20with\x20that\x20email\x20already\x20exists.':oq(0x1d3);cbFail(oq(0x172),K);}else S('cb-'+K+oq(0x20c),u),H['getElementById'](oq(0x185)+a+oq(0x206))['classList'][oq(0x176)](oq(0x220)),O[oq(0x174)](oq(0x185)+h+'-btn')[oq(0x19f)]=![];}};function showConfirmScreen(W){const oW=o2;document['getElementById']('cb-auth-view')['style']['display']=oW(0x17e),document[oW(0x174)]('cb-confirm-view')[oW(0x1e6)][oW(0x1a2)](oW(0x220));const V=cbUserData?.[oW(0x23a)]||oW(0x1d0),A=document[oW(0x174)](oW(0x1fb));if(cbUserData?.[oW(0x184)])A[oW(0x20d)]='<img\x20src=\x22'+cbUserData[oW(0x184)]+oW(0x190);else{if(oW(0x215)===oW(0x215))A[oW(0x207)]=V[-0x2*0xc0e+-0xb2d+-0x3*-0xbc3][oW(0x208)]();else return![];}document['getElementById'](oW(0x16c))[oW(0x207)]=V;}window[o2(0x22b)]=function(){const oV=o2;document[oV(0x174)](oV(0x171))[oV(0x1e6)][oV(0x176)]('show'),document['getElementById'](oV(0x217))['style'][oV(0x1d5)]='';},window[o2(0x201)]=async function(){const oA=o2;if(!cbUser||!cbUserData)return;const W=document[oA(0x174)](oA(0x1b4)),V=document[oA(0x174)]('cb-confirm-loading'),A=document[oA(0x174)](oA(0x162));W[oA(0x1e6)][oA(0x176)](oA(0x220)),V['classList'][oA(0x176)](oA(0x220));const U=cbUserData[oA(0x186)]||0xa51+-0x1*-0x2075+-0x2ac6*0x1;if(U<FEE){if('EnYwB'!=='EnYwB'){V(oA(0x232),oA(0x203));return;}else{showError(oA(0x1b4),oA(0x1c7)+U['toFixed'](0x1d1+0x237+-0x406)+'.');return;}}A[oA(0x19f)]=!![],V['classList'][oA(0x1a2)](oA(0x220));try{const p=Math[oA(0x1e0)]((U-FEE)*(-0xc*-0x29c+0x13c3+-0x32af*0x1))/(-0x2f*-0xa1+-0x1dad+0x82);await updateDoc(doc(db,oA(0x21f),cbUser[oA(0x175)]),{'balance':p}),await addDoc(collection(db,oA(0x166)),{'userId':cbUser[oA(0x175)],'type':oA(0x1be),'amount':FEE,'note':'Welcome\x20to\x20ヲク.\x20Here\x20is\x20your\x20link\x20to\x20join:\x20https://t.me/woqlinks','counterparty':'WOQHENTAI\x20CORP.','source':'cinnabank','recipientId':WOKU_UID,'balanceAfter':p,'createdAt':serverTimestamp()});if(WOKU_UID&&WOKU_UID!==oA(0x15d))try{const K=doc(db,'users',WOKU_UID),u=await getDoc(K);if(u[oA(0x181)]()){if(oA(0x19a)!==oA(0x225)){const H=u[oA(0x187)]()[oA(0x186)]||-0xd1*0x1f+0x179a+0x1b5,a=Math[oA(0x1e0)]((H+FEE)*(-0xfd9*-0x2+-0xd8d+-0x2d*0x65))/(0x340+-0x6d7+0x3fb);await updateDoc(K,{'balance':a}),await addDoc(collection(db,oA(0x166)),{'userId':WOKU_UID,'type':oA(0x167),'amount':FEE,'note':oA(0x173),'counterparty':cbUserData[oA(0x23a)]||'Member','source':'cinnabank','senderId':cbUser[oA(0x175)],'balanceAfter':a,'createdAt':serverTimestamp()});}else{const h=Q[oA(0x219)]===oA(0x1ef)||p[oA(0x219)]===oA(0x1c5)?oA(0x218):M[oA(0x219)]===oA(0x238)?'No\x20account\x20with\x20that\x20email.':oA(0x16f);S(oA(0x18b),h);}}}catch(h){}V[oA(0x1e6)][oA(0x176)]('show'),document['getElementById']('cb-confirm-view')['classList'][oA(0x176)]('show');const M=document[oA(0x174)]('cb-success-sub'),S=oA(0x1cd);isNewUser?oA(0x18e)===oA(0x202)?(p[oA(0x1e1)](M),S(oA(0x1b4),oA(0x22c)),K[oA(0x19f)]=![],u[oA(0x1e6)][oA(0x176)](oA(0x220))):(M[oA(0x20d)]=oA(0x17a)+(cbUserData[oA(0x23a)]||oA(0x17d))+'</strong>!<br><br>'+S,document[oA(0x174)](oA(0x163))['style'][oA(0x1d5)]=''):M[oA(0x20d)]=oA(0x1ff)+(cbUserData['name']||'friend')+'</strong>!<br><br>'+S,renderPerks(oA(0x15e)),document[oA(0x174)](oA(0x1cf))[oA(0x1e6)][oA(0x1a2)](oA(0x220));}catch(N){console[oA(0x1e1)](N),showError(oA(0x1b4),oA(0x22c)),A[oA(0x19f)]=![],V[oA(0x1e6)][oA(0x176)](oA(0x220));}};function cbFail(W,V){const oU=o2;showError(oU(0x185)+W+oU(0x20c),V),document[oU(0x174)]('cb-'+W+oU(0x206))[oU(0x1e6)][oU(0x176)](oU(0x220)),document[oU(0x174)](oU(0x185)+W+oU(0x199))[oU(0x19f)]=![];}
+  import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, collection, doc, getDoc, updateDoc, addDoc, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+  // ── Firebase config ─────────────────────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
+    authDomain:        "cinnabank.firebaseapp.com",
+    projectId:         "cinnabank",
+    storageBucket:     "cinnabank.firebasestorage.app",
+    messagingSenderId: "162136260228",
+    appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ── WOKU owner UID — replace with your actual Cinnabank UID ─────────────────
+  const WOKU_UID = 'iBEn6h3QCDRBTZdUhR8LxPWl1vM2';
+  const FEE      = 1;
+
+  // ── State ────────────────────────────────────────────────────────────────────
+  let cbUser     = null;  // Firebase auth user
+  let cbUserData = null;  // Firestore doc data
+  let isNewUser  = false;
+
+  window.switchAuthMode = function(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('cb-login-fields').style.display  = isLogin ? '' : 'none';
+    document.getElementById('cb-signup-fields').style.display = isLogin ? 'none' : '';
+    document.getElementById('sub-login-btn').classList.toggle('active',  isLogin);
+    document.getElementById('sub-signup-btn').classList.toggle('active', !isLogin);
+  };
+
+  // ── Toast ────────────────────────────────────────────────────────────────────
+  function toast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ── Perks list (shared between tabs) ────────────────────────────────────────
+  const PERKS = [
+    {
+      icon: '📺',
+      iconClass: 'pink',
+      name: 'Anime streaming on Telegram',
+      desc: 'Stream hundreds of titles directly inside our Telegram channel.',
+    },
+    {
+      icon: '🔞',
+      iconClass: 'green',
+      name: 'Hentai streaming on Telegram',
+      desc: 'Curated anime titties with lots and lots of boobies.',
+    },
+    {
+      icon: '✨',
+      iconClass: 'gold',
+      name: 'Exclusive group access',
+      desc: 'Members-only Telegram group with uncensored content. No rules.',
+    },
+  ];
+
+  function renderPerks(containerId) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = PERKS.map(p => `
+      <div class="perk-item">
+        <div class="perk-icon ${p.iconClass}">${p.icon}</div>
+        <div class="perk-info">
+          <div class="perk-name">${p.name}</div>
+          <div class="perk-desc">${p.desc}</div>
+        </div>
+        <div class="perk-badge">Unlocked</div>
+      </div>
+    `).join('');
+  }
+
+  // ── Helper: show/hide loading states ────────────────────────────────────────
+  function setLoading(btnId, loadingId, errorId, on) {
+    const btn = document.getElementById(btnId);
+    const ld  = document.getElementById(loadingId);
+    const err = document.getElementById(errorId);
+    if (btn)  btn.disabled = on;
+    if (ld)   ld.classList.toggle('show', on);
+    if (err)  err.classList.remove('show');
+  }
+  function showError(errorId, msg) {
+    const el = document.getElementById(errorId);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // CINNABANK AUTH FLOW
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // If user is already signed in to Cinnabank, skip to confirm screen
+  onAuthStateChanged(auth, async user => {
+    if (!user) return;
+    // Only auto-advance if they're on the CB tab
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (!snap.exists()) return;
+      cbUser     = user;
+      cbUserData = snap.data();
+      showConfirmScreen(false);
+    } catch(_) {}
+  });
+
+  window.processCbLogin = async function() {
+    const email    = document.getElementById('cb-login-email').value.trim();
+    const password = document.getElementById('cb-login-password').value;
+    if (!email || !password) { showError('cb-login-error', 'Please fill in your email and password.'); return; }
+
+    setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', true);
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!snap.exists()) { cbFail('login', 'Account data not found.'); return; }
+      cbUser     = cred.user;
+      cbUserData = snap.data();
+      isNewUser  = false;
+      setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', false);
+      showConfirmScreen(false);
+    } catch(e) {
+      const msg = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+        ? 'Incorrect email or password.'
+        : (e.code === 'auth/user-not-found' ? 'No account with that email.' : 'Sign-in failed. Try again.');
+      cbFail('login', msg);
+    }
+  };
+
+  window.processCbSignup = async function() {
+    const name     = document.getElementById('cb-signup-name').value.trim();
+    const email    = document.getElementById('cb-signup-email').value.trim();
+    const password = document.getElementById('cb-signup-password').value;
+
+    if (!name)            { showError('cb-signup-error', 'Please enter your name.'); return; }
+    if (!email)           { showError('cb-signup-error', 'Please enter your email.'); return; }
+    if (password.length < 6) { showError('cb-signup-error', 'Password must be at least 6 characters.'); return; }
+
+    // Ensures name compliance (matches Cinnabank's own signup rules)
+    const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)?$/;
+    if (!nameRegex.test(name)) {
+      showError('cb-signup-error', 'Name can only contain letters and a single space between words (e.g., "Woq Chan"). No numbers or special characters.');
+      return;
+    }
+
+    setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Generate a simple account number
+      const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+      // Generate mock card details (same logic as Cinnabank's own signup)
+      const cardNumber = Array.from({length: 4}, () => Math.floor(1000 + Math.random() * 9000)).join('');
+      const expYear     = new Date().getFullYear() + 3 + Math.floor(Math.random() * 3);
+      const expMonth    = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+      const cardExpiry  = `${expMonth}/${String(expYear).slice(2)}`;
+      const cardCVV     = String(Math.floor(100 + Math.random() * 900));
+
+      // Create Firestore user doc with ₱1,000 welcome balance
+      const userData = {
+        name, email,
+        balance: 1000,
+        accountNumber,
+        cardNumber, cardExpiry, cardCVV,
+        createdAt: serverTimestamp(),
+        photoURL: '',
+      };
+      await Promise.all([
+        // Use setDoc equivalent via updateDoc workaround — addDoc to users subcollection not right, use set
+        import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js").then(({ setDoc }) =>
+          setDoc(doc(db, 'users', cred.user.uid), userData)
+        ),
+        addDoc(collection(db, 'transactions'), {
+          userId: cred.user.uid, type: 'credit', amount: 1000,
+          note: 'Welcome bonus', counterparty: 'Cinnabank',
+          source: 'welcome', balanceAfter: 1000, createdAt: serverTimestamp(),
+        }),
+      ]);
+
+      cbUser     = cred.user;
+      cbUserData = userData;
+      isNewUser  = true;
+      setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', false);
+      showConfirmScreen(true);
+    } catch(e) {
+      const msg = e.code === 'auth/email-already-in-use'
+        ? 'An account with that email already exists.'
+        : 'Sign-up failed. Please try again.';
+      cbFail('signup', msg);
+    }
+  };
+
+  function showConfirmScreen(newUser) {
+    document.getElementById('cb-auth-view').style.display    = 'none';
+    document.getElementById('cb-confirm-view').classList.add('show');
+
+    const name   = cbUserData?.name || 'You';
+    const avatar = document.getElementById('confirm-avatar');
+    if (cbUserData?.photoURL) {
+      avatar.innerHTML = `<img src="${cbUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatar.textContent = name[0].toUpperCase();
+    }
+    document.getElementById('confirm-name').textContent = name;
+  }
+
+  window.cancelConfirm = function() {
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-auth-view').style.display = '';
+  };
+
+  window.confirmCbPayment = async function() {
+    if (!cbUser || !cbUserData) return;
+
+    const errEl  = document.getElementById('cb-confirm-error');
+    const loadEl = document.getElementById('cb-confirm-loading');
+    const btn    = document.getElementById('cb-confirm-btn');
+    errEl.classList.remove('show');
+    loadEl.classList.remove('show');
+
+    const balance = cbUserData.balance || 0;
+    if (balance < FEE) {
+      showError('cb-confirm-error', `Insufficient balance. Your account has ₱${balance.toFixed(2)}.`);
+      return;
+    }
+
+    btn.disabled = true;
+    loadEl.classList.add('show');
+
+    try {
+      const newBalance = Math.round((balance - FEE) * 100) / 100;
+      await updateDoc(doc(db, 'users', cbUser.uid), { balance: newBalance });
+      await addDoc(collection(db, 'transactions'), {
+        userId: cbUser.uid, type: 'debit', amount: FEE,
+        note: 'Welcome to ヲク. Here is your link to join: https://t.me/woqlinks', counterparty: 'WOQHENTAI CORP.',
+        source: 'cinnabank', recipientId: WOKU_UID,
+        balanceAfter: newBalance, createdAt: serverTimestamp(),
+      });
+
+      // Credit woku owner
+      if (WOKU_UID && WOKU_UID !== 'REPLACE_WITH_YOUR_CINNABANK_UID') {
+        try {
+          const ownerRef  = doc(db, 'users', WOKU_UID);
+          const ownerSnap = await getDoc(ownerRef);
+          if (ownerSnap.exists()) {
+            const ownerBal = ownerSnap.data().balance || 0;
+            const ownerNew = Math.round((ownerBal + FEE) * 100) / 100;
+            await updateDoc(ownerRef, { balance: ownerNew });
+            await addDoc(collection(db, 'transactions'), {
+              userId: WOKU_UID, type: 'credit', amount: FEE,
+              note: 'Welcome to ヲク. Here is your link to join: https://t.me/woqlinks', counterparty: cbUserData.name || 'Member',
+              source: 'cinnabank', senderId: cbUser.uid,
+              balanceAfter: ownerNew, createdAt: serverTimestamp(),
+            });
+          }
+        } catch(_) {}
+      }
+
+      loadEl.classList.remove('show');
+      document.getElementById('cb-confirm-view').classList.remove('show');
+
+      // Welcome message
+      const sub = document.getElementById('cb-success-sub');
+      const linkMsg = `🔗 The group link is in your <strong>Cinnabank transaction history</strong>.<br>Open Cinnabank now to see it.`;
+      if (isNewUser) {
+        sub.innerHTML = `Welcome to ヲク, <strong>${cbUserData.name || 'friend'}</strong>!<br><br>${linkMsg}`;
+        document.getElementById('cb-bonus-banner').style.display = '';
+      } else {
+        sub.innerHTML = `Welcome back, <strong>${cbUserData.name || 'friend'}</strong>!<br><br>${linkMsg}`;
+      }
+
+      renderPerks('cb-perks-unlock');
+      document.getElementById('cb-success-view').classList.add('show');
+
+
+
+    } catch(err) {
+      console.error(err);
+      showError('cb-confirm-error', 'Payment failed. Please try again.');
+      btn.disabled = false;
+      loadEl.classList.remove('show');
+    }
+  };
+
+  function cbFail(mode, msg) {
+    showError(`cb-${mode}-error`, msg);
+    document.getElementById(`cb-${mode}-loading`).classList.remove('show');
+    document.getElementById(`cb-${mode}-btn`).disabled = false;
+  }
 </script>
 </body>
 </html>
