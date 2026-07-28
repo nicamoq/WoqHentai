@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CinnaBank ATM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+  :root{
+    --steel-dark: #23262b;
+    --steel: #33383f;
+    --steel-light: #565f68;
+    --steel-edge: #6b7580;
+    --phosphor: #3dffa0;
+    --phosphor-dim: #1c7a56;
+    --amber: #ffb648;
+    --red-led: #ff3b3b;
+    --paper: #e9e4d6;
+  }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background: radial-gradient(ellipse at 50% 30%, #14161a 0%, #050607 70%);
+    overflow:hidden;
+    font-family:'JetBrains Mono', monospace;
+  }
+  #stage{
+    position:relative; width:100vw; height:100vh;
+  }
+  canvas#three-canvas{
+    position:absolute; inset:0; display:block;
+  }
+
+  /* ---------- CRT screen overlay ---------- */
+  #screen-wrap{
+    position:absolute;
+    left:50%; top:29.5%;
+    width:23.4%; height:24%;
+    transform:translate(-50%,-50%) perspective(900px) rotateX(6deg);
+    transform-origin:center;
+    pointer-events:none;
+  }
+  #screen{
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse at 50% 40%, #06170f 0%, #010603 100%);
+    border-radius:6px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,.9), 0 0 18px rgba(61,255,160,.15);
+    overflow:hidden;
+    pointer-events:auto;
+    color: var(--phosphor);
+  }
+  #screen::after{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px,
+      rgba(0,0,0,0) 2px,
+      rgba(0,0,0,.18) 3px
+    );
+    mix-blend-mode:multiply;
+    pointer-events:none;
+    animation: flicker 6s infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity:.55}
+    50%{opacity:.4}
+    52%{opacity:.6}
+  }
+  .crt-page{
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column;
+    padding: 3.5% 5%;
+    box-sizing:border-box;
+    text-shadow: 0 0 6px rgba(61,255,160,.65);
+  }
+  .crt-page.active{ display:flex; }
+  .crt-title{
+    font-size:.85em; letter-spacing:.14em; text-transform:uppercase;
+    border-bottom:1px solid var(--phosphor-dim);
+    padding-bottom:.4em; margin-bottom:.6em; opacity:.9;
+  }
+  .crt-line{ font-size:.78em; line-height:1.55; }
+  .crt-sub{ color:var(--phosphor-dim); font-size:.7em; }
+  .crt-input{
+    background:transparent; border:none; border-bottom:1px solid var(--phosphor-dim);
+    color:var(--phosphor); font-family:inherit; font-size:.78em; padding:.35em .1em;
+    outline:none; width:100%; margin:.25em 0 .6em 0; text-shadow: 0 0 5px rgba(61,255,160,.6);
+  }
+  .crt-input::placeholder{ color: var(--phosphor-dim); opacity:.8; }
+  .crt-btn{
+    background:transparent; border:1px solid var(--phosphor-dim); color:var(--phosphor);
+    font-family:inherit; font-size:.72em; letter-spacing:.06em; text-transform:uppercase;
+    padding:.5em .7em; margin:.25em .3em .25em 0; cursor:pointer; text-shadow: 0 0 5px rgba(61,255,160,.5);
+    transition: background .15s, color .15s;
+  }
+  .crt-btn:hover{ background:var(--phosphor); color:#04150c; }
+  .crt-btn:disabled{ opacity:.35; cursor:default; }
+  .crt-btn:disabled:hover{ background:transparent; color:var(--phosphor); }
+  .crt-row{ display:flex; flex-wrap:wrap; gap:.1em; margin-top:auto; }
+  .crt-error{ color:var(--red-led); font-size:.68em; margin-top:.3em; min-height:1.4em; text-shadow:0 0 6px rgba(255,59,59,.6); }
+  .crt-balance{ font-size:1.5em; margin:.2em 0 .5em 0; }
+  .crt-flex-fill{ flex:1; overflow-y:auto; }
+  .blink{ animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* card slot LED */
+  #card-led{
+    position:absolute; left:50%; top:47.5%; width:.5%; height:.5%;
+    transform:translate(-50%,-50%);
+  }
+  #brand-plaque{
+    position:absolute; left:50%; top:12%; transform:translate(-50%,-50%);
+    font-family:'Oswald',sans-serif; letter-spacing:.12em; color:#d7dde2;
+    font-size:1.1vw; text-shadow:0 0 12px rgba(255,182,72,.35);
+    pointer-events:none; user-select:none;
+  }
+  #hint{
+    position:absolute; bottom:3%; left:50%; transform:translateX(-50%);
+    color:#8a94a0; font-size:.75rem; letter-spacing:.04em;
+    pointer-events:none; user-select:none;
+  }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="three-canvas"></canvas>
+  <div id="brand-plaque">CINNABANK</div>
+
+  <div id="screen-wrap">
+    <div id="screen">
+
+      <!-- IDLE -->
+      <div class="crt-page active" data-page="idle">
+        <div class="crt-flex-fill" style="justify-content:center; align-items:center; display:flex; flex-direction:column;">
+          <div class="crt-line" style="font-size:1em;">WELCOME</div>
+          <div class="crt-sub" style="margin-top:.6em;">tap screen to begin<span class="blink">_</span></div>
+        </div>
+      </div>
+
+      <!-- AUTH -->
+      <div class="crt-page" data-page="auth">
+        <div class="crt-title">Account Access</div>
+        <div class="crt-flex-fill">
+          <input class="crt-input" id="auth-name" placeholder="full name (signup only)">
+          <input class="crt-input" id="auth-email" placeholder="email" type="email">
+          <input class="crt-input" id="auth-pass" placeholder="password" type="password">
+          <div class="crt-error" id="auth-error"></div>
+        </div>
+        <div class="crt-row">
+          <button class="crt-btn" id="btn-login">Login</button>
+          <button class="crt-btn" id="btn-signup">New Account</button>
+          <button class="crt-btn" id="btn-idle-back">Cancel</button>
+        </div>
+      </div>
+
+      <!-- MENU -->
+      <div class="crt-page" data-page="menu">
+        <div class="crt-title">Main Menu — <span id="menu-name"></span></div>
+        <div class="crt-flex-fill">
+          <div class="crt-sub">Balance</div>
+          <div class="crt-balance" id="menu-balance">₱0.00</div>
+        </div>
+        <div class="crt-row">
+          <button class="crt-btn" data-page-to="withdraw">Withdraw</button>
+          <button class="crt-btn" data-page-to="loan">Loans</button>
+          <button class="crt-btn" id="btn-logout">Eject Card</button>
+        </div>
+      </div>
+
+      <!-- WITHDRAW -->
+      <div class="crt-page" data-page="withdraw">
+        <div class="crt-title">Withdraw Cash</div>
+        <div class="crt-flex-fill">
+          <div class="crt-sub">Available: <span id="wd-balance"></span></div>
+          <input class="crt-input" id="wd-amount" placeholder="amount (₱)" type="number" min="1">
+          <div class="crt-error" id="wd-error"></div>
+        </div>
+        <div class="crt-row">
+          <button class="crt-btn" id="btn-wd-confirm">Confirm</button>
+          <button class="crt-btn" data-page-to="menu">Back</button>
+        </div>
+      </div>
+
+      <!-- LOAN -->
+      <div class="crt-page" data-page="loan">
+        <div class="crt-title">Loan Services</div>
+        <div class="crt-flex-fill">
+          <div class="crt-sub">30% interest · 10 min deadline</div>
+          <input class="crt-input" id="loan-amount" placeholder="amount (₱500–50,000)" type="number" min="500" max="50000">
+          <div class="crt-error" id="loan-error"></div>
+        </div>
+        <div class="crt-row">
+          <button class="crt-btn" id="btn-loan-take">Take Loan</button>
+          <button class="crt-btn" id="btn-loan-pay">Repay</button>
+          <button class="crt-btn" data-page-to="menu">Back</button>
+        </div>
+      </div>
+
+      <!-- RECEIPT -->
+      <div class="crt-page" data-page="receipt">
+        <div class="crt-title">Transaction Complete</div>
+        <div class="crt-flex-fill">
+          <div class="crt-line" id="receipt-text" style="white-space:pre-line;"></div>
+        </div>
+        <div class="crt-row">
+          <button class="crt-btn" data-page-to="menu">Done</button>
+        </div>
+      </div>
+
+      <!-- BUSY -->
+      <div class="crt-page" data-page="busy">
+        <div class="crt-flex-fill" style="justify-content:center; align-items:center; display:flex;">
+          <div class="crt-line">processing<span class="blink">...</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="hint">drag to look around</div>
+</div>
+
+<script type="module">
+import { CinnaBank } from './cinnabank-sdk.js';
+
+/* ============ CONFIG ============ */
+// Replace with a real Cinnabank merchant/receiver UID to accept withdrawal transfers.
+const CASHOUT_UID = "REPLACE_WITH_REGISTERED_MERCHANT_UID";
+
+const cinnabank = new CinnaBank();
+
+/* ============ SCREEN PAGE ROUTER ============ */
+const pages = document.querySelectorAll('.crt-page');
+function showPage(name){
+  pages.forEach(p => p.classList.toggle('active', p.dataset.page === name));
+}
+document.querySelectorAll('[data-page-to]').forEach(btn=>{
+  btn.addEventListener('click', ()=> showPage(btn.dataset.pageTo));
+});
+
+document.getElementById('screen').addEventListener('click', (e)=>{
+  const idlePage = document.querySelector('[data-page="idle"]');
+  if(idlePage.classList.contains('active')){
+    playCardInsertAnim();
+    showPage('auth');
+  }
+});
+document.getElementById('btn-idle-back').addEventListener('click', ()=>{
+  playCardEjectAnim();
+  showPage('idle');
+});
+
+/* ============ AUTH ============ */
+document.getElementById('btn-login').addEventListener('click', async ()=>{
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const err = document.getElementById('auth-error');
+  err.textContent = '';
+  showPage('busy');
+  try{
+    await cinnabank.login(email, pass);
+  }catch(e){
+    err.textContent = e.message;
+    showPage('auth');
+  }
+});
+
+document.getElementById('btn-signup').addEventListener('click', async ()=>{
+  const name = document.getElementById('auth-name').value.trim();
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const err = document.getElementById('auth-error');
+  err.textContent = '';
+  showPage('busy');
+  try{
+    await cinnabank.signup(name, email, pass);
+  }catch(e){
+    err.textContent = e.message;
+    showPage('auth');
+  }
+});
+
+cinnabank.onAuthStateChanged((user, userData)=>{
+  if(user && userData){
+    document.getElementById('menu-name').textContent = userData.name;
+    document.getElementById('menu-balance').textContent = `₱${userData.balance.toFixed(2)}`;
+    document.getElementById('wd-balance').textContent = `₱${userData.balance.toFixed(2)}`;
+    if(document.querySelector('[data-page="busy"]').classList.contains('active') ||
+       document.querySelector('[data-page="auth"]').classList.contains('active')){
+      showPage('menu');
+    }
+    if(!document.querySelector('[data-page="idle"]').classList.contains('active')){
+      // keep whichever transactional page is open, but refresh balance fields
+    }
+  } else {
+    showPage('idle');
+  }
+});
+
+document.getElementById('btn-logout').addEventListener('click', async ()=>{
+  await cinnabank.logout();
+  playCardEjectAnim();
+  showPage('idle');
+});
+
+/* ============ WITHDRAW ============ */
+document.getElementById('btn-wd-confirm').addEventListener('click', async ()=>{
+  const amt = parseFloat(document.getElementById('wd-amount').value);
+  const err = document.getElementById('wd-error');
+  err.textContent = '';
+  if(!amt || amt <= 0){ err.textContent = 'Enter a valid amount.'; return; }
+  showPage('busy');
+  try{
+    await cinnabank.processPayment(CASHOUT_UID, amt, 'ATM Withdrawal');
+    playDispenserAnim();
+    document.getElementById('receipt-text').textContent =
+      `WITHDRAWAL\n-----------------\nAmount:  -₱${amt.toFixed(2)}\nBalance: ₱${cinnabank.userData.balance.toFixed(2)}\n\nPlease take your cash.`;
+    printReceiptAnim();
+    showPage('receipt');
+  }catch(e){
+    err.textContent = e.message;
+    showPage('withdraw');
+  }
+});
+
+/* ============ LOANS ============ */
+document.getElementById('btn-loan-take').addEventListener('click', async ()=>{
+  const amt = parseFloat(document.getElementById('loan-amount').value);
+  const err = document.getElementById('loan-error');
+  err.textContent = '';
+  if(!amt){ err.textContent = 'Enter an amount.'; return; }
+  showPage('busy');
+  try{
+    const result = await cinnabank.takeLoan(amt);
+    document.getElementById('receipt-text').textContent =
+      `LOAN ISSUED\n-----------------\nPrincipal: ₱${amt.toFixed(2)}\nInterest:  30%\nDeadline:  10 minutes\n\n${JSON.stringify(result)}`;
+    printReceiptAnim();
+    showPage('receipt');
+  }catch(e){
+    err.textContent = e.message;
+    showPage('loan');
+  }
+});
+document.getElementById('btn-loan-pay').addEventListener('click', async ()=>{
+  const amt = parseFloat(document.getElementById('loan-amount').value);
+  const err = document.getElementById('loan-error');
+  err.textContent = '';
+  if(!amt){ err.textContent = 'Enter an amount.'; return; }
+  showPage('busy');
+  try{
+    const result = await cinnabank.payLoan(amt);
+    document.getElementById('receipt-text').textContent =
+      `LOAN REPAYMENT\n-----------------\nPaid: ₱${amt.toFixed(2)}\n\n${JSON.stringify(result)}`;
+    printReceiptAnim();
+    showPage('receipt');
+  }catch(e){
+    err.textContent = e.message;
+    showPage('loan');
+  }
+});
+
+/* ==========================================================
+   THREE.JS SCENE — physical ATM body
+   ========================================================== */
+const canvas = document.getElementById('three-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x05060a, 8, 22);
+
+const camera = new THREE.PerspectiveCamera(35, window.innerWidth/window.innerHeight, .1, 100);
+const camBase = new THREE.Vector3(0, 1.55, 6.2);
+camera.position.copy(camBase);
+camera.lookAt(0, 1.15, 0);
+
+// lights
+scene.add(new THREE.AmbientLight(0x2a2f3a, .8));
+const spot = new THREE.SpotLight(0xffdca8, 2.4, 20, Math.PI/6, .5, 1.2);
+spot.position.set(1.5, 6, 3);
+spot.castShadow = true;
+scene.add(spot);
+const rim = new THREE.PointLight(0x3dffa0, 1.1, 10);
+rim.position.set(-2, 2, -1.5);
+scene.add(rim);
+const fill = new THREE.PointLight(0x4477ff, .35, 10);
+fill.position.set(-1.5, 1, 3);
+scene.add(fill);
+
+// floor
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(40,40),
+  new THREE.MeshStandardMaterial({ color:0x0d0f12, roughness:.35, metalness:.6 })
+);
+floor.rotation.x = -Math.PI/2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+const steel = new THREE.MeshStandardMaterial({ color:0x33383f, roughness:.35, metalness:.85 });
+const steelDark = new THREE.MeshStandardMaterial({ color:0x1c1f23, roughness:.5, metalness:.6 });
+const steelEdge = new THREE.MeshStandardMaterial({ color:0x767f89, roughness:.25, metalness:.9 });
+const darkGlass = new THREE.MeshStandardMaterial({ color:0x03110b, roughness:.15, metalness:.2 });
+const amber = new THREE.MeshStandardMaterial({ color:0xffb648, emissive:0xffb648, emissiveIntensity:.9, roughness:.4 });
+const red = new THREE.MeshStandardMaterial({ color:0xff3b3b, emissive:0xff3b3b, emissiveIntensity:.9 });
+const paperMat = new THREE.MeshStandardMaterial({ color:0xe9e4d6, roughness:.9, metalness:0 });
+
+const atm = new THREE.Group();
+scene.add(atm);
+
+// main body
+const body = new THREE.Mesh(new THREE.BoxGeometry(2.6, 3.1, 1.3), steel);
+body.position.y = 1.55;
+body.castShadow = true; body.receiveShadow = true;
+atm.add(body);
+
+// base plinth
+const base = new THREE.Mesh(new THREE.BoxGeometry(2.9, .3, 1.55), steelDark);
+base.position.y = .15;
+atm.add(base);
+
+// angled top fascia (screen housing)
+const fascia = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.1, 1.32), steelEdge);
+fascia.position.set(0, 2.75, 0);
+fascia.rotation.x = -0.12;
+atm.add(fascia);
+
+// screen bezel + dark screen
+const bezel = new THREE.Mesh(new THREE.BoxGeometry(1.5, .95, .08), steelDark);
+bezel.position.set(0, 2.8, .68);
+bezel.rotation.x = -0.12;
+atm.add(bezel);
+const screenMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.3, .78), darkGlass);
+screenMesh.position.set(0, 2.8, .725);
+screenMesh.rotation.x = -0.12;
+atm.add(screenMesh);
+
+// keypad plate (decorative)
+const keypadPlate = new THREE.Mesh(new THREE.BoxGeometry(.9, .7, .05), steelDark);
+keypadPlate.position.set(0, 1.95, .68);
+atm.add(keypadPlate);
+for(let r=0;r<4;r++){
+  for(let c=0;c<3;c++){
+    const key = new THREE.Mesh(new THREE.BoxGeometry(.19,.13,.05), steelEdge);
+    key.position.set(-.3 + c*.3, 2.2 - r*.16, .715);
+    atm.add(key);
+  }
+}
+
+// card slot
+const cardSlot = new THREE.Mesh(new THREE.BoxGeometry(.55,.06,.05), steelDark);
+cardSlot.position.set(0, 1.45, .68);
+atm.add(cardSlot);
+const cardLED = new THREE.Mesh(new THREE.SphereGeometry(.02,8,8), red);
+cardLED.position.set(.32, 1.45, .69);
+atm.add(cardLED);
+
+// receipt slot
+const receiptSlot = new THREE.Mesh(new THREE.BoxGeometry(.6,.03,.04), steelDark);
+receiptSlot.position.set(0, 1.15, .68);
+atm.add(receiptSlot);
+
+// cash dispenser (hinged flap)
+const dispenserHousing = new THREE.Mesh(new THREE.BoxGeometry(.75,.35,.15), steelDark);
+dispenserHousing.position.set(0,.75,.66);
+atm.add(dispenserHousing);
+const flapPivot = new THREE.Group();
+flapPivot.position.set(0, .58, .73);
+atm.add(flapPivot);
+const flap = new THREE.Mesh(new THREE.BoxGeometry(.7,.28,.02), steelEdge);
+flap.position.set(0, .14, 0);
+flapPivot.add(flap);
+
+// status LED strip
+const ledStrip = new THREE.Mesh(new THREE.BoxGeometry(.5,.03,.02), amber);
+ledStrip.position.set(0, 2.28, .69);
+atm.add(ledStrip);
+
+// cash bills group (hidden until dispensed)
+const bills = [];
+const billGeo = new THREE.PlaneGeometry(.28,.13);
+const billMat = new THREE.MeshStandardMaterial({ color:0x2f8f5a, roughness:.7, side:THREE.DoubleSide });
+for(let i=0;i<6;i++){
+  const bill = new THREE.Mesh(billGeo, billMat);
+  bill.position.set(0,.6,.75);
+  bill.visible = false;
+  atm.add(bill);
+  bills.push(bill);
+}
+
+// receipt paper mesh
+const receiptPaper = new THREE.Mesh(new THREE.PlaneGeometry(.5,.01), paperMat);
+receiptPaper.position.set(0,1.15,.68);
+receiptPaper.visible = false;
+atm.add(receiptPaper);
+
+/* ===== animation helpers ===== */
+function playDispenserAnim(){
+  const start = performance.now();
+  const openDur = 500, holdDur = 900, closeDur = 500;
+  function tick(now){
+    const t = now - start;
+    if(t < openDur){
+      flapPivot.rotation.x = -1.3 * (t/openDur);
+    } else if(t < openDur+holdDur){
+      flapPivot.rotation.x = -1.3;
+      const bt = (t-openDur)/holdDur;
+      bills.forEach((b,i)=>{
+        b.visible = true;
+        b.position.y = .6 + bt*(.3+i*.05);
+        b.position.z = .78 + bt*.25;
+        b.rotation.z = Math.sin(bt*8+i)*.4;
+      });
+    } else if(t < openDur+holdDur+closeDur){
+      const ct = (t-openDur-holdDur)/closeDur;
+      flapPivot.rotation.x = -1.3*(1-ct);
+      bills.forEach(b=>{ b.visible = false; });
+    } else {
+      flapPivot.rotation.x = 0;
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function printReceiptAnim(){
+  receiptPaper.visible = true;
+  receiptPaper.scale.y = 0.01;
+  const start = performance.now(), dur = 900;
+  function tick(now){
+    const t = Math.min(1,(now-start)/dur);
+    receiptPaper.scale.y = 1 + t*18;
+    receiptPaper.position.y = 1.15 - t*.35;
+    if(t<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function playCardInsertAnim(){
+  cardLED.material.color.set(0x3dffa0);
+  cardLED.material.emissive.set(0x3dffa0);
+  setTimeout(()=>{ cardLED.material.color.set(0xff3b3b); cardLED.material.emissive.set(0xff3b3b); }, 1400);
+}
+function playCardEjectAnim(){
+  cardLED.material.color.set(0xffb648);
+  cardLED.material.emissive.set(0xffb648);
+  setTimeout(()=>{ cardLED.material.color.set(0xff3b3b); cardLED.material.emissive.set(0xff3b3b); }, 900);
+}
+
+/* ===== ambient idle animation + camera parallax (drag to look) ===== */
+let targetYaw = 0, targetPitch = 0, dragging = false, lastX = 0, lastY = 0;
+let yaw = 0, pitch = 0;
+canvas.addEventListener('pointerdown', e=>{ dragging = true; lastX=e.clientX; lastY=e.clientY; });
+window.addEventListener('pointerup', ()=> dragging = false);
+window.addEventListener('pointermove', e=>{
+  if(!dragging) return;
+  targetYaw   += (e.clientX-lastX) * .0025;
+  targetPitch += (e.clientY-lastY) * .0018;
+  targetYaw = Math.max(-.6, Math.min(.6, targetYaw));
+  targetPitch = Math.max(-.25, Math.min(.35, targetPitch));
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+function updateScreenOverlayPosition(){
+  // project screenMesh center to get on-screen % position, keep overlay locked to it
+  const v = new THREE.Vector3();
+  screenMesh.getWorldPosition(v);
+  v.project(camera);
+  const x = (v.x * .5 + .5) * 100;
+  const y = (1 - (v.y * .5 + .5)) * 100;
+  const wrap = document.getElementById('screen-wrap');
+  wrap.style.left = x + '%';
+  wrap.style.top = y + '%';
+}
+
+let t0 = performance.now();
+function animate(now){
+  requestAnimationFrame(animate);
+  const dt = (now-t0)/1000; t0 = now;
+
+  yaw += (targetYaw-yaw)*.06;
+  pitch += (targetPitch-pitch)*.06;
+  camera.position.x = camBase.x + Math.sin(yaw)*2.2;
+  camera.position.z = camBase.z - (1-Math.cos(yaw))*1.2;
+  camera.position.y = camBase.y - pitch*1.4;
+  camera.lookAt(0, 1.15, 0);
+
+  ledStrip.material.emissiveIntensity = .7 + Math.sin(now*.003)*.3;
+
+  updateScreenOverlayPosition();
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+
+window.addEventListener('resize', ()=>{
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

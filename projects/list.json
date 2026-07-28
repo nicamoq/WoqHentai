@@ -1,5 +1,12 @@
 [
   {
+    "id": "cinnabank-atm",
+    "title": "cinnabank-atm",
+    "description": "A project named cinnabank-atm",
+    "url": "projects/cinnabank-atm/",
+    "thumbnail": ""
+  },
+  {
     "id": "dubious",
     "title": "dubious",
     "description": "A project named dubious",
@@ -11,13 +18,6 @@
     "title": "isdavend",
     "description": "A project named isdavend",
     "url": "projects/isdavend/",
-    "thumbnail": ""
-  },
-  {
-    "id": "kuko-claw",
-    "title": "kuko-claw",
-    "description": "A project named kuko-claw",
-    "url": "projects/kuko-claw/",
     "thumbnail": ""
   },
   {
