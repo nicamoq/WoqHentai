@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wheel of Dubious Fortune — ₱1 a spin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Kalam:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --tent:       #1c0b13;
+    --tent2:      #2b0f1c;
+    --curtain:    #3a1224;
+    --border:     #4a1c30;
+    --border2:    #5e2740;
+    --gold:       #f4c95d;
+    --gold-dark:  #b8863a;
+    --stripe:     #c1272d;
+    --cream:      #fdf3e0;
+    --muted:      #a5808a;
+    --teal:       #37e6c4;
+    --pink:       #ff4d8d;
+    --common:     #9fd8c4;
+    --uncommon:   #37e6c4;
+    --rare:       #ff4d8d;
+    --legend:     #f4c95d;
+    --red:        #ff6b6b;
+  }
+
+  html, body { min-height: 100%; background: var(--tent); color: var(--cream); font-family: 'Space Grotesk', sans-serif; }
+
+  body {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 16px 70px; position: relative; overflow-x: hidden;
+  }
+
+  /* ── Tent stripe backdrop ── */
+  .tent-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(60% 40% at 50% 0%, rgba(244,201,93,0.09), transparent 70%),
+      repeating-linear-gradient(100deg, rgba(255,255,255,0.015) 0 40px, transparent 40px 80px);
+  }
+
+  .marquee {
+    font-family: 'Bungee', sans-serif; font-size: 13px; letter-spacing: 0.05em;
+    color: var(--gold); text-transform: uppercase; margin-bottom: 8px; position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .bulb { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); animation: twinkle 1.6s ease-in-out infinite; }
+  .bulb:nth-child(3) { animation-delay: 0.3s; }
+  .bulb:nth-child(5) { animation-delay: 0.6s; }
+  @keyframes twinkle { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+  .title {
+    font-family: 'Bungee', sans-serif; font-size: 34px; line-height: 1.15; text-align: center;
+    color: var(--cream); text-shadow: 0 3px 0 var(--stripe), 0 6px 18px rgba(0,0,0,0.5);
+    margin-bottom: 6px; position: relative; z-index: 1; max-width: 380px;
+  }
+  .title span { color: var(--gold); }
+  .subhead { font-size: 13px; color: var(--muted); margin-bottom: 30px; text-align: center; max-width: 320px; position: relative; z-index: 1; }
+
+  /* ── Barker character + speech bubble ── */
+  .barker-row { display: flex; align-items: flex-end; gap: 12px; margin-bottom: 22px; position: relative; z-index: 1; width: 100%; max-width: 420px; }
+  .barker-face {
+    width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+    background: radial-gradient(circle at 35% 30%, #4a1c30, #2b0f1c);
+    border: 2px solid var(--gold-dark);
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+    animation: bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-3px) rotate(2deg); } }
+
+  .speech-bubble {
+    position: relative; background: var(--cream); color: #2b0f1c; border-radius: 14px 14px 14px 3px;
+    padding: 11px 14px; font-family: 'Kalam', cursive; font-size: 14.5px; line-height: 1.4;
+    flex: 1; min-height: 20px; box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+  }
+  #barker-text { display: inline-block; }
+  .cursor-blink { display: inline-block; width: 2px; height: 14px; background: #2b0f1c; margin-left: 2px; vertical-align: -2px; animation: blink 0.8s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ── Wheel stage ── */
+  .wheel-stage { position: relative; width: 280px; height: 280px; margin-bottom: 26px; z-index: 1; }
+  .pointer {
+    position: absolute; top: -6px; left: 50%; transform: translateX(-50%); z-index: 5;
+    width: 0; height: 0; border-left: 14px solid transparent; border-right: 14px solid transparent;
+    border-top: 22px solid var(--gold); filter: drop-shadow(0 3px 4px rgba(0,0,0,0.5));
+  }
+  .wheel-rim {
+    position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(var(--gold) 0 8deg, var(--stripe) 8deg 16deg);
+    background-size: 100% 100%;
+    padding: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 2px rgba(0,0,0,0.3);
+  }
+  .wheel {
+    width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden;
+    border: 3px solid var(--tent);
+    transition: transform 4.4s cubic-bezier(0.11,0.79,0.16,1);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+  }
+  .wheel-label {
+    position: absolute; top: 50%; left: 50%; width: 120px; text-align: center;
+    transform-origin: 0 0; font-size: 11px; font-weight: 700; line-height: 1.2;
+    font-family: 'Space Grotesk', sans-serif; color: #1c0b13;
+  }
+  .wheel-label .wl-emoji { display: block; font-size: 20px; margin-bottom: 2px; }
+  .wheel-hub {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 46px; height: 46px; border-radius: 50%; z-index: 4;
+    background: radial-gradient(circle at 35% 30%, var(--gold), var(--gold-dark));
+    border: 2px solid var(--tent); box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+
+  /* ── CTA ── */
+  .btn-play {
+    width: 100%; max-width: 300px; padding: 15px; border-radius: 14px; border: none; cursor: pointer;
+    background: linear-gradient(180deg, var(--pink), #c22e69);
+    color: #fff; font-family: 'Bungee', sans-serif; font-size: 13px; letter-spacing: 0.03em;
+    text-transform: uppercase; box-shadow: 0 6px 0 #8f2050, 0 14px 26px rgba(255,77,141,0.3);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    position: relative; z-index: 1;
+  }
+  .btn-play:hover { transform: translateY(-2px); box-shadow: 0 8px 0 #8f2050, 0 18px 32px rgba(255,77,141,0.35); }
+  .btn-play:active { transform: translateY(4px); box-shadow: 0 2px 0 #8f2050, 0 6px 14px rgba(255,77,141,0.25); }
+  .btn-play:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .foot-note { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 14px; text-align: center; position: relative; z-index: 1; }
+  .foot-note a { color: var(--teal); text-decoration: none; }
+  .foot-note a:hover { text-decoration: underline; }
+
+  /* ── Overlay / modal ── */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(10,4,7,0.78); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    width: 100%; max-width: 400px; background: linear-gradient(165deg, var(--curtain), var(--tent2));
+    border: 1px solid var(--border2); border-radius: 22px; overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.65);
+    animation: modalRise 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes modalRise { from { transform: translateY(24px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+  .modal-band { height: 4px; background: repeating-linear-gradient(90deg, var(--gold) 0 14px, var(--stripe) 14px 28px); }
+  .modal-inner { padding: 22px 24px 26px; position: relative; }
+
+  .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+  .modal-close:hover { color: var(--cream); }
+
+  .modal-barker { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; }
+  .modal-barker .barker-face { width: 40px; height: 40px; font-size: 19px; }
+  .modal-barker .speech-bubble { font-size: 13px; padding: 9px 12px; }
+
+  .auth-tabs { display: flex; background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 10px; padding: 3px; margin-bottom: 16px; }
+  .auth-tab-btn { flex: 1; padding: 8px; border: none; background: none; color: var(--muted); font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; border-radius: 8px; cursor: pointer; }
+  .auth-tab-btn.active { background: var(--curtain); color: var(--gold); }
+
+  .fields { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 10.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .field input {
+    background: rgba(0,0,0,0.28); border: 1px solid var(--border); border-radius: 9px; padding: 11px 13px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: var(--cream); outline: none; width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input::placeholder { color: #6b4655; }
+  .field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(244,201,93,0.15); }
+
+  .amount-row {
+    display: flex; align-items: center; justify-content: space-between; background: rgba(244,201,93,0.08);
+    border: 1px solid rgba(244,201,93,0.25); border-radius: 10px; padding: 12px 15px; margin-bottom: 16px;
+  }
+  .amount-label { font-size: 12px; color: var(--muted); }
+  .amount-value { font-family: 'Bungee', sans-serif; font-size: 16px; color: var(--gold); }
+
+  .btn-cb {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--gold); color: #2b0f1c; font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 0 var(--gold-dark), 0 8px 18px rgba(244,201,93,0.2);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.15s;
+  }
+  .btn-cb:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-cb:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-dark), 0 4px 10px rgba(244,201,93,0.18); }
+  .btn-cb:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .form-hint { text-align: center; font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .form-hint a { color: var(--teal); cursor: pointer; }
+
+  .status-msg { display: none; font-size: 12.5px; text-align: center; margin-top: 10px; }
+  .status-msg.show { display: block; }
+  .status-msg.error { color: var(--red); }
+  .status-msg.info { color: var(--muted); }
+  .dots span { animation: dotFade 1.2s infinite; opacity: 0; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotFade { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+
+  .confirm-view, .success-view { display: none; text-align: center; }
+  .confirm-view.show, .success-view.show { display: block; }
+  .confirm-avatar {
+    width: 54px; height: 54px; border-radius: 50%; background: rgba(244,201,93,0.12); border: 1px solid rgba(244,201,93,0.3);
+    display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: var(--gold);
+    margin: 0 auto 10px;
+  }
+  .confirm-greeting { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .confirm-name { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+  .confirm-bank { font-size: 11.5px; color: var(--muted); margin-bottom: 16px; }
+  .confirm-amount-box { background: rgba(0,0,0,0.25); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+  .confirm-amount-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .confirm-amount-value { font-family: 'Bungee', sans-serif; font-size: 22px; color: var(--gold); }
+  .btn-confirm {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--pink); color: #fff; font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 0 #8f2050, 0 8px 18px rgba(255,77,141,0.25);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn-confirm:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-confirm:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #8f2050, 0 4px 10px rgba(255,77,141,0.2); }
+  .btn-confirm:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; transform: none; }
+  .btn-back-link { background: none; border: none; color: var(--muted); font-size: 12.5px; cursor: pointer; margin-top: 12px; }
+  .btn-back-link:hover { color: var(--cream); }
+
+  .prize-name { font-family: 'Bungee', sans-serif; font-size: 19px; color: var(--gold); margin: 8px 0 6px; }
+  .rarity-tag {
+    display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 20px; border: 1px solid; margin-bottom: 16px;
+  }
+  .rarity-common   { color: var(--common);   border-color: rgba(159,216,196,0.4); background: rgba(159,216,196,0.08); }
+  .rarity-uncommon { color: var(--uncommon); border-color: rgba(55,230,196,0.4);  background: rgba(55,230,196,0.08); }
+  .rarity-rare     { color: var(--rare);     border-color: rgba(255,77,141,0.4);  background: rgba(255,77,141,0.08); }
+  .rarity-legendary{ color: var(--legend);   border-color: rgba(244,201,93,0.4);  background: rgba(244,201,93,0.08); }
+
+  .success-btn-row { display: flex; flex-direction: column; gap: 9px; margin-top: 4px; margin-bottom: 4px; }
+  .btn-again {
+    width: 100%; padding: 13px; border-radius: 10px; border: 1px solid var(--border2); cursor: pointer;
+    background: transparent; color: var(--cream); font-weight: 600; font-size: 13.5px; transition: all 0.18s ease;
+  }
+  .btn-again:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-spin-again {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+    color: #2b0f1c; font-family: 'Bungee', sans-serif; font-size: 12px; letter-spacing: 0.02em;
+    box-shadow: 0 6px 0 #8a5f26, 0 12px 20px rgba(244,201,93,0.25);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn-spin-again:hover { transform: translateY(-1px); }
+  .btn-spin-again:active { transform: translateY(3px); box-shadow: 0 1px 0 #8a5f26, 0 4px 10px rgba(244,201,93,0.2); }
+
+  .cb-badge { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 10.5px; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .cb-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 6px var(--teal); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--curtain); border: 1px solid var(--border2); color: var(--cream); padding: 12px 20px;
+    border-radius: 10px; font-size: 13px; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: rgba(255,107,107,0.4); }
+
+  @media (max-width: 420px) {
+    .title { font-size: 27px; }
+    .wheel-stage { width: 240px; height: 240px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="tent-bg"></div>
+
+<div class="marquee"><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div> step right up </div>
+<div class="title">WHEEL OF <span>DUBIOUS</span> FORTUNE</div>
+<div class="subhead">Pay a fictional ₱1. Spin a wheel of questionable prizes. Regret nothing.</div>
+
+<div class="barker-row">
+  <div class="barker-face" id="barker-face">🎩</div>
+  <div class="speech-bubble"><span id="barker-text"></span><span class="cursor-blink"></span></div>
+</div>
+
+<div class="wheel-stage">
+  <div class="pointer"></div>
+  <div class="wheel-rim">
+    <div class="wheel" id="wheel">
+      <div id="wheel-labels"></div>
+    </div>
+  </div>
+  <div class="wheel-hub">🎪</div>
+</div>
+
+<button class="btn-play" id="play-btn" onclick="startFlow()">Step right up — ₱1</button>
+
+<div class="foot-note">Real money changes hands nowhere. Real API calls happen at <a href="https://cinnabank.vercel.app/" target="_blank">cinnabank.vercel.app</a></div>
+
+<!-- ═══════════════════ MODAL ═══════════════════ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-band"></div>
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeMachine()">✕</button>
+
+      <div class="modal-barker">
+        <div class="barker-face">🎩</div>
+        <div class="speech-bubble" id="modal-barker-bubble">Right this way.</div>
+      </div>
+
+      <!-- AUTH VIEW -->
+      <div id="cb-auth-view">
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="sub-login-btn" onclick="switchAuthMode('login')">I have a ledger</button>
+          <button class="auth-tab-btn" id="sub-signup-btn" onclick="switchAuthMode('signup')">Open one</button>
+        </div>
+
+        <div id="cb-login-fields">
+          <div class="fields">
+            <div class="field"><label>Email</label><input type="email" id="cb-login-email" placeholder="you@example.com" autocomplete="email"/></div>
+            <div class="field"><label>Password</label><input type="password" id="cb-login-password" placeholder="••••••••" autocomplete="current-password"/></div>
+          </div>
+          <div class="amount-row"><div class="amount-label">Toll for entry</div><div class="amount-value">₱1.00</div></div>
+          <button class="btn-cb" id="cb-login-btn" onclick="processCbLogin()">Sign in &amp; approach the wheel</button>
+          <div class="status-msg error" id="cb-login-error"></div>
+          <div class="status-msg info" id="cb-login-loading">Consulting the ledger<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          <div class="form-hint">No ledger yet? <a onclick="switchAuthMode('signup')">Open one free →</a></div>
+        </div>
+
+        <div id="cb-signup-fields" style="display:none">
+          <div class="fields">
+            <div class="field"><label>Full name</label><input type="text" id="cb-signup-name" placeholder="Your name" autocomplete="name"/></div>
+            <div class="field"><label>Email</label><input type="email" id="cb-signup-email" placeholder="you@example.com" autocomplete="email"/></div>
+            <div class="field"><label>Password</label><input type="password" id="cb-signup-password" placeholder="At least 6 characters" autocomplete="new-password"/></div>
+          </div>
+          <div class="amount-row"><div class="amount-label">Toll after opening</div><div class="amount-value">₱1.00</div></div>
+          <button class="btn-cb" id="cb-signup-btn" onclick="processCbSignup()">Open ledger &amp; approach the wheel</button>
+          <div class="status-msg error" id="cb-signup-error"></div>
+          <div class="status-msg info" id="cb-signup-loading">Drawing up paperwork<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          <div class="form-hint">Already have one? <a onclick="switchAuthMode('login')">Sign in →</a></div>
+        </div>
+      </div>
+
+      <!-- CONFIRM VIEW -->
+      <div class="confirm-view" id="cb-confirm-view">
+        <div class="confirm-avatar" id="confirm-avatar">?</div>
+        <div class="confirm-greeting">Paying as</div>
+        <div class="confirm-name" id="confirm-name">—</div>
+        <div class="confirm-bank">Cinnabank account</div>
+        <div class="confirm-amount-box">
+          <div class="confirm-amount-label">Toll for one spin</div>
+          <div class="confirm-amount-value">₱1.00</div>
+        </div>
+        <div class="status-msg error" id="cb-confirm-error" style="margin-bottom:12px;margin-top:0;"></div>
+        <button class="btn-confirm" id="cb-confirm-btn" onclick="confirmCbPayment()">Hand over the peso</button>
+        <div class="status-msg info" id="cb-confirm-loading" style="text-align:center;margin-top:8px;">Processing<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+        <button class="btn-back-link" onclick="cancelConfirm()">← I've changed my mind</button>
+      </div>
+
+      <!-- SUCCESS VIEW -->
+      <div class="success-view" id="cb-success-view">
+        <div class="prize-name" id="prize-name">—</div>
+        <span class="rarity-tag rarity-common" id="prize-rarity">Common</span>
+        <div class="status-msg" style="display:block;font-size:13px;color:var(--muted);margin-bottom:6px;" id="cb-success-sub"></div>
+
+        <div class="success-btn-row">
+          <button class="btn-spin-again" onclick="spinAgain()">Spin again — ₱1</button>
+          <button class="btn-again" onclick="closeMachine()">Take my winnings and leave</button>
+        </div>
+        <div><div class="cb-badge"><div class="cb-badge-dot"></div>Powered by Cinnabank</div></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+  // ── Firebase config (Cinnabank's public demo project) ──────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
+    authDomain:        "cinnabank.firebaseapp.com",
+    projectId:         "cinnabank",
+    storageBucket:     "cinnabank.firebasestorage.app",
+    messagingSenderId: "162136260228",
+    appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ── WHEEL owner UID — replace with your actual Cinnabank UID ───────────────
+  const WHEEL_UID = 'iBEn6h3QCDRBTZdUhR8LxPWl1vM2';
+  const FEE       = 1;
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let cbUser     = null;
+  let cbUserData = null;
+  let isNewUser  = false;
+  let totalRotation = 0;
+
+  // ── Prize wheel: 8 equal visual wedges, weighted probability under the hood
+  const SEGMENTS = [
+    { emoji: '🤝', name: 'A Firm Handshake',        rarity: 'common',    weight: 24, color: '#9fd8c4' },
+    { emoji: '📉', name: 'Unsolicited Advice',       rarity: 'common',    weight: 22, color: '#fdf3e0' },
+    { emoji: '👏', name: 'One (1) Compliment',       rarity: 'common',    weight: 20, color: '#9fd8c4' },
+    { emoji: '🐟', name: 'A Fish (Unexplained)',     rarity: 'uncommon',  weight: 12, color: '#37e6c4' },
+    { emoji: '📜', name: 'A Cinnabank IOU',          rarity: 'uncommon',  weight: 10, color: '#fdf3e0' },
+    { emoji: '💨', name: 'Absolutely Nothing',       rarity: 'common',    weight: 14, color: '#9fd8c4' },
+    { emoji: '🛥️', name: 'An Imaginary Yacht',       rarity: 'rare',      weight: 6,  color: '#ff4d8d' },
+    { emoji: '🎊', name: 'JACKPOT: Confetti Rights', rarity: 'legendary', weight: 2,  color: '#f4c95d' },
+  ];
+  const SEG_ANGLE = 360 / SEGMENTS.length;
+
+  // ── Build wheel visuals (conic-gradient wedges + labels) ───────────────────
+  const wheelEl = document.getElementById('wheel');
+  const gradientStops = SEGMENTS.map((s, i) => `${s.color} ${i * SEG_ANGLE}deg ${(i + 1) * SEG_ANGLE}deg`).join(', ');
+  wheelEl.style.background = `conic-gradient(${gradientStops})`;
+
+  const labelsWrap = document.getElementById('wheel-labels');
+  SEGMENTS.forEach((s, i) => {
+    const centerAngle = i * SEG_ANGLE + SEG_ANGLE / 2;
+    const label = document.createElement('div');
+    label.className = 'wheel-label';
+    label.style.transform = `rotate(${centerAngle}deg) translate(28px, -8px)`;
+    label.innerHTML = `<span class="wl-emoji">${s.emoji}</span>${s.name}`;
+    labelsWrap.appendChild(label);
+  });
+
+  function rollPrize() {
+    const total = SEGMENTS.reduce((sum, s) => sum + s.weight, 0);
+    let r = Math.random() * total;
+    for (let i = 0; i < SEGMENTS.length; i++) {
+      if (r < SEGMENTS[i].weight) return i;
+      r -= SEGMENTS[i].weight;
+    }
+    return 0;
+  }
+
+  // ── Barker dialogue (typewriter) ────────────────────────────────────────
+  const barkerFace = document.getElementById('barker-face');
+  const barkerText = document.getElementById('barker-text');
+  const FACES = ['🎩', '🎪', '🃏'];
+  let typeTimer = null;
+
+  function say(text, targetId = 'barker-text', face = null) {
+    if (face && targetId === 'barker-text') barkerFace.textContent = face;
+    const el = document.getElementById(targetId);
+    clearTimeout(typeTimer);
+    el.textContent = '';
+    let i = 0;
+    (function type() {
+      if (i <= text.length) {
+        el.textContent = text.slice(0, i);
+        i++;
+        typeTimer = setTimeout(type, 16);
+      }
+    })();
+  }
+
+  const IDLE_LINES = [
+    "Step right up, step right up!",
+    "Everybody's a winner. Legally I have to say that.",
+    "The wheel doesn't lie. It does exaggerate, though.",
+    "Yes, the fish prize is real. No, I won't explain it.",
+  ];
+  let idleIdx = 0;
+  say(IDLE_LINES[0]);
+  setInterval(() => {
+    if (document.getElementById('overlay').classList.contains('show')) return;
+    idleIdx = (idleIdx + 1) % IDLE_LINES.length;
+    say(IDLE_LINES[idleIdx]);
+  }, 5200);
+
+  // ── Modal open/close ─────────────────────────────────────────────────────
+  window.startFlow = function() {
+    document.getElementById('overlay').classList.add('show');
+    if (cbUser && cbUserData) {
+      document.getElementById('cb-auth-view').style.display = 'none';
+      document.getElementById('cb-confirm-view').classList.add('show');
+      say(`Back again, ${cbUserData.name || 'friend'}? The wheel missed you.`, 'modal-barker-bubble');
+    } else {
+      say("New face at the ledger. Sign in, or open a fresh one.", 'modal-barker-bubble');
+    }
+  };
+  window.closeMachine = function() {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('cb-success-view').classList.remove('show');
+    if (cbUser && cbUserData) {
+      document.getElementById('cb-auth-view').style.display = 'none';
+      document.getElementById('cb-confirm-view').classList.add('show');
+    } else {
+      document.getElementById('cb-auth-view').style.display = '';
+      document.getElementById('cb-confirm-view').classList.remove('show');
+    }
+  };
+  window.spinAgain = function() {
+    document.getElementById('cb-success-view').classList.remove('show');
+    showConfirmScreen();
+  };
+
+  window.switchAuthMode = function(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('cb-login-fields').style.display  = isLogin ? '' : 'none';
+    document.getElementById('cb-signup-fields').style.display = isLogin ? 'none' : '';
+    document.getElementById('sub-login-btn').classList.toggle('active',  isLogin);
+    document.getElementById('sub-signup-btn').classList.toggle('active', !isLogin);
+    say(isLogin ? "Ledger number, if you please." : "A brand new page, just for you.", 'modal-barker-bubble');
+  };
+
+  function toast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  function setLoading(btnId, loadingId, errorId, on) {
+    const btn = document.getElementById(btnId);
+    const ld  = document.getElementById(loadingId);
+    const err = document.getElementById(errorId);
+    if (btn) btn.disabled = on;
+    if (ld)  ld.classList.toggle('show', on);
+    if (err) err.classList.remove('show');
+  }
+  function showError(errorId, msg) {
+    const el = document.getElementById(errorId);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function cbFail(mode, msg) {
+    showError(`cb-${mode}-error`, msg);
+    document.getElementById(`cb-${mode}-loading`).classList.remove('show');
+    document.getElementById(`cb-${mode}-btn`).disabled = false;
+    say("Hmph. Try that again.", 'modal-barker-bubble');
+  }
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) return;
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (!snap.exists()) return;
+      cbUser     = user;
+      cbUserData = snap.data();
+    } catch (_) {}
+  });
+
+  window.processCbLogin = async function() {
+    const email    = document.getElementById('cb-login-email').value.trim();
+    const password = document.getElementById('cb-login-password').value;
+    if (!email || !password) { showError('cb-login-error', 'Please fill in your email and password.'); return; }
+
+    setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', true);
+    say("One moment. Checking the books.", 'modal-barker-bubble');
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!snap.exists()) { cbFail('login', 'Account data not found.'); return; }
+      cbUser     = cred.user;
+      cbUserData = snap.data();
+      isNewUser  = false;
+      setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', false);
+      showConfirmScreen();
+    } catch (e) {
+      const msg = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+        ? 'Incorrect email or password.'
+        : (e.code === 'auth/user-not-found' ? 'No account with that email.' : 'Sign-in failed. Try again.');
+      cbFail('login', msg);
+    }
+  };
+
+  window.processCbSignup = async function() {
+    const name     = document.getElementById('cb-signup-name').value.trim();
+    const email    = document.getElementById('cb-signup-email').value.trim();
+    const password = document.getElementById('cb-signup-password').value;
+
+    if (!name)  { showError('cb-signup-error', 'Please enter your name.'); return; }
+    if (!email) { showError('cb-signup-error', 'Please enter your email.'); return; }
+    if (password.length < 6) { showError('cb-signup-error', 'Password must be at least 6 characters.'); return; }
+
+    const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)?$/;
+    if (!nameRegex.test(name)) {
+      showError('cb-signup-error', 'Name can only contain letters and a single space between words (e.g., "Woq Chan"). No numbers or special characters.');
+      return;
+    }
+
+    setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', true);
+    say("Drawing up your page in the ledger...", 'modal-barker-bubble');
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+      const cardNumber = Array.from({ length: 4 }, () => Math.floor(1000 + Math.random() * 9000)).join('');
+      const expYear    = new Date().getFullYear() + 3 + Math.floor(Math.random() * 3);
+      const expMonth   = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+      const cardExpiry = `${expMonth}/${String(expYear).slice(2)}`;
+      const cardCVV    = String(Math.floor(100 + Math.random() * 900));
+
+      const userData = {
+        name, email,
+        balance: 1000,
+        accountNumber,
+        cardNumber, cardExpiry, cardCVV,
+        createdAt: serverTimestamp(),
+        photoURL: '',
+      };
+
+      await Promise.all([
+        setDoc(doc(db, 'users', cred.user.uid), userData),
+        addDoc(collection(db, 'transactions'), {
+          userId: cred.user.uid, type: 'credit', amount: 1000,
+          note: 'Welcome bonus', counterparty: 'Cinnabank',
+          source: 'welcome', balanceAfter: 1000, createdAt: serverTimestamp(),
+        }),
+      ]);
+
+      cbUser     = cred.user;
+      cbUserData = userData;
+      isNewUser  = true;
+      setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', false);
+      showConfirmScreen();
+    } catch (e) {
+      const msg = e.code === 'auth/email-already-in-use'
+        ? 'An account with that email already exists.'
+        : 'Sign-up failed. Please try again.';
+      cbFail('signup', msg);
+    }
+  };
+
+  function showConfirmScreen() {
+    document.getElementById('cb-auth-view').style.display = 'none';
+    document.getElementById('cb-confirm-view').classList.add('show');
+    const name   = cbUserData?.name || 'You';
+    const avatar = document.getElementById('confirm-avatar');
+    if (cbUserData?.photoURL) {
+      avatar.innerHTML = `<img src="${cbUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatar.textContent = name[0].toUpperCase();
+    }
+    document.getElementById('confirm-name').textContent = name;
+    say(`One peso to spin, ${name.split(' ')[0]}. That's the whole racket.`, 'modal-barker-bubble');
+  }
+
+  window.cancelConfirm = function() {
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-auth-view').style.display = '';
+    say("Suit yourself. The wheel isn't going anywhere.", 'modal-barker-bubble');
+  };
+
+  window.confirmCbPayment = async function() {
+    if (!cbUser || !cbUserData) return;
+
+    const errEl  = document.getElementById('cb-confirm-error');
+    const loadEl = document.getElementById('cb-confirm-loading');
+    const btn    = document.getElementById('cb-confirm-btn');
+    errEl.classList.remove('show');
+    loadEl.classList.remove('show');
+
+    const balance = cbUserData.balance || 0;
+    if (balance < FEE) {
+      showError('cb-confirm-error', `Insufficient balance. Your account has ₱${balance.toFixed(2)}.`);
+      return;
+    }
+
+    btn.disabled = true;
+    loadEl.classList.add('show');
+    say("Money talks. Let's see what it says...", 'modal-barker-bubble');
+
+    // Prize is rolled client-side and stuffed into the transaction note —
+    // purely cosmetic flavor text, no real value changes hands.
+    const segIdx = rollPrize();
+    const prize  = SEGMENTS[segIdx];
+
+    try {
+      const token = await cbUser.getIdToken();
+      const response = await fetch('https://cinnabank.vercel.app/api/transfer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          receiverUid: WHEEL_UID,
+          amount: FEE,
+          note: `Wheel of Dubious Fortune: ${prize.emoji} ${prize.name} (${prize.rarity})`,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Payment failed');
+
+      cbUserData.balance = (cbUserData.balance || 0) - FEE;
+      loadEl.classList.remove('show');
+      document.getElementById('cb-confirm-view').classList.remove('show');
+      document.getElementById('overlay').classList.remove('show'); // close modal so the wheel is visible while it spins
+      spinWheel(segIdx, prize);
+    } catch (err) {
+      console.error(err);
+      showError('cb-confirm-error', 'Payment failed. Please try again.');
+      btn.disabled = false;
+      loadEl.classList.remove('show');
+      say("The till jammed. Try that peso again.", 'modal-barker-bubble');
+    }
+  };
+
+  function spinWheel(segIdx, prize) {
+    say("SPINNING SPINNING SPINNING—", 'barker-text', '🎪');
+    document.getElementById('play-btn').disabled = true;
+
+    const centerAngle = segIdx * SEG_ANGLE + SEG_ANGLE / 2;
+    const jitter = (Math.random() - 0.5) * (SEG_ANGLE * 0.5);
+    const fullSpins = 6;
+    // Pointer sits at top (0deg); rotate wheel so segment center lands under it.
+    const targetMod = (360 - centerAngle - jitter + 360) % 360;
+    totalRotation += 360 * fullSpins + ((targetMod - (totalRotation % 360)) + 360) % 360;
+
+    wheelEl.style.transform = `rotate(${totalRotation}deg)`;
+
+    setTimeout(() => {
+      document.getElementById('play-btn').disabled = false;
+      revealPrize(prize);
+    }, 4500);
+  }
+
+  const REACTIONS = {
+    common:    ["Riveting. Truly.", "Well, someone had to win that.", "Don't spend it all in one place. You can't."],
+    uncommon:  ["Ooh, a step up! Barely.", "Now we're getting somewhere-ish."],
+    rare:      ["OHO. Look at this one!", "The crowd — myself — goes wild."],
+    legendary: ["IMPOSSIBLE. AMAZING. SUSPICIOUS.", "Confetti rights?! I don't even know what those are!"],
+  };
+
+  function revealPrize(prize) {
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('prize-name').textContent = `${prize.emoji} ${prize.name}`;
+    const tag = document.getElementById('prize-rarity');
+    tag.textContent = prize.rarity.charAt(0).toUpperCase() + prize.rarity.slice(1);
+    tag.className = `rarity-tag rarity-${prize.rarity}`;
+
+    const lines = REACTIONS[prize.rarity];
+    const line = lines[Math.floor(Math.random() * lines.length)];
+    document.getElementById('cb-success-sub').textContent = isNewUser
+      ? `Also, welcome — that ₱1,000 in your ledger was on the house.`
+      : line;
+    say(line, 'modal-barker-bubble');
+
+    document.getElementById('cb-success-view').classList.add('show');
+  }
+</script>
+</body>
+</html>

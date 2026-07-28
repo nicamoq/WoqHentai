@@ -1,5 +1,12 @@
 [
   {
+    "id": "dubious",
+    "title": "dubious",
+    "description": "A project named dubious",
+    "url": "projects/dubious/",
+    "thumbnail": ""
+  },
+  {
     "id": "isdavend",
     "title": "isdavend",
     "description": "A project named isdavend",
