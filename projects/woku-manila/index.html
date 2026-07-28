@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WOKU MANILA — Japanese Kitchen, BGC</title>
+<meta name="description" content="WOKU Manila — a modern Japanese kitchen in Bonifacio Global City."/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;700;900&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:     #0a0a0a;
+  --surface:   #111111;
+  --card:      #1a1a1a;
+  --border:    #2a2a2a;
+  --border2:   #333333;
+  --shu:       #b3311f;   /* shu-iro / vermillion */
+  --shu-dim:   rgba(179,49,31,0.10);
+  --cinna:     #C8622A;
+  --cinna-dim: rgba(200,98,42,0.10);
+  --gold:      #cfa34e;
+  --white:     #f0f0f0;
+  --white2:    #b0b0b0;
+  --muted:     #5a5a5a;
+  --red:       #ff5f6d;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ── Ambient glow ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 900px; height: 520px;
+  background: radial-gradient(ellipse, rgba(179,49,31,0.06) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ─── HERO ─────────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 80px 6vw 80px;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  top: -8%; left: -8%;
+  width: 116%; height: 116%;
+  z-index: 0;
+  will-change: transform;
+  transform: translate3d(0,0,0) scale(1.08);
+  background:
+    radial-gradient(ellipse 60% 50% at 30% 20%, rgba(179,49,31,0.16), transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 80%, rgba(207,163,78,0.09), transparent 65%),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.015) 0 2px, transparent 2px 90px),
+    #0a0a0a;
+}
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(10,10,10,0.25) 0%,
+    rgba(10,10,10,0.5) 45%,
+    rgba(10,10,10,0.9) 100%
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: right;
+  max-width: 620px;
+}
+
+.hero-eyebrow {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(3.2rem, 8.5vw, 6.6rem);
+  font-weight: 700;
+  line-height: 0.95;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+.hero-title span {
+  font-weight: 100;
+  color: var(--shu);
+}
+
+.hero-jp {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+
+.hero-sub {
+  font-size: 13.5px;
+  color: var(--white2);
+  letter-spacing: 0.02em;
+  margin-bottom: 40px;
+  max-width: 420px;
+  margin-left: auto;
+}
+.hero-sub strong { color: var(--white); font-weight: 500; }
+
+.hero-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-bottom: 36px;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--white2);
+  letter-spacing: 0.04em;
+}
+.chip-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.chip-dot.shu   { background: var(--shu); }
+.chip-dot.cinna { background: var(--cinna); }
+.chip-dot.gold  { background: var(--gold); }
+
+.btn-reserve {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 34px;
+  background: var(--shu);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.btn-reserve:hover {
+  background: #8f2718;
+  box-shadow: 0 10px 40px rgba(179,49,31,0.35);
+  transform: translateY(-1px);
+}
+.btn-reserve svg { width: 15px; height: 15px; }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: bounce 2s ease-in-out infinite;
+}
+.scroll-hint svg { width: 16px; height: 16px; }
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ─── STRIP ─────────────────────────────────────────────────────────────────── */
+.strip {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 26px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+.strip-item {
+  font-family: 'Space Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 10px;
+}
+.strip-item strong { color: var(--white2); font-weight: 700; }
+
+/* ─── SECTION SHELL ─────────────────────────────────────────────────────────── */
+.section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 100px 24px;
+  position: relative; z-index: 1;
+}
+.section-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-eyebrow::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  font-weight: 400;
+  color: var(--white);
+  max-width: 620px;
+  margin-bottom: 20px;
+}
+.section-title strong { font-style: normal; color: var(--shu); }
+.section-lead {
+  font-size: 14px;
+  color: var(--white2);
+  max-width: 540px;
+  line-height: 1.85;
+}
+
+/* ─── MENU ──────────────────────────────────────────────────────────────────── */
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 56px;
+  border: 1px solid var(--border);
+}
+.menu-card {
+  background: var(--surface);
+  padding: 30px 28px;
+  transition: background 0.2s;
+}
+.menu-card:hover { background: var(--card); }
+.menu-cat {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+.menu-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 16px; padding: 9px 0; border-bottom: 1px dashed var(--border2);
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-name { font-size: 13.5px; color: var(--white); font-weight: 500; }
+.menu-note { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.menu-price { font-family: 'Space Mono', monospace; font-size: 12.5px; color: var(--white2); white-space: nowrap; }
+
+@media (max-width: 700px) {
+  .menu-grid { grid-template-columns: 1fr; }
+}
+
+/* ─── RESERVE CTA SECTION ───────────────────────────────────────────────────── */
+.cta-section {
+  border-top: 1px solid var(--border);
+  padding: 90px 24px 110px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 640px; height: 320px;
+  background: radial-gradient(ellipse, rgba(200,98,42,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-jp {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.3em;
+  margin-bottom: 16px;
+}
+.cta-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 14px;
+  line-height: 1.1;
+}
+.cta-title span { color: var(--shu); }
+.cta-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 34px;
+  max-width: 380px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.btn-reserve-lg {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 42px;
+  background: var(--shu);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.btn-reserve-lg:hover {
+  background: #8f2718;
+  box-shadow: 0 12px 50px rgba(179,49,31,0.35);
+  transform: translateY(-2px);
+}
+
+/* ─── FOOTER ────────────────────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 24px;
+  text-align: center;
+}
+.footer-name {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white2);
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+.footer-meta {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.cb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--cinna-dim);
+  border: 1px solid rgba(200,98,42,0.18);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 11px;
+  color: var(--gold);
+  margin-top: 14px;
+}
+.cb-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cinna); flex-shrink: 0; }
+
+/* ═══════════════════════ RESERVATION MODAL ═══════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0; background: rgba(5,3,2,0.78); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  transition: opacity 0.25s ease;
+}
+.overlay.show { display: flex; }
+.modal {
+  width: 100%; max-width: 420px; background: linear-gradient(165deg, #171310, var(--card));
+  border: 1px solid var(--border2); border-radius: 10px; overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.03);
+  animation: modalRise 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes modalRise { from { transform: translateY(26px) scale(0.96); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+.modal-band { height: 3px; background: linear-gradient(90deg, var(--shu), var(--gold), var(--cinna)); }
+.modal-inner { padding: 30px 28px 30px; position: relative; }
+
+.modal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; line-height: 1; }
+.modal-close:hover { color: var(--white); }
+
+.modal-eyebrow { font-family: 'Noto Sans JP', sans-serif; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+.modal-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; color: var(--white); margin-bottom: 20px; }
+
+.field-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.field-group label { font-size: 10.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.field-group input {
+  background: #0d0b09; border: 1px solid var(--border2); border-radius: 6px; padding: 12px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--white); outline: none; width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field-group input::placeholder { color: #444; }
+.field-group input:focus { border-color: var(--shu); box-shadow: 0 0 0 3px rgba(179,49,31,0.14); }
+
+.seat-stepper { display: flex; align-items: center; gap: 14px; background: #0d0b09; border: 1px solid var(--border2); border-radius: 6px; padding: 6px 14px; }
+.seat-btn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border2); background: transparent; color: var(--white); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s, color 0.2s; }
+.seat-btn:hover { border-color: var(--shu); color: var(--shu); }
+.seat-count { flex: 1; text-align: center; font-family: 'Space Mono', monospace; font-size: 20px; color: var(--white); }
+.seat-label { font-size: 11px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+.btn-step {
+  width: 100%; padding: 14px; border-radius: 6px; border: none; cursor: pointer;
+  background: var(--shu); color: #fff; font-weight: 600; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+  margin-top: 18px;
+  transition: background 0.15s, transform 0.12s;
+}
+.btn-step:hover:not(:disabled) { background: #8f2718; transform: translateY(-1px); }
+.btn-step:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-step-ghost {
+  width: 100%; padding: 12px; border-radius: 6px; border: 1px solid var(--border2); cursor: pointer;
+  background: transparent; color: var(--white2); font-size: 12.5px; margin-top: 10px;
+}
+.btn-step-ghost:hover { border-color: var(--white2); color: var(--white); }
+
+.status-msg { display: none; font-size: 12px; text-align: center; margin-top: 12px; }
+.status-msg.show { display: block; }
+.status-msg.error { color: var(--red); }
+.status-msg.info  { color: var(--muted); }
+.dots span { animation: dotFade 1.2s infinite; opacity: 0; }
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotFade { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+
+.auth-tabs { display: flex; background: #0d0b09; border: 1px solid var(--border2); border-radius: 6px; padding: 3px; margin-bottom: 18px; }
+.auth-tab-btn { flex: 1; padding: 8px; border: none; background: none; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; border-radius: 4px; cursor: pointer; }
+.auth-tab-btn.active { background: var(--card); color: var(--gold); }
+
+.recap-box { background: #0d0b09; border: 1px solid var(--border2); border-radius: 6px; padding: 16px; margin-bottom: 18px; }
+.recap-row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 6px 0; }
+.recap-row span:first-child { color: var(--muted); }
+.recap-row span:last-child { color: var(--white); font-weight: 500; text-align: right; }
+.recap-divider { height: 1px; background: var(--border2); margin: 8px 0; }
+.recap-total { font-family: 'Space Mono', monospace; font-size: 20px; color: var(--gold); }
+
+.confirm-view, .success-view, .step-view { display: none; }
+.confirm-view.show, .success-view.show, .step-view.show { display: block; }
+
+.success-mark { width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(207,163,78,0.35); background: rgba(207,163,78,0.08); display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 16px; color: var(--gold); }
+.success-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 22px; color: var(--white); text-align: center; margin-bottom: 8px; }
+.success-sub { font-size: 13px; color: var(--white2); text-align: center; margin-bottom: 22px; line-height: 1.6; }
+.success-sub strong { color: var(--gold); }
+.ref-line { font-family: 'Space Mono', monospace; font-size: 10.5px; color: var(--muted); text-align: center; margin-bottom: 20px; letter-spacing: 0.04em; }
+.ref-line span { color: var(--white2); }
+
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--card); border: 1px solid var(--border2); color: var(--white); padding: 12px 20px;
+  border-radius: 6px; font-size: 13px; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.error { border-color: rgba(255,95,109,0.4); }
+
+@media (max-width: 600px) {
+  .hero { align-items: center; padding: 80px 24px; }
+  .hero-content { text-align: center; }
+  .hero-chips { justify-content: center; }
+  .hero-sub { margin-left: auto; margin-right: auto; }
+  .btn-reserve, .btn-reserve-lg { width: 100%; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">bonifacio global city · est. 2024</div>
+    <div class="hero-jp">和 久</div>
+    <h1 class="hero-title">WOKU<span>MANILA</span></h1>
+    <p class="hero-sub">A modern Japanese kitchen built on <strong>fire, rice, and restraint</strong> — omakase, robata, and a sake list worth the trip.</p>
+    <div class="hero-chips">
+      <div class="chip"><div class="chip-dot shu"></div>Omakase counter</div>
+      <div class="chip"><div class="chip-dot gold"></div>Robata grill</div>
+      <div class="chip"><div class="chip-dot cinna"></div>Reservations only</div>
+    </div>
+    <button class="btn-reserve" onclick="openReserve()">
+      Reserve a table
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    </button>
+  </div>
+  <div class="scroll-hint">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+    scroll
+  </div>
+</section>
+
+<!-- ── STRIP ── -->
+<div class="strip">
+  <div class="strip-item"><strong>Tue–Sun</strong> 5:30PM – 11PM</div>
+  <div class="strip-item"><strong>28</strong> seats, counter + robata</div>
+  <div class="strip-item"><strong>30th St</strong>, BGC, Taguig</div>
+</div>
+
+<!-- ── ABOUT ── -->
+<section class="section">
+  <div class="section-eyebrow">the kitchen</div>
+  <h2 class="section-title">Nothing hides behind a sauce. <strong>Every plate says exactly what it is.</strong></h2>
+  <p class="section-lead">WOKU is built around a single binchotan robata and a chef's counter for eight. Fish comes in daily from Navotas and Toyosu-standard suppliers; rice is aged short-grain, cooked to order. The menu changes with what's good that morning — this is a kitchen that plans around the market, not the other way around.</p>
+</section>
+
+<!-- ── MENU ── -->
+<section class="section" style="padding-top:0;">
+  <div class="section-eyebrow">selections</div>
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="menu-cat">刺身 · Sashimi</div>
+      <div class="menu-row"><div><div class="menu-name">Bluefin toro</div><div class="menu-note">otoro, 5pc</div></div><div class="menu-price">₱1,480</div></div>
+      <div class="menu-row"><div><div class="menu-name">Uni, Hokkaido</div><div class="menu-note">market price, ask your server</div></div><div class="menu-price">₱—</div></div>
+      <div class="menu-row"><div><div class="menu-name">Hamachi</div><div class="menu-note">yuzu kosho, 5pc</div></div><div class="menu-price">₱620</div></div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-cat">炉端 · Robata</div>
+      <div class="menu-row"><div><div class="menu-name">Wagyu skewer</div><div class="menu-note">A5, 2pc, tare</div></div><div class="menu-price">₱980</div></div>
+      <div class="menu-row"><div><div class="menu-name">Whole grilled tai</div><div class="menu-note">shared, 2–3 pax</div></div><div class="menu-price">₱1,650</div></div>
+      <div class="menu-row"><div><div class="menu-name">Shishito peppers</div><div class="menu-note">bonito, lime</div></div><div class="menu-price">₱280</div></div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-cat">おまかせ · Omakase</div>
+      <div class="menu-row"><div><div class="menu-name">Counter omakase</div><div class="menu-note">12 courses, chef's choice</div></div><div class="menu-price">₱4,200</div></div>
+      <div class="menu-row"><div><div class="menu-name">Robata omakase</div><div class="menu-note">8 courses, grill-forward</div></div><div class="menu-price">₱3,100</div></div>
+    </div>
+    <div class="menu-card">
+      <div class="menu-cat">日本酒 · Sake</div>
+      <div class="menu-row"><div><div class="menu-name">Dassai 23</div><div class="menu-note">junmai daiginjo, 90ml</div></div><div class="menu-price">₱890</div></div>
+      <div class="menu-row"><div><div class="menu-name">House sake pairing</div><div class="menu-note">3 pours, with omakase</div></div><div class="menu-price">₱1,200</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <div class="cta-jp">ご予約</div>
+  <h2 class="cta-title">Reserve your <span>seat</span></h2>
+  <p class="cta-sub">A small deposit holds your table, paid securely through Cinnabank.</p>
+  <button class="btn-reserve-lg" onclick="openReserve()">
+    Book now
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+  </button>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-name">和久 · WOKU MANILA</div>
+  <div class="footer-meta">
+    30th Street, Bonifacio Global City, Taguig<br>
+    Tue–Sun, 5:30PM–11PM · Reservations recommended
+  </div>
+  <div class="cb-badge">
+    <div class="cb-badge-dot"></div>
+    Deposits handled by Cinnabank
+  </div>
+</footer>
+
+<!-- ═══════════════════ RESERVATION MODAL ═══════════════════ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-band"></div>
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeReserve()">✕</button>
+
+      <!-- STEP 1: NAME -->
+      <div class="step-view show" id="step-name">
+        <div class="modal-eyebrow">step 1 of 3</div>
+        <div class="modal-title">Who's the reservation for?</div>
+        <div class="field-group">
+          <label>Full name</label>
+          <input type="text" id="res-name" placeholder="e.g. Maria Santos" autocomplete="name"/>
+        </div>
+        <div class="status-msg error" id="name-error"></div>
+        <button class="btn-step" onclick="goToSeats()">Continue</button>
+      </div>
+
+      <!-- STEP 2: SEATS -->
+      <div class="step-view" id="step-seats">
+        <div class="modal-eyebrow">step 2 of 3</div>
+        <div class="modal-title">How many seats?</div>
+        <div class="seat-stepper">
+          <button class="seat-btn" onclick="adjustSeats(-1)">−</button>
+          <div class="seat-count" id="seat-count">2</div>
+          <button class="seat-btn" onclick="adjustSeats(1)">+</button>
+        </div>
+        <div class="seat-label">Counter seats 1–8 · robata tables up to 6</div>
+        <button class="btn-step" onclick="goToConfirm()">Continue</button>
+        <button class="btn-step-ghost" onclick="backToName()">← Back</button>
+      </div>
+
+      <!-- STEP 3: SIGN IN + CONFIRM -->
+      <div class="step-view" id="step-confirm">
+        <div id="cb-auth-view">
+          <div class="modal-eyebrow">step 3 of 3</div>
+          <div class="modal-title">Pay the deposit</div>
+
+          <div class="recap-box">
+            <div class="recap-row"><span>Name</span><span id="recap-name">—</span></div>
+            <div class="recap-row"><span>Seats</span><span id="recap-seats">—</span></div>
+          </div>
+
+          <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="sub-login-btn" onclick="switchAuthMode('login')">Sign in</button>
+            <button class="auth-tab-btn" id="sub-signup-btn" onclick="switchAuthMode('signup')">Create account</button>
+          </div>
+
+          <div id="cb-login-fields">
+            <div class="field-group">
+              <label>Email</label>
+              <input type="email" id="cb-login-email" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+            <div class="field-group">
+              <label>Password</label>
+              <input type="password" id="cb-login-password" placeholder="••••••••" autocomplete="current-password"/>
+            </div>
+            <button class="btn-step" id="cb-login-btn" onclick="processCbLogin()">Sign in &amp; continue</button>
+            <div class="status-msg error" id="cb-login-error"></div>
+            <div class="status-msg info" id="cb-login-loading">Signing in<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          </div>
+
+          <div id="cb-signup-fields" style="display:none">
+            <div class="field-group">
+              <label>Full name (Cinnabank account)</label>
+              <input type="text" id="cb-signup-name" placeholder="Your name" autocomplete="name"/>
+            </div>
+            <div class="field-group">
+              <label>Email</label>
+              <input type="email" id="cb-signup-email" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+            <div class="field-group">
+              <label>Password</label>
+              <input type="password" id="cb-signup-password" placeholder="At least 6 characters" autocomplete="new-password"/>
+            </div>
+            <button class="btn-step" id="cb-signup-btn" onclick="processCbSignup()">Create account &amp; continue</button>
+            <div class="status-msg error" id="cb-signup-error"></div>
+            <div class="status-msg info" id="cb-signup-loading">Creating account<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          </div>
+
+          <button class="btn-step-ghost" onclick="backToSeats()">← Back</button>
+        </div>
+
+        <!-- CONFIRM PAYMENT -->
+        <div class="confirm-view" id="cb-confirm-view">
+          <div class="modal-eyebrow">confirm</div>
+          <div class="modal-title">Confirm your deposit</div>
+          <div class="recap-box">
+            <div class="recap-row"><span>Reservation</span><span id="recap-name-2">—</span></div>
+            <div class="recap-row"><span>Party size</span><span id="recap-seats-2">—</span></div>
+            <div class="recap-divider"></div>
+            <div class="recap-row"><span>Deposit</span><span class="recap-total" id="recap-total">₱—</span></div>
+          </div>
+          <div class="status-msg error" id="cb-confirm-error"></div>
+          <button class="btn-step" id="cb-confirm-btn" onclick="confirmCbPayment()">Pay deposit &amp; confirm table</button>
+          <div class="status-msg info" id="cb-confirm-loading">Processing<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          <button class="btn-step-ghost" onclick="cancelConfirm()">← Back</button>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="success-view" id="cb-success-view">
+          <div class="success-mark">✓</div>
+          <div class="success-title">Table confirmed</div>
+          <div class="success-sub" id="cb-success-sub">See you soon.</div>
+          <div class="ref-line">Reservation note: <span id="ref-note">—</span></div>
+          <button class="btn-step-ghost" onclick="closeReserve()">Done</button>
+          <div style="text-align:center;">
+            <div class="cb-badge">
+              <div class="cb-badge-dot"></div>
+              Powered by Cinnabank
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function () {
+  var bg = document.querySelector('.hero-bg');
+  var hero = document.querySelector('.hero');
+  if (!bg || !hero || typeof gsap === 'undefined') return;
+
+  var MAX_SHIFT = 22;
+  var xTo = gsap.quickTo(bg, 'x', { duration: 1.1, ease: 'power3.out' });
+  var yTo = gsap.quickTo(bg, 'y', { duration: 1.1, ease: 'power3.out' });
+  gsap.set(bg, { scale: 1.08, transformOrigin: '50% 50%' });
+
+  function onMove(clientX, clientY) {
+    var rect = hero.getBoundingClientRect();
+    var nx = (clientX - rect.left) / rect.width - 0.5;
+    var ny = (clientY - rect.top) / rect.height - 0.5;
+    xTo(-nx * MAX_SHIFT * 2);
+    yTo(-ny * MAX_SHIFT * 2);
+  }
+  hero.addEventListener('mousemove', function (e) { onMove(e.clientX, e.clientY); });
+  hero.addEventListener('mouseleave', function () { xTo(0); yTo(0); });
+})();
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+  // ── Firebase config (Cinnabank's public demo project) ──────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
+    authDomain:        "cinnabank.firebaseapp.com",
+    projectId:         "cinnabank",
+    storageBucket:     "cinnabank.firebasestorage.app",
+    messagingSenderId: "162136260228",
+    appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ── WOKU MANILA owner UID — replace with your actual Cinnabank UID ────────
+  const RESTAURANT_UID = 'iBEn6h3QCDRBTZdUhR8LxPWl1vM2';
+  const DEPOSIT_PER_SEAT = 100; // ₱100 per seat
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let cbUser     = null;
+  let cbUserData = null;
+  let isNewUser  = false;
+  let resName    = '';
+  let resSeats   = 2;
+
+  function toast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  function setLoading(btnId, loadingId, errorId, on) {
+    const btn = document.getElementById(btnId);
+    const ld  = document.getElementById(loadingId);
+    const err = document.getElementById(errorId);
+    if (btn) btn.disabled = on;
+    if (ld)  ld.classList.toggle('show', on);
+    if (err) err.classList.remove('show');
+  }
+  function showError(errorId, msg) {
+    const el = document.getElementById(errorId);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function cbFail(mode, msg) {
+    showError(`cb-${mode}-error`, msg);
+    document.getElementById(`cb-${mode}-loading`).classList.remove('show');
+    document.getElementById(`cb-${mode}-btn`).disabled = false;
+  }
+
+  // ── Modal open/close ─────────────────────────────────────────────────────
+  window.openReserve = function() {
+    document.getElementById('overlay').classList.add('show');
+    showStep('step-name');
+  };
+  window.closeReserve = function() {
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('cb-success-view').classList.remove('show');
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-auth-view').style.display = '';
+    // Reset the flow back to the start for the next open.
+    resName = '';
+    resSeats = 2;
+    document.getElementById('res-name').value = '';
+    document.getElementById('seat-count').textContent = resSeats;
+    showStep('step-name');
+  };
+
+  function showStep(id) {
+    document.querySelectorAll('.step-view').forEach(el => el.classList.remove('show'));
+    document.getElementById(id).classList.add('show');
+  }
+
+  window.goToSeats = function() {
+    const name = document.getElementById('res-name').value.trim();
+    const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)+$/;
+    if (!name) { showError('name-error', 'Please enter your full name.'); return; }
+    if (!nameRegex.test(name)) { showError('name-error', 'Please enter your first and last name.'); return; }
+    document.getElementById('name-error').classList.remove('show');
+    resName = name;
+    showStep('step-seats');
+  };
+  window.backToName = function() { showStep('step-name'); };
+
+  window.adjustSeats = function(delta) {
+    resSeats = Math.min(8, Math.max(1, resSeats + delta));
+    document.getElementById('seat-count').textContent = resSeats;
+  };
+
+  window.goToConfirm = function() {
+    document.getElementById('recap-name').textContent = resName;
+    document.getElementById('recap-seats').textContent = resSeats + (resSeats === 1 ? ' seat' : ' seats');
+    showStep('step-confirm');
+    document.getElementById('cb-auth-view').style.display = '';
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-success-view').classList.remove('show');
+    if (cbUser && cbUserData) advanceToConfirmScreen();
+  };
+  window.backToSeats = function() { showStep('step-seats'); };
+
+  window.switchAuthMode = function(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('cb-login-fields').style.display  = isLogin ? '' : 'none';
+    document.getElementById('cb-signup-fields').style.display = isLogin ? 'none' : '';
+    document.getElementById('sub-login-btn').classList.toggle('active',  isLogin);
+    document.getElementById('sub-signup-btn').classList.toggle('active', !isLogin);
+  };
+
+  // ── Auto-advance if already signed in ───────────────────────────────────
+  onAuthStateChanged(auth, async user => {
+    if (!user) return;
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (!snap.exists()) return;
+      cbUser     = user;
+      cbUserData = snap.data();
+    } catch (_) {}
+  });
+
+  window.processCbLogin = async function() {
+    const email    = document.getElementById('cb-login-email').value.trim();
+    const password = document.getElementById('cb-login-password').value;
+    if (!email || !password) { showError('cb-login-error', 'Please fill in your email and password.'); return; }
+
+    setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', true);
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!snap.exists()) { cbFail('login', 'Account data not found.'); return; }
+      cbUser     = cred.user;
+      cbUserData = snap.data();
+      isNewUser  = false;
+      setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', false);
+      advanceToConfirmScreen();
+    } catch (e) {
+      const msg = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+        ? 'Incorrect email or password.'
+        : (e.code === 'auth/user-not-found' ? 'No account with that email.' : 'Sign-in failed. Try again.');
+      cbFail('login', msg);
+    }
+  };
+
+  window.processCbSignup = async function() {
+    const name     = document.getElementById('cb-signup-name').value.trim();
+    const email    = document.getElementById('cb-signup-email').value.trim();
+    const password = document.getElementById('cb-signup-password').value;
+
+    if (!name)  { showError('cb-signup-error', 'Please enter your name.'); return; }
+    if (!email) { showError('cb-signup-error', 'Please enter your email.'); return; }
+    if (password.length < 6) { showError('cb-signup-error', 'Password must be at least 6 characters.'); return; }
+
+    const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)?$/;
+    if (!nameRegex.test(name)) {
+      showError('cb-signup-error', 'Name can only contain letters and a single space between words. No numbers or special characters.');
+      return;
+    }
+
+    setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+      const cardNumber = Array.from({ length: 4 }, () => Math.floor(1000 + Math.random() * 9000)).join('');
+      const expYear    = new Date().getFullYear() + 3 + Math.floor(Math.random() * 3);
+      const expMonth   = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+      const cardExpiry = `${expMonth}/${String(expYear).slice(2)}`;
+      const cardCVV    = String(Math.floor(100 + Math.random() * 900));
+
+      const userData = {
+        name, email,
+        balance: 1000,
+        accountNumber,
+        cardNumber, cardExpiry, cardCVV,
+        createdAt: serverTimestamp(),
+        photoURL: '',
+      };
+
+      await Promise.all([
+        setDoc(doc(db, 'users', cred.user.uid), userData),
+        addDoc(collection(db, 'transactions'), {
+          userId: cred.user.uid, type: 'credit', amount: 1000,
+          note: 'Welcome bonus', counterparty: 'Cinnabank',
+          source: 'welcome', balanceAfter: 1000, createdAt: serverTimestamp(),
+        }),
+      ]);
+
+      cbUser     = cred.user;
+      cbUserData = userData;
+      isNewUser  = true;
+      setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', false);
+      advanceToConfirmScreen();
+    } catch (e) {
+      const msg = e.code === 'auth/email-already-in-use'
+        ? 'An account with that email already exists.'
+        : 'Sign-up failed. Please try again.';
+      cbFail('signup', msg);
+    }
+  };
+
+  function advanceToConfirmScreen() {
+    document.getElementById('cb-auth-view').style.display = 'none';
+    document.getElementById('cb-confirm-view').classList.add('show');
+    const total = resSeats * DEPOSIT_PER_SEAT;
+    document.getElementById('recap-name-2').textContent = resName;
+    document.getElementById('recap-seats-2').textContent = resSeats + (resSeats === 1 ? ' seat' : ' seats');
+    document.getElementById('recap-total').textContent = `₱${total.toFixed(2)}`;
+  }
+
+  window.cancelConfirm = function() {
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-auth-view').style.display = '';
+  };
+
+  window.confirmCbPayment = async function() {
+    if (!cbUser || !cbUserData) return;
+
+    const errEl  = document.getElementById('cb-confirm-error');
+    const loadEl = document.getElementById('cb-confirm-loading');
+    const btn    = document.getElementById('cb-confirm-btn');
+    errEl.classList.remove('show');
+    loadEl.classList.remove('show');
+
+    const total = resSeats * DEPOSIT_PER_SEAT;
+    const balance = cbUserData.balance || 0;
+    if (balance < total) {
+      showError('cb-confirm-error', `Insufficient balance. Your account has ₱${balance.toFixed(2)}.`);
+      return;
+    }
+
+    btn.disabled = true;
+    loadEl.classList.add('show');
+
+    // The reservation payload — full name + party size — becomes the
+    // transaction note so the restaurant's transaction history doubles
+    // as the booking log.
+    const note = `Reservation: ${resName} — ${resSeats} pax`;
+
+    try {
+      const token = await cbUser.getIdToken();
+      const response = await fetch('https://cinnabank.vercel.app/api/transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          receiverUid: RESTAURANT_UID,
+          amount: total,
+          note,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Payment failed');
+
+      loadEl.classList.remove('show');
+      document.getElementById('cb-confirm-view').classList.remove('show');
+
+      cbUserData.balance = (cbUserData.balance || 0) - total;
+
+      document.getElementById('ref-note').textContent = note;
+      const sub = document.getElementById('cb-success-sub');
+      sub.innerHTML = isNewUser
+        ? `Welcome, <strong>${cbUserData.name || 'friend'}</strong> — your table for ${resSeats} is booked (₱1,000 welcome bonus applied to your new account).`
+        : `Your table for <strong>${resSeats}</strong> is booked under <strong>${resName}</strong>.`;
+
+      document.getElementById('cb-success-view').classList.add('show');
+      btn.disabled = false;
+    } catch (err) {
+      console.error(err);
+      showError('cb-confirm-error', 'Payment failed. Please try again.');
+      btn.disabled = false;
+      loadEl.classList.remove('show');
+    }
+  };
+</script>
+</body>
+</html>

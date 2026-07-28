@@ -1,3 +1,3 @@
 @echo off
-node generate-project.js
+node generate-projects.js
 exit
