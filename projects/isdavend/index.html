@@ -63,14 +63,25 @@
   .subhead { font-size: 13px; color: var(--muted); margin-bottom: 36px; position: relative; z-index: 1; text-align: center; max-width: 340px; }
 
   /* ── The machine cabinet ── */
+  .cabinet-stage {
+    width: 100%; max-width: 380px; perspective: 1400px; position: relative; z-index: 1;
+  }
   .cabinet {
-    width: 100%; max-width: 380px; position: relative; z-index: 1;
-    background: linear-gradient(180deg, var(--panel2), var(--panel));
+    width: 100%;
+    background: linear-gradient(155deg, var(--panel2) 0%, var(--panel) 55%, #082a27 100%);
     border: 1px solid var(--border2);
     border-radius: 26px;
     padding: 20px;
-    box-shadow: 0 30px 90px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.03);
+    transform-style: preserve-3d;
+    transform: rotateX(3deg) rotateY(0deg);
+    box-shadow:
+      0 40px 100px rgba(0,0,0,0.6),
+      0 12px 30px rgba(0,0,0,0.4),
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      inset 0 -18px 40px rgba(0,0,0,0.35);
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
   }
+  .cabinet-stage:hover .cabinet { transform: rotateX(1deg) rotateY(-2deg) translateY(-3px); }
 
   .cabinet-top {
     display: flex; align-items: center; justify-content: space-between;
@@ -87,15 +98,31 @@
     border: 1px solid var(--border);
     margin-bottom: 16px;
     display: flex; align-items: center; justify-content: center;
+    perspective: 600px;
+    box-shadow: inset 0 3px 14px rgba(0,0,0,0.55), inset 0 -10px 24px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.03);
   }
   .tank-window::before {
     content: ''; position: absolute; inset: 0;
     background: repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px);
     pointer-events: none;
   }
-  .tank-glint { position: absolute; top: 0; left: -30%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.045), transparent); transform: skewX(-16deg); }
-  .tank-fish { font-size: 44px; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4)); animation: drift 6s ease-in-out infinite; }
-  @keyframes drift { 0%,100% { transform: translateX(-14px) scaleX(1); } 50% { transform: translateX(14px) scaleX(-1); } }
+  .tank-glint {
+    position: absolute; top: 0; left: -30%; width: 40%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,0.06), transparent);
+    transform: skewX(-16deg); animation: glintSweep 7s ease-in-out infinite;
+  }
+  @keyframes glintSweep { 0%,70%,100% { transform: skewX(-16deg) translateX(0); } 85% { transform: skewX(-16deg) translateX(260%); } }
+  .tank-fish {
+    font-size: 44px; filter: drop-shadow(0 10px 16px rgba(0,0,0,0.5));
+    animation: drift 6s ease-in-out infinite; transform-style: preserve-3d;
+  }
+  @keyframes drift {
+    0%   { transform: translateX(-16px) translateY(0) rotateY(0deg); }
+    48%  { transform: translateX(16px) translateY(-6px) rotateY(0deg); }
+    50%  { transform: translateX(16px) translateY(-6px) rotateY(180deg); }
+    98%  { transform: translateX(-16px) translateY(0) rotateY(180deg); }
+    100% { transform: translateX(-16px) translateY(0) rotateY(360deg); }
+  }
   .tank-caption { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
 
   /* ── LCD readout ── */
@@ -114,13 +141,16 @@
     width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer;
     background: linear-gradient(180deg, var(--coin), var(--coin-dark));
     color: #2a1c02; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px;
-    letter-spacing: 0.02em; box-shadow: 0 8px 22px rgba(255,207,86,0.22), inset 0 1px 0 rgba(255,255,255,0.35);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    letter-spacing: 0.02em;
+    box-shadow: 0 8px 0 var(--coin-dark), 0 14px 26px rgba(255,207,86,0.28), inset 0 1px 0 rgba(255,255,255,0.4);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
     display: flex; align-items: center; justify-content: center; gap: 8px;
   }
-  .btn-insert:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,207,86,0.3), inset 0 1px 0 rgba(255,255,255,0.35); }
-  .btn-insert:active { transform: translateY(0); }
-  .coin-icon { font-size: 16px; }
+  .btn-insert:hover { transform: translateY(-2px); box-shadow: 0 10px 0 var(--coin-dark), 0 18px 32px rgba(255,207,86,0.32), inset 0 1px 0 rgba(255,255,255,0.4); }
+  .btn-insert:active { transform: translateY(6px); box-shadow: 0 2px 0 var(--coin-dark), 0 6px 14px rgba(255,207,86,0.24), inset 0 1px 0 rgba(255,255,255,0.35); }
+  .coin-icon { font-size: 16px; display: inline-block; }
+  .btn-insert:hover .coin-icon { animation: coinSpin 0.6s ease; }
+  @keyframes coinSpin { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
 
   .cabinet-foot { font-family: 'Space Mono', monospace; font-size: 9.5px; color: var(--muted); text-align: center; margin-top: 12px; letter-spacing: 0.04em; }
   .cabinet-foot a { color: var(--led); text-decoration: none; }
@@ -133,14 +163,19 @@
   }
   .overlay.show { display: flex; }
 
+  .overlay { transition: opacity 0.25s ease; }
   .modal {
-    width: 100%; max-width: 400px; background: linear-gradient(180deg, var(--panel2), var(--panel));
+    width: 100%; max-width: 400px; background: linear-gradient(165deg, var(--panel2), var(--panel));
     border: 1px solid var(--border2); border-radius: 22px; overflow: hidden;
-    box-shadow: 0 30px 90px rgba(0,0,0,0.6);
-    animation: modalRise 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.65), inset 0 1px 0 rgba(255,255,255,0.04);
+    animation: modalRise 0.45s cubic-bezier(0.22,1,0.36,1) both;
     max-height: 88vh; overflow-y: auto;
+    transform-style: preserve-3d;
   }
-  @keyframes modalRise { from { transform: translateY(16px) scale(0.97); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+  @keyframes modalRise {
+    from { transform: translateY(28px) scale(0.94) rotateX(6deg); opacity: 0; }
+    to   { transform: translateY(0) scale(1) rotateX(0deg); opacity: 1; }
+  }
   .modal-band { height: 3px; background: linear-gradient(90deg, var(--led), var(--coin), var(--rare)); }
   .modal-inner { padding: 26px 26px 28px; }
 
@@ -187,10 +222,12 @@
   .btn-cb {
     width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
     background: var(--led); color: #04211f; font-weight: 700; font-size: 14px;
-    transition: transform 0.15s, opacity 0.15s;
+    box-shadow: 0 4px 0 #2fb897, 0 8px 18px rgba(77,255,209,0.2);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.15s;
   }
-  .btn-cb:hover { transform: translateY(-1px); }
-  .btn-cb:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+  .btn-cb:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 5px 0 #2fb897, 0 10px 22px rgba(77,255,209,0.25); }
+  .btn-cb:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #2fb897, 0 4px 10px rgba(77,255,209,0.2); }
+  .btn-cb:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
 
   .form-hint { text-align: center; font-size: 12px; color: var(--muted); margin-top: 12px; }
   .form-hint a { color: var(--led); cursor: pointer; }
@@ -218,7 +255,15 @@
   .confirm-amount-box { background: #021816; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
   .confirm-amount-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
   .confirm-amount-value { font-family: 'VT323', monospace; font-size: 30px; color: var(--coin); }
-  .btn-confirm { width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer; background: var(--coin); color: #2a1c02; font-weight: 700; font-size: 14px; }
+  .btn-confirm {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--coin); color: #2a1c02; font-weight: 700; font-size: 14px;
+    box-shadow: 0 4px 0 var(--coin-dark), 0 8px 18px rgba(255,207,86,0.22);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+  }
+  .btn-confirm:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn-confirm:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 var(--coin-dark), 0 4px 10px rgba(255,207,86,0.2); }
+  .btn-confirm:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; transform: none; }
   .btn-back-link { background: none; border: none; color: var(--muted); font-size: 12.5px; cursor: pointer; }
   .btn-back-link:hover { color: var(--white); }
 
@@ -226,10 +271,21 @@
   .dispense-slot {
     background: #021816; border: 1px solid var(--border); border-radius: 16px;
     padding: 26px 16px; margin: 4px 0 18px; position: relative; overflow: hidden;
+    box-shadow: inset 0 3px 12px rgba(0,0,0,0.5); perspective: 500px;
   }
-  .dispense-emoji { font-size: 64px; display: block; margin-bottom: 10px; animation: pop 0.5s cubic-bezier(0.22,1.4,0.36,1) both; }
-  @keyframes pop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .dispense-name { font-size: 17px; font-weight: 700; margin-bottom: 5px; }
+  .dispense-emoji {
+    font-size: 64px; display: block; margin-bottom: 10px; transform-style: preserve-3d;
+    animation: drop 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+    filter: drop-shadow(0 14px 18px rgba(0,0,0,0.5));
+  }
+  @keyframes drop {
+    0%   { transform: translateY(-70px) rotateX(50deg) rotateZ(-14deg) scale(0.5); opacity: 0; }
+    60%  { transform: translateY(6px) rotateX(-8deg) rotateZ(4deg) scale(1.05); opacity: 1; }
+    80%  { transform: translateY(-3px) rotateX(4deg) rotateZ(-2deg) scale(0.98); }
+    100% { transform: translateY(0) rotateX(0deg) rotateZ(0deg) scale(1); }
+  }
+  .dispense-name { font-size: 17px; font-weight: 700; margin-bottom: 5px; animation: fadeUp 0.4s ease 0.5s both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .rarity-tag {
     display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
     text-transform: uppercase; padding: 4px 10px; border-radius: 20px; border: 1px solid;
@@ -243,8 +299,19 @@
   .success-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
   .counter-line { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 18px; }
   .counter-line span { color: var(--led); }
-  .btn-again { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid var(--border2); cursor: pointer; background: transparent; color: var(--white); font-weight: 600; font-size: 13.5px; }
+  .success-btn-row { display: flex; flex-direction: column; gap: 9px; margin-bottom: 4px; }
+  .btn-again { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid var(--border2); cursor: pointer; background: transparent; color: var(--white); font-weight: 600; font-size: 13.5px; transition: all 0.18s ease; }
   .btn-again:hover { border-color: var(--led); color: var(--led); }
+  .btn-vend-again {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: linear-gradient(180deg, var(--coin), var(--coin-dark));
+    color: #2a1c02; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 8px 22px rgba(255,207,86,0.22), inset 0 1px 0 rgba(255,255,255,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-vend-again:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,207,86,0.3), inset 0 1px 0 rgba(255,255,255,0.35); }
+  .btn-vend-again:active { transform: translateY(1px) scale(0.99); box-shadow: 0 4px 12px rgba(255,207,86,0.2), inset 0 1px 0 rgba(255,255,255,0.3); }
 
   .cb-badge {
     display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 10.5px; color: var(--muted);
@@ -273,6 +340,7 @@
 <div class="wordmark">ISDA<span>VEND</span></div>
 <div class="subhead">Insert ₱1. The machine gives you a fish. That's the whole business model.</div>
 
+<div class="cabinet-stage">
 <div class="cabinet">
   <div class="cabinet-top">
     <div class="cabinet-label">Unit 003 · Online</div>
@@ -303,6 +371,7 @@
 
   <div class="cabinet-foot">Powered by <a href="https://cinnabank.vercel.app/" target="_blank">Cinnabank</a> · fictional currency, fictional fish</div>
 </div>
+</div><!-- /.cabinet-stage -->
 
 <!-- ═══════════════════ MODAL ═══════════════════ -->
 <div class="overlay" id="overlay">
@@ -402,7 +471,10 @@
 
         <div class="counter-line">Machine total: <span id="success-count">0001</span> fish dispensed all-time</div>
 
-        <button class="btn-again" onclick="closeMachine()">Done</button>
+        <div class="success-btn-row">
+          <button class="btn-vend-again" onclick="vendAgain()"><span class="coin-icon">🪙</span> Vend another (₱1)</button>
+          <button class="btn-again" onclick="closeMachine()">Done</button>
+        </div>
         <div style="text-align:center;">
           <div class="cb-badge">
             <div class="cb-badge-dot"></div>
@@ -506,12 +578,21 @@
   };
   window.closeMachine = function() {
     document.getElementById('overlay').classList.remove('show');
-    // reset to auth view for next time unless already confirmed mid-flow
     document.getElementById('cb-success-view').classList.remove('show');
-    if (!cbUser) {
+    if (cbUser && cbUserData) {
+      // Already signed in — leave it parked on the confirm screen so the
+      // next open goes straight to "pay again" instead of a blank modal.
+      document.getElementById('cb-auth-view').style.display = 'none';
+      document.getElementById('cb-confirm-view').classList.add('show');
+    } else {
       document.getElementById('cb-auth-view').style.display = '';
       document.getElementById('cb-confirm-view').classList.remove('show');
     }
+  };
+
+  window.vendAgain = function() {
+    document.getElementById('cb-success-view').classList.remove('show');
+    showConfirmScreen();
   };
 
   window.switchAuthMode = function(mode) {
@@ -700,6 +781,7 @@
       loadEl.classList.remove('show');
       document.getElementById('cb-confirm-view').classList.remove('show');
 
+      cbUserData.balance = (cbUserData.balance || 0) - FEE;
       dispensedTotal += 1;
       document.getElementById('dispensed-count').textContent = String(dispensedTotal).padStart(4, '0');
       document.getElementById('success-count').textContent = String(dispensedTotal).padStart(4, '0');
