@@ -3,21 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>CinnaBank ATM</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root{
     --steel-dark: #23262b;
     --steel: #33383f;
     --steel-light: #565f68;
     --steel-edge: #6b7580;
+    --steel-highlight: #7d8892;
     --phosphor: #3dffa0;
     --phosphor-dim: #1c7a56;
     --amber: #ffb648;
     --red-led: #ff3b3b;
     --paper: #e9e4d6;
+
+    /* Everything below is driven off vmin so the WHOLE machine — and the
+       whole screen — is always guaranteed to fit inside the viewport,
+       on any aspect ratio (phone portrait, ultrawide desktop, etc). */
+    --unit: 1vmin;
+    --shell-h: 92vmin;
+    --shell-aspect: 0.6; /* width / height */
   }
   html,body{
     margin:0; padding:0; width:100%; height:100%;
@@ -27,48 +34,110 @@
   }
   #stage{
     position:relative; width:100vw; height:100vh;
-  }
-  canvas#three-canvas{
-    position:absolute; inset:0; display:block;
+    display:flex; align-items:center; justify-content:center;
+    perspective: 1600px;
   }
 
-  /* ---------- CRT screen overlay ---------- */
-  #screen-wrap{
-    position:absolute;
-    left:50%; top:29.5%;
-    width:min(30vw, 46vh);
-    aspect-ratio: 1.3 / 0.78;
-    transform:translate(-50%,-50%) perspective(900px) rotateX(6deg);
-    transform-origin:center;
+  /* ---------- floor glow / ambient ---------- */
+  #stage::before{
+    content:"";
+    position:absolute; left:50%; bottom:2%;
+    width:60vmin; height:14vmin; transform:translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(61,255,160,.10) 0%, rgba(61,255,160,0) 70%);
     pointer-events:none;
   }
+
+  /* ================= ATM SHELL (the physical machine) ================= */
+  #atm-shell{
+    position:relative;
+    height: var(--shell-h);
+    aspect-ratio: var(--shell-aspect);
+    max-width: 94vw;
+    max-height: 94vh;
+    transform-style: preserve-3d;
+    transform: rotateX(var(--tiltX,0deg)) rotateY(var(--tiltY,0deg));
+    transition: transform .25s cubic-bezier(.2,.7,.3,1);
+    will-change: transform;
+    display:flex; flex-direction:column;
+  }
+
+  .plate{
+    background: linear-gradient(160deg, var(--steel-light) 0%, var(--steel) 45%, var(--steel-dark) 100%);
+    border-radius: calc(var(--unit)*1.4);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.05),
+      inset 0 2px 6px rgba(255,255,255,.08),
+      inset 0 -6px 14px rgba(0,0,0,.5),
+      0 2vmin 4vmin rgba(0,0,0,.55);
+  }
+
+  #panel{
+    flex: 1 1 auto;
+    display:flex; flex-direction:column;
+    padding: 2.4% 5%;
+    box-sizing:border-box;
+    min-height:0;
+    position:relative;
+  }
+  #panel::after{ /* brushed metal texture */
+    content:"";
+    position:absolute; inset:0; border-radius:inherit;
+    background: repeating-linear-gradient(100deg, rgba(255,255,255,.025) 0px, rgba(255,255,255,.025) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+    mix-blend-mode:overlay;
+  }
+
+  #brand-plaque{
+    font-family:'Oswald',sans-serif; letter-spacing:.14em; color:#d7dde2;
+    font-size: calc(var(--unit)*2);
+    text-shadow:0 0 1.2vmin rgba(255,182,72,.35);
+    text-align:center;
+    margin-bottom: 1vmin;
+    flex: 0 0 auto;
+  }
+  #status-led-strip{
+    position:absolute; top: 6.5%; left:50%; transform:translateX(-50%);
+    width:34%; height:.55vmin; border-radius:2px;
+    background: var(--amber);
+    box-shadow: 0 0 1.2vmin var(--amber);
+    animation: ledpulse 3s ease-in-out infinite;
+  }
+  @keyframes ledpulse{ 0%,100%{opacity:.55} 50%{opacity:1} }
+
+  /* ---------- screen bezel + CRT ---------- */
+  #screen-bezel{
+    flex: 0 0 46%;
+    background: linear-gradient(155deg, var(--steel-dark), #101215 70%);
+    border-radius: calc(var(--unit)*1.1);
+    padding: 2.4%;
+    box-sizing:border-box;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,.06),
+      inset 0 3px 10px rgba(0,0,0,.6),
+      0 .6vmin 1.4vmin rgba(0,0,0,.5);
+    transform: translateZ(1.4vmin);
+  }
   #screen{
-    position:absolute; inset:0;
+    position:relative;
+    width:100%; height:100%;
     background: radial-gradient(ellipse at 50% 40%, #06170f 0%, #010603 100%);
-    border-radius:6px;
-    box-shadow: inset 0 0 40px rgba(0,0,0,.9), 0 0 18px rgba(61,255,160,.15);
+    border-radius: calc(var(--unit)*0.6);
+    box-shadow: inset 0 0 4vmin rgba(0,0,0,.9), 0 0 2.4vmin rgba(61,255,160,.15);
     overflow:hidden;
-    pointer-events:auto;
     color: var(--phosphor);
+    font-size: clamp(11px, 2.1vmin, 22px);
+    cursor:pointer;
   }
   #screen::after{
     content:"";
     position:absolute; inset:0;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(0,0,0,0) 0px,
-      rgba(0,0,0,0) 2px,
-      rgba(0,0,0,.18) 3px
-    );
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,.18) 3px);
     mix-blend-mode:multiply;
     pointer-events:none;
     animation: flicker 6s infinite;
   }
-  @keyframes flicker{
-    0%,100%{opacity:.55}
-    50%{opacity:.4}
-    52%{opacity:.6}
-  }
+  @keyframes flicker{ 0%,100%{opacity:.55} 50%{opacity:.4} 52%{opacity:.6} }
+
   .crt-page{
     position:absolute; inset:0;
     display:none;
@@ -79,155 +148,305 @@
   }
   .crt-page.active{ display:flex; }
   .crt-title{
-    font-size:.85em; letter-spacing:.14em; text-transform:uppercase;
+    font-size:.9em; letter-spacing:.1em; text-transform:uppercase;
     border-bottom:1px solid var(--phosphor-dim);
     padding-bottom:.4em; margin-bottom:.6em; opacity:.9;
+    flex: 0 0 auto;
   }
-  .crt-line{ font-size:.78em; line-height:1.55; }
-  .crt-sub{ color:var(--phosphor-dim); font-size:.7em; }
+  .crt-line{ font-size:.85em; line-height:1.55; }
+  .crt-sub{ color:var(--phosphor-dim); font-size:.75em; }
   .crt-input{
     background:transparent; border:none; border-bottom:1px solid var(--phosphor-dim);
-    color:var(--phosphor); font-family:inherit; font-size:.78em; padding:.35em .1em;
-    outline:none; width:100%; margin:.25em 0 .6em 0; text-shadow: 0 0 5px rgba(61,255,160,.6);
+    color:var(--phosphor); font-family:inherit; font-size:.85em; padding:.45em .1em;
+    outline:none; width:100%; margin:.3em 0 .7em 0; text-shadow: 0 0 5px rgba(61,255,160,.6);
   }
   .crt-input::placeholder{ color: var(--phosphor-dim); opacity:.8; }
   .crt-btn{
     background:transparent; border:1px solid var(--phosphor-dim); color:var(--phosphor);
-    font-family:inherit; font-size:.72em; letter-spacing:.06em; text-transform:uppercase;
-    padding:.5em .7em; margin:.25em .3em .25em 0; cursor:pointer; text-shadow: 0 0 5px rgba(61,255,160,.5);
+    font-family:inherit; font-size:.78em; letter-spacing:.05em; text-transform:uppercase;
+    padding:.55em .8em; margin:.25em .3em .25em 0; cursor:pointer; text-shadow: 0 0 5px rgba(61,255,160,.5);
     transition: background .15s, color .15s;
   }
   .crt-btn:hover{ background:var(--phosphor); color:#04150c; }
   .crt-btn:disabled{ opacity:.35; cursor:default; }
   .crt-btn:disabled:hover{ background:transparent; color:var(--phosphor); }
-  .crt-row{ display:flex; flex-wrap:wrap; gap:.1em; margin-top:auto; }
-  .crt-error{ color:var(--red-led); font-size:.68em; margin-top:.3em; min-height:1.4em; text-shadow:0 0 6px rgba(255,59,59,.6); }
-  .crt-balance{ font-size:1.5em; margin:.2em 0 .5em 0; }
-  .crt-flex-fill{ flex:1; overflow-y:auto; }
+  .crt-row{ display:flex; flex-wrap:wrap; gap:.15em; margin-top:auto; flex: 0 0 auto; }
+  .crt-error{ color:var(--red-led); font-size:.72em; margin-top:.3em; min-height:1.4em; text-shadow:0 0 6px rgba(255,59,59,.6); }
+  .crt-balance{ font-size:1.6em; margin:.2em 0 .5em 0; }
+  .crt-flex-fill{ flex:1 1 auto; min-height:0; overflow-y:auto; }
   .blink{ animation: blink 1.1s steps(1) infinite; }
   @keyframes blink{ 50%{ opacity:0; } }
 
-  /* card slot LED */
+  /* thin scrollbar so it fits the retro vibe instead of a fat native one */
+  .crt-flex-fill::-webkit-scrollbar{ width:5px; }
+  .crt-flex-fill::-webkit-scrollbar-thumb{ background: var(--phosphor-dim); border-radius:3px; }
+
+  /* ---------- keypad (decorative) ---------- */
+  #keypad{
+    flex: 0 0 15%;
+    margin-top: 2.4%;
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(4,1fr);
+    gap: 3% 4%;
+    transform: translateZ(.8vmin);
+  }
+  .key{
+    background: linear-gradient(160deg, var(--steel-edge), var(--steel));
+    border-radius: .4vmin;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.3),
+      inset 0 -2px 3px rgba(0,0,0,.35),
+      0 .3vmin .3vmin rgba(0,0,0,.4);
+  }
+
+  /* ---------- I/O row: card + receipt + dispenser ---------- */
+  #io-row{
+    flex: 0 0 auto;
+    margin-top: 3%;
+    display:flex;
+    flex-direction:column;
+    gap: 3%;
+  }
+  .io-unit{ position:relative; }
+  .io-label{
+    position:absolute; left:0; top:100%;
+    font-size: calc(var(--unit)*.85);
+    color:#8a94a0; letter-spacing:.1em; margin-top:.3vmin;
+  }
+
+  #card-slot-mouth{
+    height: 2.2vmin; border-radius: 1.1vmin;
+    background: linear-gradient(to bottom, #0a0c0e, #1c1f23 40%, #2a2e33);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.8), 0 1px 0 rgba(255,255,255,.06);
+  }
   #card-led{
-    position:absolute; left:50%; top:47.5%; width:.5%; height:.5%;
-    transform:translate(-50%,-50%);
+    position:absolute; right: 6%; top:50%; transform:translateY(-50%);
+    width: 1.1vmin; height:1.1vmin; border-radius:50%;
+    background: var(--red-led);
+    box-shadow: 0 0 1.4vmin var(--red-led);
+    transition: background .3s, box-shadow .3s;
   }
-  #brand-plaque{
-    position:absolute; left:50%; top:12%; transform:translate(-50%,-50%);
-    font-family:'Oswald',sans-serif; letter-spacing:.12em; color:#d7dde2;
-    font-size:1.1vw; text-shadow:0 0 12px rgba(255,182,72,.35);
-    pointer-events:none; user-select:none;
+  #card-led.led-green{ background: var(--phosphor); box-shadow:0 0 1.4vmin var(--phosphor); }
+  #card-led.led-amber{ background: var(--amber); box-shadow:0 0 1.4vmin var(--amber); }
+
+  #receipt-slot-mouth{
+    height: 1.5vmin; border-radius: .6vmin;
+    background: linear-gradient(to bottom, #0a0c0e, #1c1f23 50%, #2a2e33);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,.8);
+    overflow:visible;
+    position:relative;
   }
+  #receipt-paper{
+    position:absolute; left:8%; top:0; width:84%; height:.6vmin;
+    background: var(--paper);
+    border-radius: 0 0 .3vmin .3vmin;
+    box-shadow: 0 .4vmin .6vmin rgba(0,0,0,.4);
+    transform-origin: top center;
+    transform: scaleY(0);
+    opacity:0;
+    transition: transform .9s cubic-bezier(.2,.8,.2,1), opacity .2s;
+    font-size: calc(var(--unit)*.7);
+    color:#2a2a2a;
+    white-space:pre-line;
+    padding: 6% 8% 3%;
+    box-sizing:border-box;
+    overflow:hidden;
+    z-index:2;
+  }
+  #receipt-paper.printed{ height:auto; min-height:22vmin; transform:scaleY(1); opacity:1; }
+
+  /* ---------- cash dispenser ---------- */
+  #dispenser-unit{ height: 8vmin; }
+  #dispenser-housing{
+    position:relative;
+    height:100%;
+    border-radius: .8vmin;
+    background: linear-gradient(160deg, var(--steel-dark), #16181b);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,.6);
+    overflow:visible;
+  }
+  #dispenser-flap{
+    position:absolute; left:6%; right:6%; top:0; height:60%;
+    background: linear-gradient(160deg, var(--steel-edge), var(--steel));
+    border-radius: .5vmin .5vmin 0 0;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    box-shadow: 0 .4vmin .8vmin rgba(0,0,0,.4);
+    transition: transform .45s ease;
+    z-index:3;
+  }
+  #dispenser-flap.open{ transform: rotateX(-115deg); }
+  #bills-tray{
+    position:absolute; left:0; right:0; bottom:-2vmin; height:8vmin;
+    pointer-events:none;
+    z-index:2;
+  }
+  .bill{
+    position:absolute; left:50%; top:0;
+    width: 11vmin; height: 5vmin;
+    margin-left:-5.5vmin;
+    border-radius: .4vmin;
+    background: linear-gradient(135deg, #3fa06a, #2f8f5a 60%, #276f47);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.15), 0 .3vmin .6vmin rgba(0,0,0,.4);
+    opacity:0;
+    transform: translate(0,-2vmin) rotate(0deg);
+    transition: transform .65s cubic-bezier(.3,.6,.3,1), opacity .3s;
+  }
+
+  #plinth{
+    flex: 0 0 5.5%;
+    margin-top: 1.6%;
+    background: linear-gradient(160deg, var(--steel-dark), #0c0d0f);
+    border-radius: calc(var(--unit)*1);
+    box-shadow: inset 0 2px 4px rgba(255,255,255,.05), 0 1vmin 2vmin rgba(0,0,0,.6);
+    transform: translateZ(-.6vmin);
+  }
+
   #hint{
-    position:absolute; bottom:3%; left:50%; transform:translateX(-50%);
+    position:absolute; bottom:2.4%; left:50%; transform:translateX(-50%);
     color:#8a94a0; font-size:.75rem; letter-spacing:.04em;
     pointer-events:none; user-select:none;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    #atm-shell{ transition:none; }
+    .bill, #dispenser-flap, #receipt-paper{ transition-duration: .01ms !important; }
   }
 </style>
 </head>
 <body>
 <div id="stage">
-  <canvas id="three-canvas"></canvas>
-  <div id="brand-plaque">CINNABANK</div>
+  <div id="atm-shell">
+    <div id="panel" class="plate">
+      <div id="brand-plaque">CINNABANK</div>
+      <div id="status-led-strip"></div>
 
-  <div id="screen-wrap">
-    <div id="screen">
+      <div id="screen-bezel">
+        <div id="screen">
 
-      <!-- IDLE -->
-      <div class="crt-page active" data-page="idle">
-        <div class="crt-flex-fill" style="justify-content:center; align-items:center; display:flex; flex-direction:column;">
-          <div class="crt-line" style="font-size:1em;">WELCOME</div>
-          <div class="crt-sub" style="margin-top:.6em;">tap screen to begin<span class="blink">_</span></div>
-        </div>
-      </div>
-
-      <!-- AUTH -->
-      <div class="crt-page" data-page="auth">
-        <div class="crt-title">Account Access</div>
-        <div class="crt-flex-fill">
-          <input class="crt-input" id="auth-name" placeholder="full name (signup only)">
-          <input class="crt-input" id="auth-email" placeholder="email" type="email">
-          <input class="crt-input" id="auth-pass" placeholder="password" type="password">
-          <div class="crt-error" id="auth-error"></div>
-        </div>
-        <div class="crt-row">
-          <button class="crt-btn" id="btn-login">Login</button>
-          <button class="crt-btn" id="btn-signup">New Account</button>
-          <button class="crt-btn" id="btn-idle-back">Cancel</button>
-        </div>
-      </div>
-
-      <!-- MENU -->
-      <div class="crt-page" data-page="menu">
-        <div class="crt-title">Card Accepted — <span id="menu-name"></span></div>
-        <div class="crt-flex-fill">
-          <div class="crt-sub">Acct No. <span id="menu-account"></span> · Card <span id="menu-card"></span></div>
-          <div class="crt-sub" style="margin-top:.6em;">Balance</div>
-          <div class="crt-balance" id="menu-balance">₱0.00</div>
-        </div>
-        <div class="crt-row">
-          <button class="crt-btn" data-page-to="withdraw">Withdraw</button>
-          <button class="crt-btn" data-page-to="loan">Loans</button>
-          <button class="crt-btn" id="btn-logout">Eject Card</button>
-        </div>
-      </div>
-
-      <!-- WITHDRAW -->
-      <div class="crt-page" data-page="withdraw">
-        <div class="crt-title">Withdraw Cash</div>
-        <div class="crt-flex-fill">
-          <div class="crt-sub">Available: <span id="wd-balance"></span></div>
-          <div class="crt-sub" style="margin-top:.7em;">Select amount</div>
-          <div class="crt-row" style="margin-top:.3em;">
-            <button class="crt-btn wd-amt-btn" data-amt="200">₱200</button>
-            <button class="crt-btn wd-amt-btn" data-amt="500">₱500</button>
-            <button class="crt-btn wd-amt-btn" data-amt="1000">₱1,000</button>
-            <button class="crt-btn wd-amt-btn" data-amt="2000">₱2,000</button>
-            <button class="crt-btn wd-amt-btn" data-amt="5000">₱5,000</button>
+          <!-- IDLE -->
+          <div class="crt-page active" data-page="idle">
+            <div class="crt-flex-fill" style="justify-content:center; align-items:center; display:flex; flex-direction:column;">
+              <div class="crt-line" style="font-size:1.1em;">WELCOME</div>
+              <div class="crt-sub" style="margin-top:.6em;">tap screen to begin<span class="blink">_</span></div>
+            </div>
           </div>
-          <input class="crt-input" id="wd-amount" placeholder="or type custom amount (₱)" type="number" min="1" style="margin-top:.8em;">
-          <div class="crt-error" id="wd-error"></div>
-        </div>
-        <div class="crt-row">
-          <button class="crt-btn" id="btn-wd-confirm">Confirm</button>
-          <button class="crt-btn" data-page-to="menu">Back</button>
+
+          <!-- AUTH -->
+          <div class="crt-page" data-page="auth">
+            <div class="crt-title">Account Access</div>
+            <div class="crt-flex-fill">
+              <input class="crt-input" id="auth-name" placeholder="full name (signup only)">
+              <input class="crt-input" id="auth-email" placeholder="email" type="email">
+              <input class="crt-input" id="auth-pass" placeholder="password" type="password">
+              <div class="crt-error" id="auth-error"></div>
+            </div>
+            <div class="crt-row">
+              <button class="crt-btn" id="btn-login">Login</button>
+              <button class="crt-btn" id="btn-signup">New Account</button>
+              <button class="crt-btn" id="btn-idle-back">Cancel</button>
+            </div>
+          </div>
+
+          <!-- MENU -->
+          <div class="crt-page" data-page="menu">
+            <div class="crt-title">Card Accepted — <span id="menu-name"></span></div>
+            <div class="crt-flex-fill">
+              <div class="crt-sub">Acct No. <span id="menu-account"></span> · Card <span id="menu-card"></span></div>
+              <div class="crt-sub" style="margin-top:.6em;">Balance</div>
+              <div class="crt-balance" id="menu-balance">₱0.00</div>
+            </div>
+            <div class="crt-row">
+              <button class="crt-btn" data-page-to="withdraw">Withdraw</button>
+              <button class="crt-btn" data-page-to="loan">Loans</button>
+              <button class="crt-btn" id="btn-logout">Eject Card</button>
+            </div>
+          </div>
+
+          <!-- WITHDRAW -->
+          <div class="crt-page" data-page="withdraw">
+            <div class="crt-title">Withdraw Cash</div>
+            <div class="crt-flex-fill">
+              <div class="crt-sub">Available: <span id="wd-balance"></span></div>
+              <div class="crt-sub" style="margin-top:.7em;">Select amount</div>
+              <div class="crt-row" style="margin-top:.3em;">
+                <button class="crt-btn wd-amt-btn" data-amt="200">₱200</button>
+                <button class="crt-btn wd-amt-btn" data-amt="500">₱500</button>
+                <button class="crt-btn wd-amt-btn" data-amt="1000">₱1,000</button>
+                <button class="crt-btn wd-amt-btn" data-amt="2000">₱2,000</button>
+                <button class="crt-btn wd-amt-btn" data-amt="5000">₱5,000</button>
+              </div>
+              <input class="crt-input" id="wd-amount" placeholder="or type custom amount (₱)" type="number" min="1" style="margin-top:.8em;">
+              <div class="crt-error" id="wd-error"></div>
+            </div>
+            <div class="crt-row">
+              <button class="crt-btn" id="btn-wd-confirm">Confirm</button>
+              <button class="crt-btn" data-page-to="menu">Back</button>
+            </div>
+          </div>
+
+          <!-- LOAN -->
+          <div class="crt-page" data-page="loan">
+            <div class="crt-title">Loan Services</div>
+            <div class="crt-flex-fill">
+              <div class="crt-sub">30% interest · 10 min deadline</div>
+              <input class="crt-input" id="loan-amount" placeholder="amount (₱500–50,000)" type="number" min="500" max="50000">
+              <div class="crt-error" id="loan-error"></div>
+            </div>
+            <div class="crt-row">
+              <button class="crt-btn" id="btn-loan-take">Take Loan</button>
+              <button class="crt-btn" id="btn-loan-pay">Repay</button>
+              <button class="crt-btn" data-page-to="menu">Back</button>
+            </div>
+          </div>
+
+          <!-- RECEIPT -->
+          <div class="crt-page" data-page="receipt">
+            <div class="crt-title">Transaction Complete</div>
+            <div class="crt-flex-fill">
+              <div class="crt-line" id="receipt-text" style="white-space:pre-line;"></div>
+            </div>
+            <div class="crt-row">
+              <button class="crt-btn" data-page-to="menu">Done</button>
+            </div>
+          </div>
+
+          <!-- BUSY -->
+          <div class="crt-page" data-page="busy">
+            <div class="crt-flex-fill" style="justify-content:center; align-items:center; display:flex;">
+              <div class="crt-line">processing<span class="blink">...</span></div>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- LOAN -->
-      <div class="crt-page" data-page="loan">
-        <div class="crt-title">Loan Services</div>
-        <div class="crt-flex-fill">
-          <div class="crt-sub">30% interest · 10 min deadline</div>
-          <input class="crt-input" id="loan-amount" placeholder="amount (₱500–50,000)" type="number" min="500" max="50000">
-          <div class="crt-error" id="loan-error"></div>
+      <div id="keypad"></div>
+
+      <div id="io-row">
+        <div class="io-unit" id="card-reader">
+          <div id="card-slot-mouth"></div>
+          <div id="card-led"></div>
+          <div class="io-label">CARD</div>
         </div>
-        <div class="crt-row">
-          <button class="crt-btn" id="btn-loan-take">Take Loan</button>
-          <button class="crt-btn" id="btn-loan-pay">Repay</button>
-          <button class="crt-btn" data-page-to="menu">Back</button>
+        <div class="io-unit" id="receipt-unit">
+          <div id="receipt-slot-mouth">
+            <div id="receipt-paper"></div>
+          </div>
+          <div class="io-label">RECEIPT</div>
+        </div>
+        <div class="io-unit" id="dispenser-unit">
+          <div id="dispenser-housing">
+            <div id="dispenser-flap"></div>
+            <div id="bills-tray"></div>
+          </div>
+          <div class="io-label">CASH</div>
         </div>
       </div>
-
-      <!-- RECEIPT -->
-      <div class="crt-page" data-page="receipt">
-        <div class="crt-title">Transaction Complete</div>
-        <div class="crt-flex-fill">
-          <div class="crt-line" id="receipt-text" style="white-space:pre-line;"></div>
-        </div>
-        <div class="crt-row">
-          <button class="crt-btn" data-page-to="menu">Done</button>
-        </div>
-      </div>
-
-      <!-- BUSY -->
-      <div class="crt-page" data-page="busy">
-        <div class="crt-flex-fill" style="justify-content:center; align-items:center; display:flex;">
-          <div class="crt-line">processing<span class="blink">...</span></div>
-        </div>
-      </div>
-
     </div>
+
+    <div id="plinth"></div>
   </div>
 
   <div id="hint">drag to look around</div>
@@ -304,9 +523,6 @@ cinnabank.onAuthStateChanged((user, userData)=>{
        document.querySelector('[data-page="auth"]').classList.contains('active')){
       showPage('menu');
     }
-    if(!document.querySelector('[data-page="idle"]').classList.contains('active')){
-      // keep whichever transactional page is open, but refresh balance fields
-    }
   } else {
     showPage('idle');
   }
@@ -382,291 +598,113 @@ document.getElementById('btn-loan-pay').addEventListener('click', async ()=>{
 });
 
 /* ==========================================================
-   THREE.JS SCENE — physical ATM body
+   PHYSICAL ATM — built from real DOM/CSS instead of a WebGL
+   scene. This guarantees the whole machine (and whole screen)
+   always fits the viewport, since every dimension is derived
+   from vmin (percentage of the SMALLER viewport axis).
    ========================================================== */
-const canvas = document.getElementById('three-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x05060a, 8, 22);
-
-const camera = new THREE.PerspectiveCamera(35, window.innerWidth/window.innerHeight, .1, 100);
-const camBase = new THREE.Vector3(0, 1.55, 6.2);
-camera.position.copy(camBase);
-camera.lookAt(0, 1.15, 0);
-
-// lights
-scene.add(new THREE.AmbientLight(0x2a2f3a, .8));
-const spot = new THREE.SpotLight(0xffdca8, 2.4, 20, Math.PI/6, .5, 1.2);
-spot.position.set(1.5, 6, 3);
-spot.castShadow = true;
-scene.add(spot);
-const rim = new THREE.PointLight(0x3dffa0, 1.1, 10);
-rim.position.set(-2, 2, -1.5);
-scene.add(rim);
-const fill = new THREE.PointLight(0x4477ff, .35, 10);
-fill.position.set(-1.5, 1, 3);
-scene.add(fill);
-
-// floor
-const floor = new THREE.Mesh(
-  new THREE.PlaneGeometry(40,40),
-  new THREE.MeshStandardMaterial({ color:0x0d0f12, roughness:.35, metalness:.6 })
-);
-floor.rotation.x = -Math.PI/2;
-floor.receiveShadow = true;
-scene.add(floor);
-
-const steel = new THREE.MeshStandardMaterial({ color:0x33383f, roughness:.35, metalness:.85 });
-const steelDark = new THREE.MeshStandardMaterial({ color:0x1c1f23, roughness:.5, metalness:.6 });
-const steelEdge = new THREE.MeshStandardMaterial({ color:0x767f89, roughness:.25, metalness:.9 });
-const darkGlass = new THREE.MeshStandardMaterial({ color:0x03110b, roughness:.15, metalness:.2 });
-const amber = new THREE.MeshStandardMaterial({ color:0xffb648, emissive:0xffb648, emissiveIntensity:.9, roughness:.4 });
-const red = new THREE.MeshStandardMaterial({ color:0xff3b3b, emissive:0xff3b3b, emissiveIntensity:.9 });
-const paperMat = new THREE.MeshStandardMaterial({ color:0xe9e4d6, roughness:.9, metalness:0 });
-
-const atm = new THREE.Group();
-scene.add(atm);
-
-// main body
-const body = new THREE.Mesh(new THREE.BoxGeometry(2.6, 3.1, 1.3), steel);
-body.position.y = 1.55;
-body.castShadow = true; body.receiveShadow = true;
-atm.add(body);
-
-// base plinth
-const base = new THREE.Mesh(new THREE.BoxGeometry(2.9, .3, 1.55), steelDark);
-base.position.y = .15;
-atm.add(base);
-
-// angled top fascia (screen housing)
-const fascia = new THREE.Mesh(new THREE.BoxGeometry(2.5, 1.1, 1.32), steelEdge);
-fascia.position.set(0, 2.75, 0);
-fascia.rotation.x = -0.12;
-atm.add(fascia);
-
-// screen bezel + dark screen
-const bezel = new THREE.Mesh(new THREE.BoxGeometry(1.5, .95, .08), steelDark);
-bezel.position.set(0, 2.8, .68);
-bezel.rotation.x = -0.12;
-atm.add(bezel);
-const screenMesh = new THREE.Mesh(new THREE.PlaneGeometry(1.3, .78), darkGlass);
-screenMesh.position.set(0, 2.8, .725);
-screenMesh.rotation.x = -0.12;
-atm.add(screenMesh);
-
-// keypad plate (decorative)
-const keypadPlate = new THREE.Mesh(new THREE.BoxGeometry(.9, .7, .05), steelDark);
-keypadPlate.position.set(0, 1.95, .68);
-atm.add(keypadPlate);
-for(let r=0;r<4;r++){
-  for(let c=0;c<3;c++){
-    const key = new THREE.Mesh(new THREE.BoxGeometry(.19,.13,.05), steelEdge);
-    key.position.set(-.3 + c*.3, 2.2 - r*.16, .715);
-    atm.add(key);
-  }
+// build decorative keypad
+const keypad = document.getElementById('keypad');
+for(let i=0;i<12;i++){
+  const key = document.createElement('div');
+  key.className = 'key';
+  keypad.appendChild(key);
 }
 
-// card slot
-const cardSlot = new THREE.Mesh(new THREE.BoxGeometry(.55,.06,.05), steelDark);
-cardSlot.position.set(0, 1.45, .68);
-atm.add(cardSlot);
-const cardLED = new THREE.Mesh(new THREE.SphereGeometry(.02,8,8), red);
-cardLED.position.set(.32, 1.45, .69);
-atm.add(cardLED);
-
-// receipt slot
-const receiptSlot = new THREE.Mesh(new THREE.BoxGeometry(.6,.03,.04), steelDark);
-receiptSlot.position.set(0, 1.15, .68);
-atm.add(receiptSlot);
-
-// cash dispenser (hinged flap)
-const dispenserHousing = new THREE.Mesh(new THREE.BoxGeometry(.75,.35,.15), steelDark);
-dispenserHousing.position.set(0,.75,.66);
-atm.add(dispenserHousing);
-const flapPivot = new THREE.Group();
-flapPivot.position.set(0, .58, .73);
-atm.add(flapPivot);
-const flap = new THREE.Mesh(new THREE.BoxGeometry(.7,.28,.02), steelEdge);
-flap.position.set(0, .14, 0);
-flapPivot.add(flap);
-
-// status LED strip
-const ledStrip = new THREE.Mesh(new THREE.BoxGeometry(.5,.03,.02), amber);
-ledStrip.position.set(0, 2.28, .69);
-atm.add(ledStrip);
-
-// cash bills group (hidden until dispensed)
+// build cash bills (hidden until dispensed)
+const billsTray = document.getElementById('bills-tray');
 const bills = [];
-const billGeo = new THREE.PlaneGeometry(.28,.13);
 for(let i=0;i<6;i++){
-  const billMat = new THREE.MeshStandardMaterial({ color:0x2f8f5a, roughness:.7, side:THREE.DoubleSide, transparent:true });
-  const bill = new THREE.Mesh(billGeo, billMat);
-  bill.position.set(0,.6,.75);
-  bill.visible = false;
-  atm.add(bill);
+  const bill = document.createElement('div');
+  bill.className = 'bill';
+  billsTray.appendChild(bill);
   bills.push({
-    mesh: bill,
-    groundX: (Math.random()-.5)*.9,
-    groundZ: .9 + Math.random()*.7,
-    spin: (Math.random()-.5)*3,
-    windDir: 1.6 + Math.random()*.6
+    el: bill,
+    groundX: (Math.random()-.5)*70,   // vmin
+    windX: 60 + Math.random()*50,     // vmin, sweep distance
+    rot: (Math.random()-.5)*100,      // deg
+    delay: i*70                       // ms stagger
   });
 }
 
-// receipt paper mesh
-const receiptPaper = new THREE.Mesh(new THREE.PlaneGeometry(.5,.01), paperMat);
-receiptPaper.position.set(0,1.15,.68);
-receiptPaper.visible = false;
-atm.add(receiptPaper);
+const dispenserFlap = document.getElementById('dispenser-flap');
+const receiptPaper = document.getElementById('receipt-paper');
+const cardLED = document.getElementById('card-led');
 
-/* ===== animation helpers ===== */
 function playDispenserAnim(){
-  const start = performance.now();
-  // phases: flap opens -> bills eject & fall to the ground -> rest -> wind sweeps them away -> flap closes
-  const openDur = 450, fallDur = 650, restDur = 350, sweepDur = 650, closeDur = 400;
-  const t1 = openDur, t2 = t1+fallDur, t3 = t2+restDur, t4 = t3+sweepDur, t5 = t4+closeDur;
+  dispenserFlap.classList.add('open');
 
-  function tick(now){
-    const t = now - start;
+  // bills fall onto the tray, staggered
+  bills.forEach(b=>{
+    setTimeout(()=>{
+      b.el.style.opacity = '1';
+      b.el.style.transform = `translate(${b.groundX}vmin, 5.5vmin) rotate(${b.rot}deg)`;
+    }, 450 + b.delay);
+  });
 
-    if(t < t1){
-      flapPivot.rotation.x = -1.3 * (t/openDur);
-    }
-    else if(t < t2){
-      flapPivot.rotation.x = -1.3;
-      const bt = (t-t1)/fallDur; // 0..1
-      bills.forEach((b,i)=>{
-        const stagger = Math.min(1, Math.max(0,(bt*1.4 - i*.08)));
-        const f = stagger*stagger;
-        b.mesh.visible = true;
-        b.mesh.position.x = b.groundX * f;
-        b.mesh.position.z = .78 + (b.groundZ-.78) * f;
-        b.mesh.position.y = Math.max(.02, .6 - f*.58);
-        b.mesh.rotation.z = b.spin * f;
-        b.mesh.rotation.x = f * 1.4;
-        b.mesh.material.opacity = 1;
-      });
-    }
-    else if(t < t3){
-      flapPivot.rotation.x = -1.3;
-      bills.forEach(b=>{
-        b.mesh.position.y = .02;
-        b.mesh.rotation.x = 1.4;
-      });
-    }
-    else if(t < t4){
-      flapPivot.rotation.x = -1.3;
-      const st = (t-t3)/sweepDur; // 0..1
-      bills.forEach(b=>{
-        b.mesh.position.x = b.groundX + st*st*b.windDir*3;
-        b.mesh.position.z = b.groundZ - st*.4;
-        b.mesh.position.y = .02 + Math.sin(st*10)*.01;
-        b.mesh.rotation.z += 0.25;
-        b.mesh.material.opacity = Math.max(0, 1-st*1.3);
-      });
-    }
-    else if(t < t5){
-      const ct = (t-t4)/closeDur;
-      flapPivot.rotation.x = -1.3*(1-ct);
-      bills.forEach(b=>{ b.mesh.visible = false; });
-    }
-    else{
-      flapPivot.rotation.x = 0;
-      bills.forEach(b=>{ b.mesh.visible = false; });
-      return;
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+  // after resting, wind sweeps them off-screen
+  setTimeout(()=>{
+    bills.forEach(b=>{
+      b.el.style.transition = 'transform .65s cubic-bezier(.3,.6,.3,1), opacity .65s ease-in';
+      b.el.style.transform = `translate(${b.groundX + b.windX}vmin, 2vmin) rotate(${b.rot+180}deg)`;
+      b.el.style.opacity = '0';
+    });
+  }, 1450);
+
+  // flap closes, bills reset for next time
+  setTimeout(()=>{
+    dispenserFlap.classList.remove('open');
+    bills.forEach(b=>{
+      b.el.style.transition = 'none';
+      b.el.style.transform = 'translate(0,-2vmin) rotate(0deg)';
+    });
+  }, 2300);
 }
 
 function printReceiptAnim(){
-  receiptPaper.visible = true;
-  receiptPaper.scale.y = 0.01;
-  const start = performance.now(), dur = 900;
-  function tick(now){
-    const t = Math.min(1,(now-start)/dur);
-    receiptPaper.scale.y = 1 + t*18;
-    receiptPaper.position.y = 1.15 - t*.35;
-    if(t<1) requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+  receiptPaper.textContent = document.getElementById('receipt-text').textContent;
+  receiptPaper.classList.remove('printed');
+  // force reflow so the animation retriggers on repeat transactions
+  void receiptPaper.offsetHeight;
+  receiptPaper.classList.add('printed');
 }
 
 function playCardInsertAnim(){
-  cardLED.material.color.set(0x3dffa0);
-  cardLED.material.emissive.set(0x3dffa0);
-  setTimeout(()=>{ cardLED.material.color.set(0xff3b3b); cardLED.material.emissive.set(0xff3b3b); }, 1400);
+  cardLED.classList.remove('led-amber');
+  cardLED.classList.add('led-green');
+  setTimeout(()=> cardLED.classList.remove('led-green'), 1400);
 }
 function playCardEjectAnim(){
-  cardLED.material.color.set(0xffb648);
-  cardLED.material.emissive.set(0xffb648);
-  setTimeout(()=>{ cardLED.material.color.set(0xff3b3b); cardLED.material.emissive.set(0xff3b3b); }, 900);
+  cardLED.classList.remove('led-green');
+  cardLED.classList.add('led-amber');
+  setTimeout(()=> cardLED.classList.remove('led-amber'), 900);
 }
 
-/* ===== ambient idle animation + camera parallax (drag to look) ===== */
-let targetYaw = 0, targetPitch = 0, dragging = false, lastX = 0, lastY = 0;
-let yaw = 0, pitch = 0;
-canvas.addEventListener('pointerdown', e=>{ dragging = true; lastX=e.clientX; lastY=e.clientY; });
+/* ===== subtle 3D tilt (mix of 2D panel + real CSS 3D depth) ===== */
+const shell = document.getElementById('atm-shell');
+const stage = document.getElementById('stage');
+let targetYaw = 0, targetPitch = 0, yaw = 0, pitch = 0, dragging = false, lastX = 0, lastY = 0;
+
+stage.addEventListener('pointerdown', e=>{ dragging = true; lastX=e.clientX; lastY=e.clientY; });
 window.addEventListener('pointerup', ()=> dragging = false);
 window.addEventListener('pointermove', e=>{
   if(!dragging) return;
-  targetYaw   += (e.clientX-lastX) * .0025;
-  targetPitch += (e.clientY-lastY) * .0018;
-  targetYaw = Math.max(-.6, Math.min(.6, targetYaw));
-  targetPitch = Math.max(-.25, Math.min(.35, targetPitch));
+  targetYaw   += (e.clientX-lastX) * .06;
+  targetPitch += (e.clientY-lastY) * .04;
+  targetYaw = Math.max(-14, Math.min(14, targetYaw));
+  targetPitch = Math.max(-8, Math.min(8, targetPitch));
   lastX = e.clientX; lastY = e.clientY;
 });
 
-const screenWrapEl = document.getElementById('screen-wrap');
-function updateScreenOverlayPosition(){
-  // project screenMesh center to get on-screen pixel position, keep overlay locked to it
-  const v = new THREE.Vector3();
-  screenMesh.getWorldPosition(v);
-  v.project(camera);
-  const w = window.innerWidth, h = window.innerHeight;
-  let x = (v.x * .5 + .5) * w;
-  let y = (1 - (v.y * .5 + .5)) * h;
-
-  // clamp so the wrap (whose size is known) never gets clipped by the viewport edge
-  const halfW = screenWrapEl.offsetWidth / 2;
-  const halfH = screenWrapEl.offsetHeight / 2;
-  const margin = 14;
-  x = Math.min(Math.max(x, halfW + margin), w - halfW - margin);
-  y = Math.min(Math.max(y, halfH + margin), h - halfH - margin);
-
-  screenWrapEl.style.left = x + 'px';
-  screenWrapEl.style.top = y + 'px';
+function tiltLoop(){
+  requestAnimationFrame(tiltLoop);
+  yaw += (targetYaw-yaw)*.08;
+  pitch += (targetPitch-pitch)*.08;
+  shell.style.setProperty('--tiltY', yaw.toFixed(2)+'deg');
+  shell.style.setProperty('--tiltX', (-pitch).toFixed(2)+'deg');
 }
-
-let t0 = performance.now();
-function animate(now){
-  requestAnimationFrame(animate);
-  const dt = (now-t0)/1000; t0 = now;
-
-  yaw += (targetYaw-yaw)*.06;
-  pitch += (targetPitch-pitch)*.06;
-  camera.position.x = camBase.x + Math.sin(yaw)*2.2;
-  camera.position.z = camBase.z - (1-Math.cos(yaw))*1.2;
-  camera.position.y = camBase.y - pitch*1.4;
-  camera.lookAt(0, 1.15, 0);
-
-  ledStrip.material.emissiveIntensity = .7 + Math.sin(now*.003)*.3;
-
-  updateScreenOverlayPosition();
-  renderer.render(scene, camera);
-}
-requestAnimationFrame(animate);
-
-window.addEventListener('resize', ()=>{
-  camera.aspect = window.innerWidth/window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
+requestAnimationFrame(tiltLoop);
 </script>
 </body>
 </html>
