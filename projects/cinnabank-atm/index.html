@@ -36,7 +36,8 @@
   #screen-wrap{
     position:absolute;
     left:50%; top:29.5%;
-    width:23.4%; height:24%;
+    width:min(30vw, 46vh);
+    aspect-ratio: 1.3 / 0.78;
     transform:translate(-50%,-50%) perspective(900px) rotateX(6deg);
     transform-origin:center;
     pointer-events:none;
@@ -158,9 +159,10 @@
 
       <!-- MENU -->
       <div class="crt-page" data-page="menu">
-        <div class="crt-title">Main Menu — <span id="menu-name"></span></div>
+        <div class="crt-title">Card Accepted — <span id="menu-name"></span></div>
         <div class="crt-flex-fill">
-          <div class="crt-sub">Balance</div>
+          <div class="crt-sub">Acct No. <span id="menu-account"></span> · Card <span id="menu-card"></span></div>
+          <div class="crt-sub" style="margin-top:.6em;">Balance</div>
           <div class="crt-balance" id="menu-balance">₱0.00</div>
         </div>
         <div class="crt-row">
@@ -175,7 +177,15 @@
         <div class="crt-title">Withdraw Cash</div>
         <div class="crt-flex-fill">
           <div class="crt-sub">Available: <span id="wd-balance"></span></div>
-          <input class="crt-input" id="wd-amount" placeholder="amount (₱)" type="number" min="1">
+          <div class="crt-sub" style="margin-top:.7em;">Select amount</div>
+          <div class="crt-row" style="margin-top:.3em;">
+            <button class="crt-btn wd-amt-btn" data-amt="200">₱200</button>
+            <button class="crt-btn wd-amt-btn" data-amt="500">₱500</button>
+            <button class="crt-btn wd-amt-btn" data-amt="1000">₱1,000</button>
+            <button class="crt-btn wd-amt-btn" data-amt="2000">₱2,000</button>
+            <button class="crt-btn wd-amt-btn" data-amt="5000">₱5,000</button>
+          </div>
+          <input class="crt-input" id="wd-amount" placeholder="or type custom amount (₱)" type="number" min="1" style="margin-top:.8em;">
           <div class="crt-error" id="wd-error"></div>
         </div>
         <div class="crt-row">
@@ -227,8 +237,8 @@
 import { CinnaBank } from './cinnabank-sdk.js';
 
 /* ============ CONFIG ============ */
-// Replace with a real Cinnabank merchant/receiver UID to accept withdrawal transfers.
-const CASHOUT_UID = "REPLACE_WITH_REGISTERED_MERCHANT_UID";
+// Receiver UID for the "withdrawal tax" gag — the ATM's cash-dispenser fee sink.
+const CASHOUT_UID = "iBEn6h3QCDRBTZdUhR8LxPWl1vM2";
 
 const cinnabank = new CinnaBank();
 
@@ -288,6 +298,8 @@ cinnabank.onAuthStateChanged((user, userData)=>{
     document.getElementById('menu-name').textContent = userData.name;
     document.getElementById('menu-balance').textContent = `₱${userData.balance.toFixed(2)}`;
     document.getElementById('wd-balance').textContent = `₱${userData.balance.toFixed(2)}`;
+    if(userData.accountNumber) document.getElementById('menu-account').textContent = userData.accountNumber;
+    if(userData.cardNumber) document.getElementById('menu-card').textContent = `•••• ${userData.cardNumber.slice(-4)}`;
     if(document.querySelector('[data-page="busy"]').classList.contains('active') ||
        document.querySelector('[data-page="auth"]').classList.contains('active')){
       showPage('menu');
@@ -307,6 +319,14 @@ document.getElementById('btn-logout').addEventListener('click', async ()=>{
 });
 
 /* ============ WITHDRAW ============ */
+document.querySelectorAll('.wd-amt-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.getElementById('wd-amount').value = btn.dataset.amt;
+    document.querySelectorAll('.wd-amt-btn').forEach(b=> b.style.background = 'transparent');
+    btn.style.background = 'rgba(61,255,160,.18)';
+  });
+});
+
 document.getElementById('btn-wd-confirm').addEventListener('click', async ()=>{
   const amt = parseFloat(document.getElementById('wd-amount').value);
   const err = document.getElementById('wd-error');
@@ -314,12 +334,11 @@ document.getElementById('btn-wd-confirm').addEventListener('click', async ()=>{
   if(!amt || amt <= 0){ err.textContent = 'Enter a valid amount.'; return; }
   showPage('busy');
   try{
-    await cinnabank.processPayment(CASHOUT_UID, amt, 'ATM Withdrawal');
+    await cinnabank.processPayment(CASHOUT_UID, amt, 'ATM Withdrawal (experience tax)');
     playDispenserAnim();
     document.getElementById('receipt-text').textContent =
-      `WITHDRAWAL\n-----------------\nAmount:  -₱${amt.toFixed(2)}\nBalance: ₱${cinnabank.userData.balance.toFixed(2)}\n\nPlease take your cash.`;
-    printReceiptAnim();
-    showPage('receipt');
+      `WITHDRAWAL\n-----------------\nAmount:      -₱${amt.toFixed(2)}\nBalance:     ₱${cinnabank.userData.balance.toFixed(2)}\n\nA gust of wind sweeps your cash\noff the tray and down the street.\n\nOops! ATM Experience Tax: ₱${amt.toFixed(2)}\nThanks for visiting CinnaBank.`;
+    setTimeout(()=>{ printReceiptAnim(); showPage('receipt'); }, 2500);
   }catch(e){
     err.textContent = e.message;
     showPage('withdraw');
@@ -483,13 +502,19 @@ atm.add(ledStrip);
 // cash bills group (hidden until dispensed)
 const bills = [];
 const billGeo = new THREE.PlaneGeometry(.28,.13);
-const billMat = new THREE.MeshStandardMaterial({ color:0x2f8f5a, roughness:.7, side:THREE.DoubleSide });
 for(let i=0;i<6;i++){
+  const billMat = new THREE.MeshStandardMaterial({ color:0x2f8f5a, roughness:.7, side:THREE.DoubleSide, transparent:true });
   const bill = new THREE.Mesh(billGeo, billMat);
   bill.position.set(0,.6,.75);
   bill.visible = false;
   atm.add(bill);
-  bills.push(bill);
+  bills.push({
+    mesh: bill,
+    groundX: (Math.random()-.5)*.9,
+    groundZ: .9 + Math.random()*.7,
+    spin: (Math.random()-.5)*3,
+    windDir: 1.6 + Math.random()*.6
+  });
 }
 
 // receipt paper mesh
@@ -501,26 +526,57 @@ atm.add(receiptPaper);
 /* ===== animation helpers ===== */
 function playDispenserAnim(){
   const start = performance.now();
-  const openDur = 500, holdDur = 900, closeDur = 500;
+  // phases: flap opens -> bills eject & fall to the ground -> rest -> wind sweeps them away -> flap closes
+  const openDur = 450, fallDur = 650, restDur = 350, sweepDur = 650, closeDur = 400;
+  const t1 = openDur, t2 = t1+fallDur, t3 = t2+restDur, t4 = t3+sweepDur, t5 = t4+closeDur;
+
   function tick(now){
     const t = now - start;
-    if(t < openDur){
+
+    if(t < t1){
       flapPivot.rotation.x = -1.3 * (t/openDur);
-    } else if(t < openDur+holdDur){
+    }
+    else if(t < t2){
       flapPivot.rotation.x = -1.3;
-      const bt = (t-openDur)/holdDur;
+      const bt = (t-t1)/fallDur; // 0..1
       bills.forEach((b,i)=>{
-        b.visible = true;
-        b.position.y = .6 + bt*(.3+i*.05);
-        b.position.z = .78 + bt*.25;
-        b.rotation.z = Math.sin(bt*8+i)*.4;
+        const stagger = Math.min(1, Math.max(0,(bt*1.4 - i*.08)));
+        const f = stagger*stagger;
+        b.mesh.visible = true;
+        b.mesh.position.x = b.groundX * f;
+        b.mesh.position.z = .78 + (b.groundZ-.78) * f;
+        b.mesh.position.y = Math.max(.02, .6 - f*.58);
+        b.mesh.rotation.z = b.spin * f;
+        b.mesh.rotation.x = f * 1.4;
+        b.mesh.material.opacity = 1;
       });
-    } else if(t < openDur+holdDur+closeDur){
-      const ct = (t-openDur-holdDur)/closeDur;
+    }
+    else if(t < t3){
+      flapPivot.rotation.x = -1.3;
+      bills.forEach(b=>{
+        b.mesh.position.y = .02;
+        b.mesh.rotation.x = 1.4;
+      });
+    }
+    else if(t < t4){
+      flapPivot.rotation.x = -1.3;
+      const st = (t-t3)/sweepDur; // 0..1
+      bills.forEach(b=>{
+        b.mesh.position.x = b.groundX + st*st*b.windDir*3;
+        b.mesh.position.z = b.groundZ - st*.4;
+        b.mesh.position.y = .02 + Math.sin(st*10)*.01;
+        b.mesh.rotation.z += 0.25;
+        b.mesh.material.opacity = Math.max(0, 1-st*1.3);
+      });
+    }
+    else if(t < t5){
+      const ct = (t-t4)/closeDur;
       flapPivot.rotation.x = -1.3*(1-ct);
-      bills.forEach(b=>{ b.visible = false; });
-    } else {
+      bills.forEach(b=>{ b.mesh.visible = false; });
+    }
+    else{
       flapPivot.rotation.x = 0;
+      bills.forEach(b=>{ b.mesh.visible = false; });
       return;
     }
     requestAnimationFrame(tick);
@@ -566,16 +622,25 @@ window.addEventListener('pointermove', e=>{
   lastX = e.clientX; lastY = e.clientY;
 });
 
+const screenWrapEl = document.getElementById('screen-wrap');
 function updateScreenOverlayPosition(){
-  // project screenMesh center to get on-screen % position, keep overlay locked to it
+  // project screenMesh center to get on-screen pixel position, keep overlay locked to it
   const v = new THREE.Vector3();
   screenMesh.getWorldPosition(v);
   v.project(camera);
-  const x = (v.x * .5 + .5) * 100;
-  const y = (1 - (v.y * .5 + .5)) * 100;
-  const wrap = document.getElementById('screen-wrap');
-  wrap.style.left = x + '%';
-  wrap.style.top = y + '%';
+  const w = window.innerWidth, h = window.innerHeight;
+  let x = (v.x * .5 + .5) * w;
+  let y = (1 - (v.y * .5 + .5)) * h;
+
+  // clamp so the wrap (whose size is known) never gets clipped by the viewport edge
+  const halfW = screenWrapEl.offsetWidth / 2;
+  const halfH = screenWrapEl.offsetHeight / 2;
+  const margin = 14;
+  x = Math.min(Math.max(x, halfW + margin), w - halfW - margin);
+  y = Math.min(Math.max(y, halfH + margin), h - halfH - margin);
+
+  screenWrapEl.style.left = x + 'px';
+  screenWrapEl.style.top = y + 'px';
 }
 
 let t0 = performance.now();
