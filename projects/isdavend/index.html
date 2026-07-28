@@ -801,6 +801,7 @@
         : `Enjoy your fish, <strong>${cbUserData.name || 'friend'}</strong>.`;
 
       document.getElementById('cb-success-view').classList.add('show');
+      btn.disabled = false;
     } catch (err) {
       console.error(err);
       showError('cb-confirm-error', 'Payment failed. Please try again.');

@@ -699,6 +699,7 @@
       document.getElementById('cb-confirm-view').classList.remove('show');
       document.getElementById('overlay').classList.remove('show'); // close modal so the wheel is visible while it spins
       spinWheel(segIdx, prize);
+      btn.disabled = false;
     } catch (err) {
       console.error(err);
       showError('cb-confirm-error', 'Payment failed. Please try again.');
