@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ISDA VEND — ₱1 fish machine</title>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --tank:     #04211f;
+    --panel:    #0a3330;
+    --panel2:   #0f3f3a;
+    --border:   #1a4d47;
+    --border2:  #245e57;
+    --glass:    rgba(120,230,210,0.055);
+    --coin:     #ffcf56;
+    --coin-dark:#b8862a;
+    --led:      #4dffd1;
+    --led-dim:  rgba(77,255,209,0.15);
+    --rare:     #ff6b8a;
+    --epic:     #c792ff;
+    --legend:   #ffd166;
+    --common:   #7fd9c9;
+    --white:    #eafffa;
+    --muted:    #4d7a72;
+    --red:      #ff5f6d;
+  }
+
+  html, body { min-height: 100%; background: var(--tank); color: var(--white); font-family: 'Space Grotesk', sans-serif; }
+
+  body {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 48px 18px 70px; position: relative; overflow-x: hidden;
+  }
+
+  /* ── Ambient bubbles ── */
+  .bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .bubble {
+    position: absolute; bottom: -40px; border-radius: 50%;
+    background: rgba(120,230,210,0.06); border: 1px solid rgba(120,230,210,0.12);
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    from { transform: translateY(0) translateX(0); opacity: 0; }
+    10%  { opacity: 1; }
+    to   { transform: translateY(-110vh) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+
+  .eyebrow {
+    font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 10px; position: relative; z-index: 1;
+  }
+  .eyebrow span { color: var(--led); }
+
+  .wordmark {
+    font-family: 'VT323', monospace; font-size: 58px; line-height: 1;
+    color: var(--white); letter-spacing: 0.02em; margin-bottom: 6px;
+    text-shadow: 0 0 18px rgba(77,255,209,0.25); position: relative; z-index: 1;
+  }
+  .wordmark span { color: var(--led); }
+  .subhead { font-size: 13px; color: var(--muted); margin-bottom: 36px; position: relative; z-index: 1; text-align: center; max-width: 340px; }
+
+  /* ── The machine cabinet ── */
+  .cabinet {
+    width: 100%; max-width: 380px; position: relative; z-index: 1;
+    background: linear-gradient(180deg, var(--panel2), var(--panel));
+    border: 1px solid var(--border2);
+    border-radius: 26px;
+    padding: 20px;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+
+  .cabinet-top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .cabinet-label { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+  .cabinet-lamp { width: 7px; height: 7px; border-radius: 50%; background: var(--led); box-shadow: 0 0 8px var(--led); animation: blink 2.4s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* ── Glass tank window ── */
+  .tank-window {
+    height: 168px; border-radius: 16px; position: relative; overflow: hidden;
+    background: radial-gradient(120% 140% at 50% -10%, rgba(77,255,209,0.10), transparent 60%), #062725;
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tank-window::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px);
+    pointer-events: none;
+  }
+  .tank-glint { position: absolute; top: 0; left: -30%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.045), transparent); transform: skewX(-16deg); }
+  .tank-fish { font-size: 44px; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4)); animation: drift 6s ease-in-out infinite; }
+  @keyframes drift { 0%,100% { transform: translateX(-14px) scaleX(1); } 50% { transform: translateX(14px) scaleX(-1); } }
+  .tank-caption { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+
+  /* ── LCD readout ── */
+  .lcd {
+    background: #021816; border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lcd-item { text-align: left; }
+  .lcd-label { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+  .lcd-value { font-family: 'VT323', monospace; font-size: 26px; color: var(--led); text-shadow: 0 0 10px rgba(77,255,209,0.4); }
+  .lcd-divider { width: 1px; height: 32px; background: var(--border); }
+
+  /* ── Insert coin button ── */
+  .btn-insert {
+    width: 100%; padding: 15px; border-radius: 12px; border: none; cursor: pointer;
+    background: linear-gradient(180deg, var(--coin), var(--coin-dark));
+    color: #2a1c02; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 15px;
+    letter-spacing: 0.02em; box-shadow: 0 8px 22px rgba(255,207,86,0.22), inset 0 1px 0 rgba(255,255,255,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-insert:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,207,86,0.3), inset 0 1px 0 rgba(255,255,255,0.35); }
+  .btn-insert:active { transform: translateY(0); }
+  .coin-icon { font-size: 16px; }
+
+  .cabinet-foot { font-family: 'Space Mono', monospace; font-size: 9.5px; color: var(--muted); text-align: center; margin-top: 12px; letter-spacing: 0.04em; }
+  .cabinet-foot a { color: var(--led); text-decoration: none; }
+  .cabinet-foot a:hover { text-decoration: underline; }
+
+  /* ── Modal overlay ── */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(2,10,9,0.72); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  }
+  .overlay.show { display: flex; }
+
+  .modal {
+    width: 100%; max-width: 400px; background: linear-gradient(180deg, var(--panel2), var(--panel));
+    border: 1px solid var(--border2); border-radius: 22px; overflow: hidden;
+    box-shadow: 0 30px 90px rgba(0,0,0,0.6);
+    animation: modalRise 0.35s cubic-bezier(0.22,1,0.36,1) both;
+    max-height: 88vh; overflow-y: auto;
+  }
+  @keyframes modalRise { from { transform: translateY(16px) scale(0.97); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+  .modal-band { height: 3px; background: linear-gradient(90deg, var(--led), var(--coin), var(--rare)); }
+  .modal-inner { padding: 26px 26px 28px; }
+
+  .modal-close {
+    position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--muted);
+    font-size: 20px; cursor: pointer; line-height: 1;
+  }
+  .modal-close:hover { color: var(--white); }
+
+  .gate-notice {
+    display: flex; gap: 12px; background: var(--led-dim); border: 1px solid rgba(77,255,209,0.22);
+    border-radius: 12px; padding: 13px; margin-bottom: 20px;
+  }
+  .gate-icon { font-size: 18px; }
+  .gate-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .gate-sub { font-size: 12px; color: rgba(234,255,250,0.55); line-height: 1.5; }
+  .gate-sub strong { color: var(--coin); }
+
+  .auth-tabs { display: flex; background: #021816; border: 1px solid var(--border); border-radius: 10px; padding: 3px; margin-bottom: 18px; }
+  .auth-tab-btn {
+    flex: 1; padding: 8px; border: none; background: none; color: var(--muted);
+    font-family: 'Space Grotesk', sans-serif; font-size: 12.5px; font-weight: 600; border-radius: 8px; cursor: pointer;
+  }
+  .auth-tab-btn.active { background: var(--panel2); color: var(--led); }
+
+  .fields { display: flex; flex-direction: column; gap: 11px; margin-bottom: 16px; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 10.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .field input {
+    background: #021816; border: 1px solid var(--border); border-radius: 9px; padding: 11px 13px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: var(--white); outline: none; width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input::placeholder { color: #2c4844; }
+  .field input:focus { border-color: var(--led); box-shadow: 0 0 0 3px rgba(77,255,209,0.12); }
+
+  .amount-row {
+    display: flex; align-items: center; justify-content: space-between; background: rgba(255,207,86,0.08);
+    border: 1px solid rgba(255,207,86,0.22); border-radius: 10px; padding: 12px 15px; margin-bottom: 16px;
+  }
+  .amount-label { font-size: 12px; color: rgba(234,255,250,0.5); }
+  .amount-value { font-family: 'VT323', monospace; font-size: 22px; color: var(--coin); }
+
+  .btn-cb {
+    width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--led); color: #04211f; font-weight: 700; font-size: 14px;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  .btn-cb:hover { transform: translateY(-1px); }
+  .btn-cb:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+  .form-hint { text-align: center; font-size: 12px; color: var(--muted); margin-top: 12px; }
+  .form-hint a { color: var(--led); cursor: pointer; }
+
+  .status-msg { display: none; font-size: 12.5px; text-align: center; margin-top: 10px; }
+  .status-msg.show { display: block; }
+  .status-msg.error { color: var(--red); }
+  .status-msg.info { color: var(--muted); }
+  .dots span { animation: dotFade 1.2s infinite; opacity: 0; }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotFade { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+
+  /* Confirm view */
+  .confirm-view, .success-view { display: none; text-align: center; }
+  .confirm-view.show, .success-view.show { display: block; }
+  .confirm-avatar {
+    width: 58px; height: 58px; border-radius: 50%; background: var(--led-dim); border: 1px solid rgba(77,255,209,0.3);
+    display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: var(--led);
+    margin: 0 auto 12px;
+  }
+  .confirm-greeting { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .confirm-name { font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+  .confirm-bank { font-size: 11.5px; color: var(--muted); margin-bottom: 18px; }
+  .confirm-amount-box { background: #021816; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+  .confirm-amount-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .confirm-amount-value { font-family: 'VT323', monospace; font-size: 30px; color: var(--coin); }
+  .btn-confirm { width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer; background: var(--coin); color: #2a1c02; font-weight: 700; font-size: 14px; }
+  .btn-back-link { background: none; border: none; color: var(--muted); font-size: 12.5px; cursor: pointer; }
+  .btn-back-link:hover { color: var(--white); }
+
+  /* Success / dispense view */
+  .dispense-slot {
+    background: #021816; border: 1px solid var(--border); border-radius: 16px;
+    padding: 26px 16px; margin: 4px 0 18px; position: relative; overflow: hidden;
+  }
+  .dispense-emoji { font-size: 64px; display: block; margin-bottom: 10px; animation: pop 0.5s cubic-bezier(0.22,1.4,0.36,1) both; }
+  @keyframes pop { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .dispense-name { font-size: 17px; font-weight: 700; margin-bottom: 5px; }
+  .rarity-tag {
+    display: inline-block; font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 20px; border: 1px solid;
+  }
+  .rarity-common  { color: var(--common); border-color: rgba(127,217,201,0.4); background: rgba(127,217,201,0.08); }
+  .rarity-uncommon{ color: var(--led);    border-color: rgba(77,255,209,0.4);  background: rgba(77,255,209,0.08); }
+  .rarity-rare    { color: var(--rare);   border-color: rgba(255,107,138,0.4); background: rgba(255,107,138,0.08); }
+  .rarity-legendary{ color: var(--legend);border-color: rgba(255,209,102,0.4); background: rgba(255,209,102,0.08); }
+
+  .success-title { font-family: 'VT323', monospace; font-size: 30px; color: var(--led); margin-bottom: 6px; }
+  .success-sub { font-size: 13px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+  .counter-line { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); margin-bottom: 18px; }
+  .counter-line span { color: var(--led); }
+  .btn-again { width: 100%; padding: 13px; border-radius: 10px; border: 1px solid var(--border2); cursor: pointer; background: transparent; color: var(--white); font-weight: 600; font-size: 13.5px; }
+  .btn-again:hover { border-color: var(--led); color: var(--led); }
+
+  .cb-badge {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; font-size: 10.5px; color: var(--muted);
+    font-family: 'Space Mono', monospace;
+  }
+  .cb-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--led); box-shadow: 0 0 6px var(--led); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--panel2); border: 1px solid var(--border2); color: var(--white); padding: 12px 20px;
+    border-radius: 10px; font-size: 13px; opacity: 0; pointer-events: none; transition: all 0.25s; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: rgba(255,95,109,0.4); }
+
+  @media (max-width: 420px) {
+    .wordmark { font-size: 46px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bubbles" id="bubbles"></div>
+
+<div class="eyebrow">coin-op curiosity shop <span>·</span> est. today</div>
+<div class="wordmark">ISDA<span>VEND</span></div>
+<div class="subhead">Insert ₱1. The machine gives you a fish. That's the whole business model.</div>
+
+<div class="cabinet">
+  <div class="cabinet-top">
+    <div class="cabinet-label">Unit 003 · Online</div>
+    <div class="cabinet-lamp"></div>
+  </div>
+
+  <div class="tank-window">
+    <div class="tank-glint"></div>
+    <div class="tank-fish" id="idle-fish">🐟</div>
+    <div class="tank-caption">no fish were harmed. none were real.</div>
+  </div>
+
+  <div class="lcd">
+    <div class="lcd-item">
+      <div class="lcd-label">Price</div>
+      <div class="lcd-value">₱1.00</div>
+    </div>
+    <div class="lcd-divider"></div>
+    <div class="lcd-item">
+      <div class="lcd-label">Dispensed</div>
+      <div class="lcd-value" id="dispensed-count">0000</div>
+    </div>
+  </div>
+
+  <button class="btn-insert" onclick="openMachine()">
+    <span class="coin-icon">🪙</span> Insert ₱1 — get a fish
+  </button>
+
+  <div class="cabinet-foot">Powered by <a href="https://cinnabank.vercel.app/" target="_blank">Cinnabank</a> · fictional currency, fictional fish</div>
+</div>
+
+<!-- ═══════════════════ MODAL ═══════════════════ -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-band"></div>
+    <div class="modal-inner" style="position:relative;">
+      <button class="modal-close" onclick="closeMachine()">✕</button>
+
+      <!-- AUTH VIEW -->
+      <div id="cb-auth-view">
+        <div class="gate-notice">
+          <div class="gate-icon">🐟</div>
+          <div>
+            <div class="gate-title">Pay ₱1, get a fish</div>
+            <div class="gate-sub">Sign in with Cinnabank to dispense. New here? Make a free account and get a <strong>₱1,000 welcome bonus</strong> instantly.</div>
+          </div>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="sub-login-btn" onclick="switchAuthMode('login')">Sign in</button>
+          <button class="auth-tab-btn" id="sub-signup-btn" onclick="switchAuthMode('signup')">Create account</button>
+        </div>
+
+        <div id="cb-login-fields">
+          <div class="fields">
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="cb-login-email" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input type="password" id="cb-login-password" placeholder="••••••••" autocomplete="current-password"/>
+            </div>
+          </div>
+          <div class="amount-row">
+            <div class="amount-label">Vend price</div>
+            <div class="amount-value">₱1.00</div>
+          </div>
+          <button class="btn-cb" id="cb-login-btn" onclick="processCbLogin()">Sign in &amp; vend</button>
+          <div class="status-msg error" id="cb-login-error"></div>
+          <div class="status-msg info" id="cb-login-loading">Signing in<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          <div class="form-hint">No account? <a onclick="switchAuthMode('signup')">Create one free →</a></div>
+        </div>
+
+        <div id="cb-signup-fields" style="display:none">
+          <div class="fields">
+            <div class="field">
+              <label>Full name</label>
+              <input type="text" id="cb-signup-name" placeholder="Your name" autocomplete="name"/>
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="cb-signup-email" placeholder="you@example.com" autocomplete="email"/>
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input type="password" id="cb-signup-password" placeholder="At least 6 characters" autocomplete="new-password"/>
+            </div>
+          </div>
+          <div class="amount-row">
+            <div class="amount-label">Vend price after signup</div>
+            <div class="amount-value">₱1.00</div>
+          </div>
+          <button class="btn-cb" id="cb-signup-btn" onclick="processCbSignup()">Create account &amp; vend</button>
+          <div class="status-msg error" id="cb-signup-error"></div>
+          <div class="status-msg info" id="cb-signup-loading">Creating account<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+          <div class="form-hint">Already have an account? <a onclick="switchAuthMode('login')">Sign in →</a></div>
+        </div>
+      </div>
+
+      <!-- CONFIRM VIEW -->
+      <div class="confirm-view" id="cb-confirm-view">
+        <div class="confirm-avatar" id="confirm-avatar">?</div>
+        <div class="confirm-greeting">Paying as</div>
+        <div class="confirm-name" id="confirm-name">—</div>
+        <div class="confirm-bank">Cinnabank account</div>
+        <div class="confirm-amount-box">
+          <div class="confirm-amount-label">Vend price</div>
+          <div class="confirm-amount-value">₱1.00</div>
+        </div>
+        <div class="status-msg error" id="cb-confirm-error" style="width:100%;margin-bottom:12px;margin-top:0;"></div>
+        <button class="btn-confirm" id="cb-confirm-btn" onclick="confirmCbPayment()">Confirm &amp; dispense fish</button>
+        <div class="status-msg info" id="cb-confirm-loading" style="width:100%;text-align:center;margin-top:8px;">Processing<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+        <button class="btn-back-link" onclick="cancelConfirm()" style="margin-top:14px;">← Back</button>
+      </div>
+
+      <!-- SUCCESS / DISPENSE VIEW -->
+      <div class="success-view" id="cb-success-view">
+        <div class="success-title">*clunk*</div>
+        <div class="success-sub" id="cb-success-sub">Your fish has been dispensed.</div>
+
+        <div class="dispense-slot">
+          <span class="dispense-emoji" id="dispense-emoji">🐟</span>
+          <div class="dispense-name" id="dispense-name">Lil Bloop</div>
+          <span class="rarity-tag rarity-common" id="dispense-rarity">Common</span>
+        </div>
+
+        <div class="counter-line">Machine total: <span id="success-count">0001</span> fish dispensed all-time</div>
+
+        <button class="btn-again" onclick="closeMachine()">Done</button>
+        <div style="text-align:center;">
+          <div class="cb-badge">
+            <div class="cb-badge-dot"></div>
+            Powered by Cinnabank
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+
+  // ── Firebase config (Cinnabank's public demo project) ──────────────────────
+  const firebaseConfig = {
+    apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
+    authDomain:        "cinnabank.firebaseapp.com",
+    projectId:         "cinnabank",
+    storageBucket:     "cinnabank.firebasestorage.app",
+    messagingSenderId: "162136260228",
+    appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+
+  // ── ISDAVEND owner UID — replace with your actual Cinnabank UID ────────────
+  const VEND_UID = 'REPLACE_WITH_YOUR_CINNABANK_UID';
+  const FEE      = 1;
+
+  // ── State ────────────────────────────────────────────────────────────────
+  let cbUser     = null;
+  let cbUserData = null;
+  let isNewUser  = false;
+
+  // ── Fish catalog: [emoji, name, rarity, weight] ─────────────────────────
+  const CATALOG = [
+    ['🐟', 'Lil Bloop',            'common',    40],
+    ['🐠', "Tropicano",            'common',    30],
+    ['🐡', 'Sir Puffington III',   'uncommon',  12],
+    ['🦀', 'Crabby Patty Knockoff','uncommon',  10],
+    ['🦐', 'Shrimpy McShrimperson','uncommon',   8],
+    ['🐬', 'Blorp the Friendly',   'rare',        6],
+    ['🦈', 'Chomps McGee',         'rare',        5],
+    ['🐙', 'Ink Lord',             'rare',        4],
+    ['🦑', 'Cal Amari',            'rare',        3],
+    ['🐳', "Moby's Nephew",        'legendary',   1.5],
+    ['🐋', 'The Big Guy',          'legendary',   1],
+    ['🪼', 'Jellybean the Wise',   'legendary',   0.5],
+  ];
+
+  function rollFish() {
+    const total = CATALOG.reduce((s, f) => s + f[3], 0);
+    let r = Math.random() * total;
+    for (const f of CATALOG) {
+      if (r < f[3]) return f;
+      r -= f[3];
+    }
+    return CATALOG[0];
+  }
+
+  // ── Dispensed counter (local, cosmetic) ─────────────────────────────────
+  let dispensedTotal = 1247 + Math.floor(Math.random() * 40);
+  document.getElementById('dispensed-count').textContent = String(dispensedTotal).padStart(4, '0');
+
+  // ── Ambient bubbles ──────────────────────────────────────────────────────
+  const bubbleWrap = document.getElementById('bubbles');
+  for (let i = 0; i < 18; i++) {
+    const b = document.createElement('div');
+    const size = 4 + Math.random() * 10;
+    b.className = 'bubble';
+    b.style.left = Math.random() * 100 + 'vw';
+    b.style.width = size + 'px';
+    b.style.height = size + 'px';
+    b.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    b.style.animationDuration = (8 + Math.random() * 10) + 's';
+    b.style.animationDelay = (Math.random() * 10) + 's';
+    bubbleWrap.appendChild(b);
+  }
+
+  // ── Idle tank fish cycling ───────────────────────────────────────────────
+  const idleFish = ['🐟','🐠','🐡','🐬'];
+  let idleIdx = 0;
+  setInterval(() => {
+    idleIdx = (idleIdx + 1) % idleFish.length;
+    document.getElementById('idle-fish').textContent = idleFish[idleIdx];
+  }, 4000);
+
+  // ── Modal open/close ─────────────────────────────────────────────────────
+  window.openMachine = function() {
+    document.getElementById('overlay').classList.add('show');
+  };
+  window.closeMachine = function() {
+    document.getElementById('overlay').classList.remove('show');
+    // reset to auth view for next time unless already confirmed mid-flow
+    document.getElementById('cb-success-view').classList.remove('show');
+    if (!cbUser) {
+      document.getElementById('cb-auth-view').style.display = '';
+      document.getElementById('cb-confirm-view').classList.remove('show');
+    }
+  };
+
+  window.switchAuthMode = function(mode) {
+    const isLogin = mode === 'login';
+    document.getElementById('cb-login-fields').style.display  = isLogin ? '' : 'none';
+    document.getElementById('cb-signup-fields').style.display = isLogin ? 'none' : '';
+    document.getElementById('sub-login-btn').classList.toggle('active',  isLogin);
+    document.getElementById('sub-signup-btn').classList.toggle('active', !isLogin);
+  };
+
+  function toast(msg, type = '') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (type ? ' ' + type : '');
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  function setLoading(btnId, loadingId, errorId, on) {
+    const btn = document.getElementById(btnId);
+    const ld  = document.getElementById(loadingId);
+    const err = document.getElementById(errorId);
+    if (btn) btn.disabled = on;
+    if (ld)  ld.classList.toggle('show', on);
+    if (err) err.classList.remove('show');
+  }
+  function showError(errorId, msg) {
+    const el = document.getElementById(errorId);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function cbFail(mode, msg) {
+    showError(`cb-${mode}-error`, msg);
+    document.getElementById(`cb-${mode}-loading`).classList.remove('show');
+    document.getElementById(`cb-${mode}-btn`).disabled = false;
+  }
+
+  // ── Auto-advance if already signed in ───────────────────────────────────
+  onAuthStateChanged(auth, async user => {
+    if (!user) return;
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (!snap.exists()) return;
+      cbUser     = user;
+      cbUserData = snap.data();
+    } catch (_) {}
+  });
+
+  window.processCbLogin = async function() {
+    const email    = document.getElementById('cb-login-email').value.trim();
+    const password = document.getElementById('cb-login-password').value;
+    if (!email || !password) { showError('cb-login-error', 'Please fill in your email and password.'); return; }
+
+    setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', true);
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const snap = await getDoc(doc(db, 'users', cred.user.uid));
+      if (!snap.exists()) { cbFail('login', 'Account data not found.'); return; }
+      cbUser     = cred.user;
+      cbUserData = snap.data();
+      isNewUser  = false;
+      setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', false);
+      showConfirmScreen();
+    } catch (e) {
+      const msg = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
+        ? 'Incorrect email or password.'
+        : (e.code === 'auth/user-not-found' ? 'No account with that email.' : 'Sign-in failed. Try again.');
+      cbFail('login', msg);
+    }
+  };
+
+  window.processCbSignup = async function() {
+    const name     = document.getElementById('cb-signup-name').value.trim();
+    const email    = document.getElementById('cb-signup-email').value.trim();
+    const password = document.getElementById('cb-signup-password').value;
+
+    if (!name)  { showError('cb-signup-error', 'Please enter your name.'); return; }
+    if (!email) { showError('cb-signup-error', 'Please enter your email.'); return; }
+    if (password.length < 6) { showError('cb-signup-error', 'Password must be at least 6 characters.'); return; }
+
+    const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)?$/;
+    if (!nameRegex.test(name)) {
+      showError('cb-signup-error', 'Name can only contain letters and a single space between words (e.g., "Woq Chan"). No numbers or special characters.');
+      return;
+    }
+
+    setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', true);
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+
+      const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+      const cardNumber = Array.from({ length: 4 }, () => Math.floor(1000 + Math.random() * 9000)).join('');
+      const expYear    = new Date().getFullYear() + 3 + Math.floor(Math.random() * 3);
+      const expMonth   = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
+      const cardExpiry = `${expMonth}/${String(expYear).slice(2)}`;
+      const cardCVV    = String(Math.floor(100 + Math.random() * 900));
+
+      const userData = {
+        name, email,
+        balance: 1000,
+        accountNumber,
+        cardNumber, cardExpiry, cardCVV,
+        createdAt: serverTimestamp(),
+        photoURL: '',
+      };
+
+      await Promise.all([
+        setDoc(doc(db, 'users', cred.user.uid), userData),
+        addDoc(collection(db, 'transactions'), {
+          userId: cred.user.uid, type: 'credit', amount: 1000,
+          note: 'Welcome bonus', counterparty: 'Cinnabank',
+          source: 'welcome', balanceAfter: 1000, createdAt: serverTimestamp(),
+        }),
+      ]);
+
+      cbUser     = cred.user;
+      cbUserData = userData;
+      isNewUser  = true;
+      setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', false);
+      showConfirmScreen();
+    } catch (e) {
+      const msg = e.code === 'auth/email-already-in-use'
+        ? 'An account with that email already exists.'
+        : 'Sign-up failed. Please try again.';
+      cbFail('signup', msg);
+    }
+  };
+
+  function showConfirmScreen() {
+    document.getElementById('cb-auth-view').style.display = 'none';
+    document.getElementById('cb-confirm-view').classList.add('show');
+    const name   = cbUserData?.name || 'You';
+    const avatar = document.getElementById('confirm-avatar');
+    if (cbUserData?.photoURL) {
+      avatar.innerHTML = `<img src="${cbUserData.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      avatar.textContent = name[0].toUpperCase();
+    }
+    document.getElementById('confirm-name').textContent = name;
+  }
+
+  window.cancelConfirm = function() {
+    document.getElementById('cb-confirm-view').classList.remove('show');
+    document.getElementById('cb-auth-view').style.display = '';
+  };
+
+  window.confirmCbPayment = async function() {
+    if (!cbUser || !cbUserData) return;
+
+    const errEl  = document.getElementById('cb-confirm-error');
+    const loadEl = document.getElementById('cb-confirm-loading');
+    const btn    = document.getElementById('cb-confirm-btn');
+    errEl.classList.remove('show');
+    loadEl.classList.remove('show');
+
+    const balance = cbUserData.balance || 0;
+    if (balance < FEE) {
+      showError('cb-confirm-error', `Insufficient balance. Your account has ₱${balance.toFixed(2)}.`);
+      return;
+    }
+
+    btn.disabled = true;
+    loadEl.classList.add('show');
+
+    // Roll the fish before we even confirm the network call resolved cleanly,
+    // so the "prize" is decided client-side — purely cosmetic, no real value.
+    const [emoji, name, rarity] = rollFish();
+
+    try {
+      const token = await cbUser.getIdToken();
+      const response = await fetch('https://cinnabank.vercel.app/api/transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          receiverUid: VEND_UID,
+          amount: FEE,
+          note: `ISDAVEND dispense: ${emoji} ${name} (${rarity})`,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Payment failed');
+
+      loadEl.classList.remove('show');
+      document.getElementById('cb-confirm-view').classList.remove('show');
+
+      dispensedTotal += 1;
+      document.getElementById('dispensed-count').textContent = String(dispensedTotal).padStart(4, '0');
+      document.getElementById('success-count').textContent = String(dispensedTotal).padStart(4, '0');
+
+      document.getElementById('dispense-emoji').textContent = emoji;
+      document.getElementById('dispense-emoji').style.animation = 'none';
+      void document.getElementById('dispense-emoji').offsetWidth;
+      document.getElementById('dispense-emoji').style.animation = '';
+      document.getElementById('dispense-name').textContent = name;
+      const rarityTag = document.getElementById('dispense-rarity');
+      rarityTag.textContent = rarity.charAt(0).toUpperCase() + rarity.slice(1);
+      rarityTag.className = `rarity-tag rarity-${rarity}`;
+
+      const sub = document.getElementById('cb-success-sub');
+      sub.innerHTML = isNewUser
+        ? `Welcome, <strong>${cbUserData.name || 'friend'}</strong> — first fish is on the house-ish (₱1,000 welcome bonus applied).`
+        : `Enjoy your fish, <strong>${cbUserData.name || 'friend'}</strong>.`;
+
+      document.getElementById('cb-success-view').classList.add('show');
+    } catch (err) {
+      console.error(err);
+      showError('cb-confirm-error', 'Payment failed. Please try again.');
+      btn.disabled = false;
+      loadEl.classList.remove('show');
+    }
+  };
+</script>
+</body>
+</html>

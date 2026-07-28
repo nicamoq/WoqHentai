@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Other Projects — ヲクアニメ</title>
+<meta name="description" content="Discover other projects from the woqhentai community."/>
+<link rel="shortcut icon" href="assets/images/favicon-128x128.png" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;700;900&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black:     #0a0a0a;
+  --surface:   #111111;
+  --card:      #1a1a1a;
+  --border:    #2a2a2a;
+  --border2:   #333333;
+  --pink:      #fe085b;
+  --pink-dim:  rgba(254,8,91,0.10);
+  --cinna:     #C8622A;
+  --cinna-dim: rgba(200,98,42,0.10);
+  --gold:      #e8a84e;
+  --white:     #f0f0f0;
+  --white2:    #b0b0b0;
+  --muted:     #555555;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* ── Ambient glow ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse, rgba(200,98,42,0.055) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── Navbar ── */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 6vw;
+  position: relative;
+  z-index: 10;
+}
+.nav-brand {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  transition: color 0.2s;
+}
+.nav-brand:hover {
+  color: var(--pink);
+}
+
+/* ── Header ── */
+.header-section {
+  padding: 80px 6vw 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+.header-eyebrow {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.header-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+.header-sub {
+  font-size: 14px;
+  color: var(--white2);
+  letter-spacing: 0.02em;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ── Projects Grid ── */
+.projects-container {
+  flex: 1;
+  padding: 40px 6vw 100px;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.project-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  border-color: var(--border2);
+}
+
+.project-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.02) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.project-card:hover::after { opacity: 1; }
+
+.project-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--white);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.project-title svg {
+  width: 18px; height: 18px;
+  color: var(--muted);
+  transition: color 0.3s, transform 0.3s;
+}
+.project-card:hover .project-title svg {
+  color: var(--cinna);
+  transform: translate(2px, -2px);
+}
+
+.project-desc {
+  font-size: 13px;
+  color: var(--white2);
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  padding: 40px;
+}
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 6vw;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+.footer-name {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--white);
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">ヲクアニメ</a>
+  <a href="index.html" style="font-size: 13px; color: var(--white2); transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--white2)'">Return Home</a>
+</nav>
+
+<header class="header-section">
+  <div class="header-eyebrow">The Ecosystem</div>
+  <h1 class="header-title">Other Projects</h1>
+  <p class="header-sub">Explore the various side projects, tools, and integrations built around our community.</p>
+</header>
+
+<main class="projects-container">
+  <div id="loading" class="loading">LOADING PROJECTS...</div>
+  <div id="projects-grid" class="projects-grid" style="display: none;"></div>
+</main>
+
+<footer>
+  <div class="footer-name">ヲクへんたい</div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('projects-grid');
+    const loading = document.getElementById('loading');
+
+    fetch('projects/list.json')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load projects');
+        return response.json();
+      })
+      .then(projects => {
+        loading.style.display = 'none';
+        
+        if (projects.length === 0) {
+          grid.style.display = 'block';
+          grid.innerHTML = '<div style="text-align:center; color: var(--muted); width: 100%;">No projects found.</div>';
+          return;
+        }
+
+        grid.style.display = 'grid';
+        projects.forEach(project => {
+          const card = document.createElement('a');
+          card.className = 'project-card';
+          card.href = project.url;
+          
+          card.innerHTML = `
+            <div class="project-title">
+              ${project.title}
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </div>
+            <div class="project-desc">${project.description}</div>
+          `;
+          grid.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        loading.textContent = 'ERROR LOADING PROJECTS';
+      });
+  });
+</script>
+
+</body>
+</html>
