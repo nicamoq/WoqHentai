@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -17,36 +17,57 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 export class CinnaBank {
-  constructor() {
+  /**
+   * Initialize the Cinnabank SDK.
+   * @param {object} [config] - Configuration settings
+   * @param {string} [config.apiBaseUrl] - Custom API base URL (defaults to "https://cinnabank.vercel.app")
+   */
+  constructor(config = {}) {
+    this.apiBaseUrl = config.apiBaseUrl || "https://cinnabank.vercel.app";
     this.user = null;
     this.userData = null;
     this.isNewUser = false;
   }
 
   /**
-   * Listens to auth state changes and loads the corresponding Cinnabank user profile.
-   * @param {function(user, userData)} callback - Called on auth change with (user, userData)
-   * @returns {function} Unsubscribe function
+   * Listens to auth state changes and loads the corresponding Cinnabank user profile in real-time.
+   * @param {function(user, userData)} callback - Called on auth or profile change with (user, userData)
+   * @returns {function} Unsubscribe function to clean up listeners
    */
   onAuthStateChanged(callback) {
-    return onAuthStateChanged(auth, async (user) => {
+    let unsubscribeSnapshot = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
       if (user) {
         this.user = user;
-        try {
-          const snap = await getDoc(doc(db, 'users', user.uid));
+        // Listen to profile updates in real-time
+        unsubscribeSnapshot = onSnapshot(doc(db, 'users', user.uid), (snap) => {
           if (snap.exists()) {
             this.userData = snap.data();
             callback(this.user, this.userData);
-            return;
+          } else {
+            this.userData = null;
+            callback(this.user, null);
           }
-        } catch (e) {
-          console.error("Cinnabank SDK: Error fetching user profile:", e);
-        }
+        }, (error) => {
+          console.error("Cinnabank SDK: Error listening to user profile:", error);
+        });
+      } else {
+        this.user = null;
+        this.userData = null;
+        callback(null, null);
       }
-      this.user = null;
-      this.userData = null;
-      callback(null, null);
     });
+
+    return () => {
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      unsubscribeAuth();
+    };
   }
 
   /**
@@ -126,9 +147,13 @@ export class CinnaBank {
    * @param {string} receiverUid - Merchant's Cinnabank UID
    * @param {number} amount - Payment amount
    * @param {string} note - Payment note/description
-   * @returns {Promise<object>} Response details from Cinnabank Vercel serverless function
+   * @param {object} [options] - Optional parameters for payment requests and links
+   * @param {string} [options.chatId] - ID of the chat if resolving a payment request
+   * @param {string} [options.requestId] - ID of the message request in the chat
+   * @param {string} [options.linkId] - ID of the payment link/QR code
+   * @returns {Promise<object>} Response details from Cinnabank serverless function
    */
-  async processPayment(receiverUid, amount, note) {
+  async processPayment(receiverUid, amount, note, options = {}) {
     if (!this.user || !this.userData) {
       throw new Error("No user authenticated.");
     }
@@ -139,17 +164,20 @@ export class CinnaBank {
     }
 
     const token = await this.user.getIdToken();
-    const response = await fetch('https://cinnabank.vercel.app/api/transfer', {
+    const payload = {
+      receiverUid,
+      amount,
+      note,
+      ...options
+    };
+
+    const response = await fetch(`${this.apiBaseUrl}/api/transfer`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({
-        receiverUid,
-        amount,
-        note
-      })
+      body: JSON.stringify(payload)
     });
 
     const result = await response.json();
@@ -157,8 +185,111 @@ export class CinnaBank {
       throw new Error(result.error || 'Payment failed');
     }
 
-    // Deduct locally on success to keep client states updated
+    // Deduct locally on success to keep client states updated optimistically
     this.userData.balance -= amount;
+
+    return result;
+  }
+
+  /**
+   * Helper to perform secure loan transactions.
+   * @private
+   */
+  async _handleLoan(action, amount) {
+    if (!this.user || !this.userData) {
+      throw new Error("No user authenticated.");
+    }
+
+    const token = await this.user.getIdToken();
+    const response = await fetch(`${this.apiBaseUrl}/api/loan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ action, amount })
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'Loan transaction failed');
+    }
+
+    return result;
+  }
+
+  /**
+   * Take out a Cinnabank loan with a 30% interest rate and a 10-minute deadline.
+   * @param {number} amount - Loan principal (between ₱500 and ₱50,000)
+   * @returns {Promise<object>} Response details from Cinnabank serverless function
+   */
+  async takeLoan(amount) {
+    return this._handleLoan('take', amount);
+  }
+
+  /**
+   * Repay an active Cinnabank loan.
+   * @param {number} amount - Repayment amount
+   * @returns {Promise<object>} Response details from Cinnabank serverless function
+   */
+  async payLoan(amount) {
+    return this._handleLoan('pay', amount);
+  }
+
+  /**
+   * Play a casino game using Cinnabank funds.
+   * @param {string} game - Game name: 'slots', 'coin', 'dice', or 'roulette'
+   * @param {number} bet - Bet amount
+   * @param {string} [choice] - Choice parameters for the game ('heads'/'tails' for coin, etc.)
+   * @returns {Promise<object>} Game response details including winnings and new balance
+   */
+  async playGame(game, bet, choice) {
+    if (!this.user || !this.userData) {
+      throw new Error("No user authenticated.");
+    }
+
+    const token = await this.user.getIdToken();
+    const response = await fetch(`${this.apiBaseUrl}/api/play`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ game, bet, choice })
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'Game failed');
+    }
+
+    return result;
+  }
+
+  /**
+   * Purchase a custom card skin from the Cinnabank catalog.
+   * @param {string} skinId - ID of the skin to purchase (e.g., 'ba-arona')
+   * @returns {Promise<object>} Purchase response details
+   */
+  async purchaseSkin(skinId) {
+    if (!this.user || !this.userData) {
+      throw new Error("No user authenticated.");
+    }
+
+    const token = await this.user.getIdToken();
+    const response = await fetch(`${this.apiBaseUrl}/api/store`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ skinId })
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'Purchase failed');
+    }
 
     return result;
   }

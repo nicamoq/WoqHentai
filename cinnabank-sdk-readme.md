@@ -15,7 +15,11 @@ The SDK is written as an ES module. You can import the `CinnaBank` class directl
 ```javascript
 import { CinnaBank } from '/cinnabank-sdk.js'; // Use appropriate relative path (e.g. '../../cinnabank-sdk.js' in subfolders)
 
+// Default initialization (points to production API)
 const cinnabank = new CinnaBank();
+
+// Local development initialization (points to local dev backend)
+// const cinnabank = new CinnaBank({ apiBaseUrl: 'http://localhost:3000' });
 ```
 
 ---
@@ -23,12 +27,12 @@ const cinnabank = new CinnaBank();
 ## 🔑 Core API Methods
 
 ### `cinnabank.onAuthStateChanged(callback)`
-Listens for changes to the user's authentication state. If a user is logged in, it automatically fetches their corresponding Cinnabank profile document from Firestore.
+Listens for changes to the user's authentication state and subscribes to their corresponding Cinnabank profile document in Cloud Firestore in real-time. If the profile's balance or fields change on the database, this callback will fire automatically with the updated data.
 * **Arguments:** 
-  - `callback(user, userData)`: A function that runs whenever the auth state changes.
+  - `callback(user, userData)`: A function that runs whenever the auth state changes or database profile changes.
     - `user`: The Firebase Auth user object (or `null` if logged out).
     - `userData`: The Cinnabank user document data (balance, account name, account number, card numbers) from Firestore (or `null` if logged out).
-* **Returns:** `unsubscribe` function to clean up the listener.
+* **Returns:** `unsubscribe` function to clean up the listeners.
 
 ### `cinnabank.login(email, password)`
 Authenticates an existing Cinnabank user using their credentials.
@@ -42,15 +46,45 @@ Creates a new Cinnabank user, automatically assigns a 10-digit account number, c
 * **Returns:** `Promise<{ user, userData }>`
 * **Throws:** An error if the display name fails validation, or if the email is already in use.
 
-### `cinnabank.processPayment(receiverUid, amount, note)`
-Invokes the Cinnabank Vercel serverless backend `/api/transfer` to execute an atomic, double-spend resistant transfer.
+### `cinnabank.processPayment(receiverUid, amount, note, options)`
+Invokes the Cinnabank serverless backend `/api/transfer` to execute an atomic, double-spend resistant transfer.
 * **Arguments:** 
   - `receiverUid` (string): The Cinnabank user UID of the merchant/recipient.
   - `amount` (number): The payment amount in Pesos (₱).
   - `note` (string): Transaction description (e.g. `"Dispensed: 🧸 Toy Plushie"`).
+  - `options` (object, optional): Optional parameters:
+    - `chatId` (string): The ID of the chat if resolving a payment request.
+    - `requestId` (string): The ID of the message request in the chat.
+    - `linkId` (string): The ID of the payment link/QR code.
 * **Returns:** `Promise<object>` (The JSON response from the serverless API)
 * **Throws:** An error if there are insufficient funds or if the API call fails.
 * **Side-effects:** Deducts the paid amount from `cinnabank.userData.balance` locally upon success.
+
+### `cinnabank.takeLoan(amount)`
+Takes out a Cinnabank loan with a 30% interest rate and a 10-minute repayment deadline.
+* **Arguments:** `amount` (number): The loan principal (must be between ₱500 and ₱50,000).
+* **Returns:** `Promise<object>` (The JSON response from the serverless API)
+
+### `cinnabank.payLoan(amount)`
+Repays a portion or all of an active Cinnabank loan.
+* **Arguments:** `amount` (number): The repayment amount.
+* **Returns:** `Promise<object>` (The JSON response from the serverless API)
+
+### `cinnabank.playGame(game, bet, choice)`
+Plays a secure, server-authoritative casino game using Cinnabank funds.
+* **Arguments:**
+  - `game` (string): The game name (`'slots'`, `'coin'`, `'dice'`, or `'roulette'`).
+  - `bet` (number): The amount of money to bet.
+  - `choice` (string, optional): The choice parameter:
+    - For `'coin'`: `'heads'` or `'tails'`.
+    - For `'dice'`: `'higher'`, `'lower'`, or `'equal'`.
+    - For `'roulette'`: `'red'`, `'black'`, `'green'`, `'even'`, `'odd'`, etc.
+* **Returns:** `Promise<object>` (The JSON response containing game results, multiplier, winnings, garnished loan repayment amounts, and `newBalance`).
+
+### `cinnabank.purchaseSkin(skinId)`
+Purchases a card cosmetic skin from the Cinnabank Store catalog (applies 12% VAT and 1% service fee automatically).
+* **Arguments:** `skinId` (string): The ID of the skin to buy (e.g. `'ba-arona'`, `'midnight-spice'`).
+* **Returns:** `Promise<object>` (The JSON response from the serverless API)
 
 ### `cinnabank.logout()`
 Signs out the current session and clears cached SDK states.
