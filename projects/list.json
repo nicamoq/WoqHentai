@@ -2,7 +2,7 @@
   {
     "id": "dubious",
     "title": "dubious",
-    "description": "Spin the wheel",
+    "description": "A project named dubious",
     "url": "projects/dubious/",
     "thumbnail": ""
   },
@@ -23,7 +23,7 @@
   {
     "id": "woku-manila",
     "title": "woku-manila",
-    "description": "A high-end Japanese restaurant serving great dishes such as Tilapiamaki",
+    "description": "A project named woku-manila",
     "url": "projects/woku-manila/",
     "thumbnail": ""
   }

@@ -727,25 +727,10 @@
 <div class="toast" id="toast"></div>
 
 <script type="module">
-  import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-  import { getFirestore, collection, doc, getDoc, updateDoc, addDoc, serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+  import { CinnaBank } from './cinnabank-sdk.js';
 
-  // ── Firebase config ─────────────────────────────────────────────────────────
-  const firebaseConfig = {
-    apiKey:            "AIzaSyCRLhAHtcKU54-utFf_LWUFD2cBO5_Cok4",
-    authDomain:        "cinnabank.firebaseapp.com",
-    projectId:         "cinnabank",
-    storageBucket:     "cinnabank.firebasestorage.app",
-    messagingSenderId: "162136260228",
-    appId:             "1:162136260228:web:30bd93eca36945811c4cd1",
-  };
-
-  const app  = initializeApp(firebaseConfig);
-  const db   = getFirestore(app);
-  const auth = getAuth(app);
+  // Initialize SDK
+  const cb = new CinnaBank();
 
   // ── WOKU owner UID — replace with your actual Cinnabank UID ─────────────────
   const WOKU_UID = 'iBEn6h3QCDRBTZdUhR8LxPWl1vM2';
@@ -829,16 +814,12 @@
   // ─────────────────────────────────────────────────────────────────────────────
 
   // If user is already signed in to Cinnabank, skip to confirm screen
-  onAuthStateChanged(auth, async user => {
-    if (!user) return;
-    // Only auto-advance if they're on the CB tab
-    try {
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      if (!snap.exists()) return;
-      cbUser     = user;
-      cbUserData = snap.data();
-      showConfirmScreen(false);
-    } catch(_) {}
+  cb.onAuthStateChanged((user, userData) => {
+    if (!user || !userData) return;
+    cbUser     = user;
+    cbUserData = userData;
+    isNewUser  = cb.isNewUser;
+    showConfirmScreen(false);
   });
 
   window.processCbLogin = async function() {
@@ -848,19 +829,14 @@
 
     setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', true);
     try {
-      const cred = await signInWithEmailAndPassword(auth, email, password);
-      const snap = await getDoc(doc(db, 'users', cred.user.uid));
-      if (!snap.exists()) { cbFail('login', 'Account data not found.'); return; }
-      cbUser     = cred.user;
-      cbUserData = snap.data();
-      isNewUser  = false;
+      const res = await cb.login(email, password);
+      cbUser     = res.user;
+      cbUserData = res.userData;
+      isNewUser  = cb.isNewUser;
       setLoading('cb-login-btn', 'cb-login-loading', 'cb-login-error', false);
       showConfirmScreen(false);
     } catch(e) {
-      const msg = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
-        ? 'Incorrect email or password.'
-        : (e.code === 'auth/user-not-found' ? 'No account with that email.' : 'Sign-in failed. Try again.');
-      cbFail('login', msg);
+      cbFail('login', e.message);
     }
   };
 
@@ -873,58 +849,16 @@
     if (!email)           { showError('cb-signup-error', 'Please enter your email.'); return; }
     if (password.length < 6) { showError('cb-signup-error', 'Password must be at least 6 characters.'); return; }
 
-    // Ensures name compliance (matches Cinnabank's own signup rules)
-    const nameRegex = /^[a-zA-Z]+(?: [a-zA-Z]+)?$/;
-    if (!nameRegex.test(name)) {
-      showError('cb-signup-error', 'Name can only contain letters and a single space between words (e.g., "Woq Chan"). No numbers or special characters.');
-      return;
-    }
-
     setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', true);
     try {
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Generate a simple account number
-      const accountNumber = Math.floor(1000000000 + Math.random() * 9000000000).toString();
-
-      // Generate mock card details (same logic as Cinnabank's own signup)
-      const cardNumber = Array.from({length: 4}, () => Math.floor(1000 + Math.random() * 9000)).join('');
-      const expYear     = new Date().getFullYear() + 3 + Math.floor(Math.random() * 3);
-      const expMonth    = String(Math.floor(1 + Math.random() * 12)).padStart(2, '0');
-      const cardExpiry  = `${expMonth}/${String(expYear).slice(2)}`;
-      const cardCVV     = String(Math.floor(100 + Math.random() * 900));
-
-      // Create Firestore user doc with ₱1,000 welcome balance
-      const userData = {
-        name, email,
-        balance: 1000,
-        accountNumber,
-        cardNumber, cardExpiry, cardCVV,
-        createdAt: serverTimestamp(),
-        photoURL: '',
-      };
-      await Promise.all([
-        // Use setDoc equivalent via updateDoc workaround — addDoc to users subcollection not right, use set
-        import("https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js").then(({ setDoc }) =>
-          setDoc(doc(db, 'users', cred.user.uid), userData)
-        ),
-        addDoc(collection(db, 'transactions'), {
-          userId: cred.user.uid, type: 'credit', amount: 1000,
-          note: 'Welcome bonus', counterparty: 'Cinnabank',
-          source: 'welcome', balanceAfter: 1000, createdAt: serverTimestamp(),
-        }),
-      ]);
-
-      cbUser     = cred.user;
-      cbUserData = userData;
-      isNewUser  = true;
+      const res = await cb.signup(name, email, password);
+      cbUser     = res.user;
+      cbUserData = res.userData;
+      isNewUser  = cb.isNewUser;
       setLoading('cb-signup-btn', 'cb-signup-loading', 'cb-signup-error', false);
       showConfirmScreen(true);
     } catch(e) {
-      const msg = e.code === 'auth/email-already-in-use'
-        ? 'An account with that email already exists.'
-        : 'Sign-up failed. Please try again.';
-      cbFail('signup', msg);
+      cbFail('signup', e.message);
     }
   };
 
@@ -966,25 +900,10 @@
     loadEl.classList.add('show');
 
     try {
-      const token = await cbUser.getIdToken();
-      // Replace with your actual deployed Cinnabank API URL if not hosted on the same origin
-      const response = await fetch('https://cinnabank.vercel.app/api/transfer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          receiverUid: WOKU_UID,
-          amount: FEE,
-          note: 'Welcome to ヲク. Here is your link to join: https://t.me/woqlinks'
-        })
-      });
-
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.error || 'Payment failed');
-      }
+      await cb.processPayment(WOKU_UID, FEE, 'Welcome to ヲク. Here is your link to join: https://t.me/woqlinks');
+      
+      // Update local state balance from SDK
+      cbUserData = cb.userData;
 
       loadEl.classList.remove('show');
       document.getElementById('cb-confirm-view').classList.remove('show');
@@ -1002,11 +921,9 @@
       renderPerks('cb-perks-unlock');
       document.getElementById('cb-success-view').classList.add('show');
 
-
-
     } catch(err) {
       console.error(err);
-      showError('cb-confirm-error', 'Payment failed. Please try again.');
+      showError('cb-confirm-error', err.message || 'Payment failed. Please try again.');
       btn.disabled = false;
       loadEl.classList.remove('show');
     }
